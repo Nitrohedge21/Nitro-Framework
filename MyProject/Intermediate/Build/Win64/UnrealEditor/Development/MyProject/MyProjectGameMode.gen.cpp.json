@@ -1,0 +1,19 @@
+{
+    "Version": "1.1",
+    "Data": {
+        "Source": "d:\\ninjatest\\myproject\\intermediate\\build\\win64\\unrealeditor\\inc\\myproject\\myprojectgamemode.gen.cpp",
+        "ProvidedModule": "",
+        "PCH": "d:\\ninjatest\\myproject\\intermediate\\build\\win64\\myprojecteditor\\development\\engine\\sharedpch.engine.shadowerrors.h.pch",
+        "Includes": [
+            "d:\\ninjatest\\myproject\\intermediate\\build\\win64\\unrealeditor\\development\\myproject\\definitions.myproject.h",
+            "d:\\ninjatest\\myproject\\source\\myproject\\myprojectgamemode.h",
+            "d:\\ue_5.0\\engine\\source\\runtime\\engine\\classes\\gameframework\\gamemodebase.h",
+            "d:\\ue_5.0\\engine\\source\\runtime\\engine\\classes\\engine\\serverstatreplicator.h",
+            "d:\\ue_5.0\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\serverstatreplicator.generated.h",
+            "d:\\ue_5.0\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\gamemodebase.generated.h",
+            "d:\\ninjatest\\myproject\\intermediate\\build\\win64\\unrealeditor\\inc\\myproject\\myprojectgamemode.generated.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}

@@ -1,0 +1,13 @@
+{
+    "Version": "1.1",
+    "Data": {
+        "Source": "d:\\ninjatest\\myproject\\intermediate\\build\\win64\\unrealeditor\\inc\\myproject\\myproject.init.gen.cpp",
+        "ProvidedModule": "",
+        "PCH": "d:\\ninjatest\\myproject\\intermediate\\build\\win64\\myprojecteditor\\development\\engine\\sharedpch.engine.shadowerrors.h.pch",
+        "Includes": [
+            "d:\\ninjatest\\myproject\\intermediate\\build\\win64\\unrealeditor\\development\\myproject\\definitions.myproject.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}
