@@ -20,7 +20,7 @@ AMyClass::AMyClass(const FObjectInitializer& ObjectInitializer)
 
 	// Configure character movement
 	GetCharacterMovement()->bOrientRotationToMovement = true; // Character moves in the direction of input...	
-	GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f); // ...at this rotation rate
+	GetCharacterMovement()->RotationRate = FRotator(0.0f, 520.0f, 0.0f); // ...at this rotation rate
 
 	// Note: For faster iteration times these variables, and many more, can be tweaked in the Character Blueprint
 	// instead of recompiling to adjust them
@@ -84,12 +84,19 @@ void AMyClass::MoveForward(float Value)
 {
 	if ((Controller != nullptr) && (Value != 0.0f))
 	{
+		//STUPID CAMERA DOESN'T WORK PROPERLY; IT DOESN'T UPDATE DIRECTION WHEN I ROTATE IT TO LEFT OR RIGHT
 		// find out which way is forward
 		const FRotator Rotation = Controller->GetControlRotation();
-		const FRotator YawRotation(0, Rotation.Yaw, 0);
+		const FVector UpVector = GetCapsuleComponent()->GetUpVector();
 
+		//Other attempts at this shit
+		//const FVector Rotation = GetControlRotation().Vector().RightVector; /GetActorRightVector(); / Controller->GetControlRotation().Vector().RightVector;
+		//const FVector UpVector = GetCapsuleComponent()->GetComponentRotation().Vector().UpVector; /GetCapsuleComponent()->GetUpVector();
+		
 		// get forward vector
-		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+		FVector Direction = FVector::CrossProduct(Rotation.Vector().RightVector,UpVector);
+		Direction.Normalize(0.0001);
+		
 		AddMovementInput(Direction, Value);
 	}
 }

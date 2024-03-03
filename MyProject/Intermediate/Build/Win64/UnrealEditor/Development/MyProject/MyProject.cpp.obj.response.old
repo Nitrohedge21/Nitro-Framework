@@ -1,19 +1,16 @@
 D:\NinjaTest\MyProject\Source\MyProject\MyProject.cpp
 /I .
-/I ..\Plugins\Marketplace\NinjaCharacter\Intermediate\Build\Win64\UnrealEditor\Inc\NinjaCharacter
-/I ..\Plugins\Marketplace\NinjaCharacter\Source
-/I ..\Plugins\Marketplace\NinjaCharacter\Source\NinjaCharacter\Public
-/I Runtime
-/I Runtime\TraceLog\Public
-/I Runtime\Core\Public
-/I ..\Intermediate\Build\Win64\UnrealEditor\Inc\CoreUObject
-/I Runtime\CoreUObject\Public
 /I ..\Intermediate\Build\Win64\UnrealEditor\Inc\Engine
+/I Runtime
 /I ..\Shaders\Shared
 /I Runtime\Engine\Classes
 /I Runtime\Engine\Public
+/I Runtime\TraceLog\Public
+/I Runtime\Core\Public
 /I ..\Intermediate\Build\Win64\UnrealEditor\Inc\CoreOnline
 /I Runtime\CoreOnline\Public
+/I ..\Intermediate\Build\Win64\UnrealEditor\Inc\CoreUObject
+/I Runtime\CoreUObject\Public
 /I ..\Intermediate\Build\Win64\UnrealEditor\Inc\NetCore
 /I Runtime\Net
 /I Runtime\Net\Core\Classes
@@ -254,6 +251,9 @@ D:\NinjaTest\MyProject\Source\MyProject\MyProject.cpp
 /I Runtime\ClothingSystemRuntimeInterface\Public
 /I ..\Intermediate\Build\Win64\UnrealEditor\Inc\AnimationDataController
 /I Developer\AnimationDataController\Public
+/I ..\Plugins\Marketplace\NinjaCharacter\Intermediate\Build\Win64\UnrealEditor\Inc\NinjaCharacter
+/I ..\Plugins\Marketplace\NinjaCharacter\Source
+/I ..\Plugins\Marketplace\NinjaCharacter\Source\NinjaCharacter\Public
 /I D:\NinjaTest\MyProject\Intermediate\Build\Win64\UnrealEditor\Inc\MyProject
 /I D:\NinjaTest\MyProject\Source
 /I ..\Intermediate\Build\Win64\UnrealEditor\Inc\AugmentedReality

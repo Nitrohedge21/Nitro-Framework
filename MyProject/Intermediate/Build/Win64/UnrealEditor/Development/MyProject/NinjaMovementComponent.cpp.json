@@ -1,12 +1,12 @@
 {
     "Version": "1.1",
     "Data": {
-        "Source": "d:\\ninjatest\\myproject\\source\\myproject\\ninjamovementcomponent.cpp",
+        "Source": "d:\\github\\ninja-character-test\\myproject\\source\\myproject\\ninjamovementcomponent.cpp",
         "ProvidedModule": "",
-        "PCH": "d:\\ninjatest\\myproject\\intermediate\\build\\win64\\myprojecteditor\\development\\engine\\sharedpch.engine.shadowerrors.h.pch",
+        "PCH": "d:\\github\\ninja-character-test\\myproject\\intermediate\\build\\win64\\myprojecteditor\\development\\engine\\sharedpch.engine.shadowerrors.h.pch",
         "Includes": [
-            "d:\\ninjatest\\myproject\\intermediate\\build\\win64\\unrealeditor\\development\\myproject\\definitions.myproject.h",
-            "d:\\ninjatest\\myproject\\source\\myproject\\ninjamovementcomponent.h",
+            "d:\\github\\ninja-character-test\\myproject\\intermediate\\build\\win64\\unrealeditor\\development\\myproject\\definitions.myproject.h",
+            "d:\\github\\ninja-character-test\\myproject\\source\\myproject\\ninjamovementcomponent.h",
             "d:\\ue_5.0\\engine\\plugins\\marketplace\\ninjacharacter\\source\\ninjacharacter\\public\\ninjacharactermovementcomponent.h",
             "d:\\ue_5.0\\engine\\source\\runtime\\engine\\classes\\gameframework\\charactermovementcomponent.h",
             "d:\\ue_5.0\\engine\\source\\runtime\\engine\\classes\\gameframework\\rootmotionsource.h",
@@ -34,7 +34,7 @@
             "d:\\ue_5.0\\engine\\plugins\\marketplace\\ninjacharacter\\source\\ninjacharacter\\public\\ninjamath.h",
             "d:\\ue_5.0\\engine\\plugins\\marketplace\\ninjacharacter\\source\\ninjacharacter\\public\\ninjatypes.h",
             "d:\\ue_5.0\\engine\\plugins\\marketplace\\ninjacharacter\\intermediate\\build\\win64\\unrealeditor\\inc\\ninjacharacter\\ninjacharactermovementcomponent.generated.h",
-            "d:\\ninjatest\\myproject\\intermediate\\build\\win64\\unrealeditor\\inc\\myproject\\ninjamovementcomponent.generated.h"
+            "d:\\github\\ninja-character-test\\myproject\\intermediate\\build\\win64\\unrealeditor\\inc\\myproject\\ninjamovementcomponent.generated.h"
         ],
         "ImportedModules": [],
         "ImportedHeaderUnits": []
