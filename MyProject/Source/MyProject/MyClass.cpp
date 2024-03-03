@@ -84,17 +84,27 @@ void AMyClass::MoveForward(float Value)
 {
 	if ((Controller != nullptr) && (Value != 0.0f))
 	{
+
+		//The original code
+		//const FRotator Rotation = Controller->GetControlRotation();
+		//const FRotator YawRotation(0, Rotation.Yaw, 0);
+		//
+		//const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+		//AddMovementInput(Direction, Value);
+		/////////////////////////////////
+
+		
 		//STUPID CAMERA DOESN'T WORK PROPERLY; IT DOESN'T UPDATE DIRECTION WHEN I ROTATE IT TO LEFT OR RIGHT
 		// find out which way is forward
 		const FRotator Rotation = Controller->GetControlRotation();
-		const FVector UpVector = GetCapsuleComponent()->GetUpVector();
-
+		const FVector UpVector = GetCapsuleComponent()->GetComponentQuat().GetUpVector();
+		
 		//Other attempts at this shit
 		//const FVector Rotation = GetControlRotation().Vector().RightVector; /GetActorRightVector(); / Controller->GetControlRotation().Vector().RightVector;
 		//const FVector UpVector = GetCapsuleComponent()->GetComponentRotation().Vector().UpVector; /GetCapsuleComponent()->GetUpVector();
 		
 		// get forward vector
-		FVector Direction = FVector::CrossProduct(Rotation.Vector().RightVector,UpVector);
+		FVector Direction = FVector3d::CrossProduct(Rotation.RotateVector(FVector::RightVector),UpVector);
 		Direction.Normalize(0.0001);
 		
 		AddMovementInput(Direction, Value);
