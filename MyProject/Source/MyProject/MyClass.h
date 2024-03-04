@@ -32,10 +32,10 @@ public:
 protected:
 
 	/** Called for forwards/backward input */
-	void MoveForward(float Value);
+	void MoveForward(float Axis);
 
 	/** Called for side to side input */
-	void MoveRight(float Value);
+	void MoveRight(float Axis);
 
 	/** 
 	 * Called via input to turn at a given rate. 

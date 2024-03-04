@@ -30,6 +30,9 @@ AMyClass::AMyClass(const FObjectInitializer& ObjectInitializer)
 	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
 
+	//The line below makes the camera rotate alongside the player's rotation. (Eg. On a loop-de-loop)
+	this->bCapsuleRotatesControlRotation = true;
+	
 	// Create a camera boom (pulls in towards the player if there is a collision)
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
@@ -80,48 +83,32 @@ void AMyClass::LookUpAtRate(float Rate)
 	AddControllerPitchInput(Rate * TurnRateGamepad * GetWorld()->GetDeltaSeconds());
 }
 
-void AMyClass::MoveForward(float Value)
+void AMyClass::MoveForward(float Axis)
 {
-	if ((Controller != nullptr) && (Value != 0.0f))
+	if ((Controller != nullptr) && (Axis != 0.0f))
 	{
-
-		//The original code
-		//const FRotator Rotation = Controller->GetControlRotation();
-		//const FRotator YawRotation(0, Rotation.Yaw, 0);
-		//
-		//const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-		//AddMovementInput(Direction, Value);
-		/////////////////////////////////
-
-		
-		//STUPID CAMERA DOESN'T WORK PROPERLY; IT DOESN'T UPDATE DIRECTION WHEN I ROTATE IT TO LEFT OR RIGHT
-		// find out which way is forward
 		const FRotator Rotation = Controller->GetControlRotation();
 		const FVector UpVector = GetCapsuleComponent()->GetComponentQuat().GetUpVector();
-		
-		//Other attempts at this shit
-		//const FVector Rotation = GetControlRotation().Vector().RightVector; /GetActorRightVector(); / Controller->GetControlRotation().Vector().RightVector;
-		//const FVector UpVector = GetCapsuleComponent()->GetComponentRotation().Vector().UpVector; /GetCapsuleComponent()->GetUpVector();
-		
-		// get forward vector
+	
 		FVector Direction = FVector3d::CrossProduct(Rotation.RotateVector(FVector::RightVector),UpVector);
 		Direction.Normalize(0.0001);
 		
-		AddMovementInput(Direction, Value);
+		AddMovementInput(Direction, Axis);
 	}
 }
 
-void AMyClass::MoveRight(float Value)
+void AMyClass::MoveRight(float Axis)
 {
-	if ( (Controller != nullptr) && (Value != 0.0f) )
+	//While rotating on a loop-de-loop and upon reaching 90ish degrees, turning left or right
+	//is bugged for some reason. I'll just leave it as it is - Ersan
+	if ( (Controller != nullptr) && (Axis != 0.0f) )
 	{
 		// find out which way is right
 		const FRotator Rotation = Controller->GetControlRotation();
-		const FRotator YawRotation(0, Rotation.Yaw, 0);
 	
 		// get right vector 
-		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+		const FVector Direction = Rotation.RotateVector(FVector::RightVector);
 		// add movement in that direction
-		AddMovementInput(Direction, Value);
+		AddMovementInput(Direction, Axis);
 	}
 }
