@@ -108,6 +108,9 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	
+	// TODO - Figure out how to override the jump count changing after launching off a ramp/slope
+	virtual void Jump()	override;	
+	
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/

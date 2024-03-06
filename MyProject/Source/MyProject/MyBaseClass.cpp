@@ -58,6 +58,9 @@ AMyBaseClass::AMyBaseClass(const FObjectInitializer& ObjectInitializer)
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
+	// Configure the mesh's location and rotation.
+	GetMesh()->SetRelativeLocationAndRotation(FVector(0, 0, -80), FRotator(0, -90, 0));
+	
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
 }
@@ -74,10 +77,7 @@ void AMyBaseClass::SetupPlayerInputComponent(class UInputComponent* PlayerInputC
 
 	PlayerInputComponent->BindAxis("Move Forward / Backward", this, &AMyBaseClass::MoveForward);
 	PlayerInputComponent->BindAxis("Move Right / Left", this, &AMyBaseClass::MoveRight);
-
-	// We have 2 versions of the rotation bindings to handle different kinds of devices differently
-	// "turn" handles devices that provide an absolute delta, such as a mouse.
-	// "turnrate" is for devices that we choose to treat as a rate of change, such as an analog joystick
+	
 	PlayerInputComponent->BindAxis("Turn Right / Left Mouse", this, &APawn::AddControllerYawInput);
 	PlayerInputComponent->BindAxis("Turn Right / Left Gamepad", this, &AMyBaseClass::TurnAtRate);
 	PlayerInputComponent->BindAxis("Look Up / Down Mouse", this, &APawn::AddControllerPitchInput);
@@ -137,24 +137,36 @@ void AMyBaseClass::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	// This needs to be checked every frame because it's being used in multiple functions.
+	bIsGrounded = GetCharacterMovement()->IsMovingOnGround();
 	CheckStomp();
 }
 
-////////////////////////////////////////////////////////////////////////////////////////
-/// All the functions should be added from this point in order to keep the code clear
-///
+//////////////////////////////////////////////////////////////////////////////////////////
+//																					   //
+// All the functions should be added from this point in order to keep the code clear  //
+//																					 //
+//////////////////////////////////////////////////////////////////////////////////////
+
+// TODO - Figure out how to override the jump count changing after launching off a ramp/slope
+void AMyBaseClass::Jump()
+{
+	Super::Jump();
+	JumpDash(); // [IMPROVEMENT] - This was originally done in a separate input action
+	// Now it's being called inside the built in jump function.
+}
 
 void AMyBaseClass::Stomp()
 {
-	//[IMPORTANT] Check Sonic Unleashed to see if you can stomp without needing to jump first.
-	// This fixed the spamming issue but might not be a good idea.
-	if (GetNinjaCharacterMovement()->IsFalling() && JumpCurrentCount == 1)
+	// [IMPORTANT] Check Sonic Unleashed to see if you can stomp without needing to jump first.
+	// BUG - The character can still trigger the jump input even if they're launched off a ramp/slope.
+	if (JumpCurrentCount == 1 && GetNinjaCharacterMovement()->IsFalling())
 	{
-		stompForce = 2500;
+		stompForce = 10000;	// The force value doesn't really matter much as the velocity gets set to zero.
 		const FVector Downward = -GetActorUpVector();
-		// Made it override XY so that it does not maintain the momentum
+		GetCharacterMovement()->Velocity = FVector::Zero();
 		LaunchCharacter(Downward * stompForce, false, true);
-		JumpCurrentCount = 2; // StompJumping(); might be more useful for this part. - I assume i did this to block the players from jumping while stomping
+		JumpCurrentCount = 2; // This is done in order to block the players from jumping while stomping
 		isStomping = true;
 	}
 }
@@ -162,6 +174,18 @@ void AMyBaseClass::Stomp()
 //Check if the character is on the ground. If so, reset the "isStomping" to false.
 void AMyBaseClass::CheckStomp()
 {
-	bIsGrounded = GetNinjaCharacterMovement()->IsMovingOnGround();
 	if (bIsGrounded) { isStomping = false; }
+}
+
+// TODO - Check if Sonic can stomp after jump dashes
+void AMyBaseClass::JumpDash()
+{
+	// I had an older comment here saying that the if statement needs to be fixed. Will figure out what went wrong here.
+	if (!bIsGrounded && JumpCurrentCount == 1)
+	{
+		jumpDashForce = 1000;
+		const FVector ForwardDir = GetActorRotation().Vector(); // Adding .ForwardVector at the end, breaks the mechanic.
+		LaunchCharacter(ForwardDir * jumpDashForce, false, false);
+		JumpCurrentCount = 2;
+	}
 }
