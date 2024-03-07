@@ -29,13 +29,19 @@
     <None Include="..\..\Config\DefaultInput.ini">
       <Filter>Config</Filter>
     </None>
+    <Filter Include="Config\HoloLens">
+      <UniqueIdentifier>{4C8DD267-CDE7-336F-8602-F5F485D22BAB}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Config\HoloLens\HoloLensEngine.ini">
+      <Filter>Config\HoloLens</Filter>
+    </None>
     <Filter Include="Source\MyProject">
       <UniqueIdentifier>{E24959B1-EBAF-399D-9D3A-65ADD2D94AF5}</UniqueIdentifier>
     </Filter>
-    <ClCompile Include="..\..\Source\MyProject\MyClass.cpp">
+    <ClCompile Include="..\..\Source\MyProject\MyBaseClass.cpp">
       <Filter>Source\MyProject</Filter>
     </ClCompile>
-    <ClInclude Include="..\..\Source\MyProject\MyClass.h">
+    <ClInclude Include="..\..\Source\MyProject\MyBaseClass.h">
       <Filter>Source\MyProject</Filter>
     </ClInclude>
     <None Include="..\..\Source\MyProject\MyProject.Build.cs">
@@ -47,16 +53,10 @@
     <ClInclude Include="..\..\Source\MyProject\MyProject.h">
       <Filter>Source\MyProject</Filter>
     </ClInclude>
-    <ClCompile Include="..\..\Source\MyProject\MyProjectCharacter.cpp">
+    <ClCompile Include="..\..\Source\MyProject\MyTestClass.cpp">
       <Filter>Source\MyProject</Filter>
     </ClCompile>
-    <ClInclude Include="..\..\Source\MyProject\MyProjectCharacter.h">
-      <Filter>Source\MyProject</Filter>
-    </ClInclude>
-    <ClCompile Include="..\..\Source\MyProject\MyProjectGameMode.cpp">
-      <Filter>Source\MyProject</Filter>
-    </ClCompile>
-    <ClInclude Include="..\..\Source\MyProject\MyProjectGameMode.h">
+    <ClInclude Include="..\..\Source\MyProject\MyTestClass.h">
       <Filter>Source\MyProject</Filter>
     </ClInclude>
     <ClCompile Include="..\..\Source\MyProject\NinjaMovementComponent.cpp">
