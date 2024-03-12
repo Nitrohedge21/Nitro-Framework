@@ -50,6 +50,13 @@ public:
 	float delayForStaminaRecharge;
 	float canStaminaRecharge;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Slope Physics")
+	float GroundAngle;
+	float SlopeInfluence;
+	float MinSlopeSpeed;
+	float MinSlopeAngle;
+	bool IsSlopeAlignedToGravity;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rings")
 	int RingCount = 0;
 
@@ -97,6 +104,10 @@ protected:
 	
 	//Jump dash mechanic's function
 	void JumpDash();
+
+	// Slope Physics functions
+	void SlopePhysics();
+	void SlopeAlignment();
 	
 public:
 	// APawn interface

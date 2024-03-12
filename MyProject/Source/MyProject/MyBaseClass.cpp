@@ -5,6 +5,7 @@
 #include "NinjaCharacter/Public/NinjaCharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 
 
 AMyBaseClass::AMyBaseClass(const FObjectInitializer& ObjectInitializer)
@@ -26,6 +27,8 @@ AMyBaseClass::AMyBaseClass(const FObjectInitializer& ObjectInitializer)
 	staminaSprintUsageRate = 0.1f;
 	staminaRechargeRate = 0.1f;
 	RingCount = 0;
+
+	SlopeInfluence = 200.0f;
 	
 	// Don't rotate when the controller rotates. Let that just affect the camera.
 	bUseControllerRotationPitch = false;
@@ -142,6 +145,7 @@ void AMyBaseClass::Tick(float DeltaTime)
 	// This needs to be checked every frame because it's being used in multiple functions.
 	bIsGrounded = GetCharacterMovement()->IsMovingOnGround();
 	CheckStomp();
+	//SlopePhysics();
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -190,4 +194,47 @@ void AMyBaseClass::JumpDash()
 		LaunchCharacter(ForwardDir * jumpDashForce, false, false);
 		JumpCurrentCount = 2;
 	}
+}
+
+void AMyBaseClass::SlopePhysics()
+{
+
+	TArray<FHitResult> HitResults;
+	const FVector Start = GetActorLocation();
+	const FVector End = (GetActorRotation().Vector().UpVector * -100.0f) + Start;
+	
+	FCollisionQueryParams CollisionParams;
+	const FCollisionObjectQueryParams ObjectCollisionParams;
+	CollisionParams.AddIgnoredActor(this);	//Ignores the actor itself
+
+	
+	bool IsHit = GetWorld()->LineTraceMultiByObjectType(HitResults,Start,End,ObjectCollisionParams,CollisionParams);
+
+	for (const FHitResult& HitResult : HitResults)
+	{
+		//Draws the raycast line
+		DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 0, 0, 1);
+		float DotProduct = FVector3d::DotProduct(HitResult.Normal, FVector3d(0.0f,0.0f,1.0f));
+		GroundAngle = UKismetMathLibrary::DegAcos(DotProduct);
+
+		FVector HitResVec = FVector(HitResult.Normal.X,HitResult.Normal.Y,UKismetMathLibrary::DegSin(HitResult.Normal.Z));
+		FVector PlaneVector = FVector::VectorPlaneProject(HitResVec,HitResult.Normal);
+
+		bool Condition = (GroundAngle < 90.0f) && (GroundAngle > 20.0f);
+		float TempFloat = (GroundAngle * SlopeInfluence) * GetWorld()->GetDeltaSeconds();
+		float Multiplier = UKismetMathLibrary::SelectFloat(TempFloat,0.0f,Condition);
+		FVector Impulse = PlaneVector * Multiplier;
+
+		if(IsHit)
+		{
+			GetNinjaCharacterMovement()->AddImpulse(Impulse,true);
+		}
+		
+		
+	}
+}
+
+void AMyBaseClass::SlopeAlignment()
+{
+	
 }

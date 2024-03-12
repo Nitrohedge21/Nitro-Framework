@@ -46,7 +46,10 @@
             "d:\\ue_5.0\\engine\\plugins\\marketplace\\ninjacharacter\\source\\ninjacharacter\\public\\ninjamath.h",
             "d:\\ue_5.0\\engine\\plugins\\marketplace\\ninjacharacter\\intermediate\\build\\win64\\unrealeditor\\inc\\ninjacharacter\\ninjacharactermovementcomponent.generated.h",
             "d:\\ue_5.0\\engine\\source\\runtime\\engine\\classes\\gameframework\\springarmcomponent.h",
-            "d:\\ue_5.0\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\springarmcomponent.generated.h"
+            "d:\\ue_5.0\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\springarmcomponent.generated.h",
+            "d:\\ue_5.0\\engine\\source\\runtime\\engine\\classes\\kismet\\kismetmathlibrary.h",
+            "d:\\ue_5.0\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\kismetmathlibrary.generated.h",
+            "d:\\ue_5.0\\engine\\source\\runtime\\engine\\classes\\kismet\\kismetmathlibrary.inl"
         ],
         "ImportedModules": [],
         "ImportedHeaderUnits": []
