@@ -55,7 +55,7 @@ public:
 	float SlopeInfluence;
 	float MinSlopeSpeed;
 	float MinSlopeAngle;
-	bool IsSlopeAlignedToGravity;
+	bool SlopeIsAlignedToGravity;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rings")
 	int RingCount = 0;

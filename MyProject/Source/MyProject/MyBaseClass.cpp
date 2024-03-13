@@ -28,7 +28,12 @@ AMyBaseClass::AMyBaseClass(const FObjectInitializer& ObjectInitializer)
 	staminaRechargeRate = 0.1f;
 	RingCount = 0;
 
+	//Slope Physics values
 	SlopeInfluence = 200.0f;
+	SlopeIsAlignedToGravity = true;
+	MinSlopeAngle = 60.0f;
+	MinSlopeSpeed = 600.0f;
+
 	
 	// Don't rotate when the controller rotates. Let that just affect the camera.
 	bUseControllerRotationPitch = false;
@@ -145,7 +150,8 @@ void AMyBaseClass::Tick(float DeltaTime)
 	// This needs to be checked every frame because it's being used in multiple functions.
 	bIsGrounded = GetCharacterMovement()->IsMovingOnGround();
 	CheckStomp();
-	//SlopePhysics();
+	SlopePhysics();
+	SlopeAlignment();
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -199,42 +205,56 @@ void AMyBaseClass::JumpDash()
 void AMyBaseClass::SlopePhysics()
 {
 
-	TArray<FHitResult> HitResults;
+	FHitResult HitResult;
 	const FVector Start = GetActorLocation();
-	const FVector End = (GetActorRotation().Vector().UpVector * -100.0f) + Start;
+	const FVector End = (GetActorUpVector() * -100.0f) + Start;
 	
 	FCollisionQueryParams CollisionParams;
-	const FCollisionObjectQueryParams ObjectCollisionParams;
+	FCollisionObjectQueryParams ObjectCollisionParams;
+	ObjectCollisionParams.AddObjectTypesToQuery(ECollisionChannel::ECC_WorldDynamic);
+	ObjectCollisionParams.AddObjectTypesToQuery(ECollisionChannel::ECC_WorldStatic);
 	CollisionParams.AddIgnoredActor(this);	//Ignores the actor itself
 
-	
-	bool IsHit = GetWorld()->LineTraceMultiByObjectType(HitResults,Start,End,ObjectCollisionParams,CollisionParams);
+	//This is originally a multi line trace in nova's framework but 
+	//I found it unnecessary so I made mine a single line trace
+	bool IsHit = GetWorld()->LineTraceSingleByObjectType(HitResult,Start,End,ObjectCollisionParams,CollisionParams);
 
-	for (const FHitResult& HitResult : HitResults)
+
+	//Draws the raycast line
+	//DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 0, 0, 1);
+
+	//The rest handles the math calculations
+	float DotProduct = FVector3d::DotProduct(HitResult.Normal, FVector3d(0.0f,0.0f,1.0f));
+	GroundAngle = UKismetMathLibrary::DegAcos(DotProduct);
+
+	FVector HitResVec = FVector(HitResult.Normal.X,HitResult.Normal.Y,UKismetMathLibrary::DegSin(HitResult.Normal.Z));
+	FVector PlaneVector = FVector::VectorPlaneProject(HitResVec,HitResult.Normal);
+
+	bool Condition = (GroundAngle < 90.0f) && (GroundAngle > 20.0f);
+	float TempFloat = (GroundAngle * SlopeInfluence) * GetWorld()->GetDeltaSeconds();
+	float Multiplier = UKismetMathLibrary::SelectFloat(TempFloat,0.0f,Condition);
+	FVector Impulse = PlaneVector * Multiplier;
+
+	//Applies an impulse as the slope physics' force or something
+	if(IsHit)
 	{
-		//Draws the raycast line
-		DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 0, 0, 1);
-		float DotProduct = FVector3d::DotProduct(HitResult.Normal, FVector3d(0.0f,0.0f,1.0f));
-		GroundAngle = UKismetMathLibrary::DegAcos(DotProduct);
-
-		FVector HitResVec = FVector(HitResult.Normal.X,HitResult.Normal.Y,UKismetMathLibrary::DegSin(HitResult.Normal.Z));
-		FVector PlaneVector = FVector::VectorPlaneProject(HitResVec,HitResult.Normal);
-
-		bool Condition = (GroundAngle < 90.0f) && (GroundAngle > 20.0f);
-		float TempFloat = (GroundAngle * SlopeInfluence) * GetWorld()->GetDeltaSeconds();
-		float Multiplier = UKismetMathLibrary::SelectFloat(TempFloat,0.0f,Condition);
-		FVector Impulse = PlaneVector * Multiplier;
-
-		if(IsHit)
-		{
-			GetNinjaCharacterMovement()->AddImpulse(Impulse,true);
-		}
-		
-		
+		GetNinjaCharacterMovement()->AddImpulse(Impulse,true);
 	}
+	
 }
 
 void AMyBaseClass::SlopeAlignment()
 {
-	
+	// These if statements are pretty straight forward
+	if (!GetNinjaCharacterMovement()->IsFalling() && SlopeIsAlignedToGravity)
+	{
+		if((GroundAngle > MinSlopeAngle) && GetVelocity().Length() < MinSlopeSpeed)
+		{
+			GetNinjaCharacterMovement()->SetAlignComponentToFloor(false);
+		}
+		else
+		{
+			GetNinjaCharacterMovement()->SetAlignComponentToFloor(true);
+		}
+	}
 }
