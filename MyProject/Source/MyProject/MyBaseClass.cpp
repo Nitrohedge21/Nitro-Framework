@@ -68,8 +68,19 @@ AMyBaseClass::AMyBaseClass(const FObjectInitializer& ObjectInitializer)
 
 	// Configure the mesh's location and rotation.
 	GetMesh()->SetRelativeLocationAndRotation(FVector(0, 0, -80), FRotator(0, -90, 0));
+
+	//Configure the jumpball mesh
+	BallMesh = CreateDefaultSubobject<UStaticMeshComponent>("SpinballMesh");
+	BallMesh->SetupAttachment(RootComponent);
+	BallMesh->SetRelativeLocation(FVector(0,0,-15));
+	BallMesh->SetRelativeRotation(FRotator(0,-90,0));
+	BallMesh->SetRelativeScale3D(FVector(1.5,1.5,1.5));
+	BallMesh->SetVisibility(false);
+	
 	//Configure capsule half height
 	GetCapsuleComponent()->SetCapsuleHalfHeight(80.0f);
+	GetCapsuleComponent()->SetCapsuleRadius(42.0f);
+	//Spinball height might be different, just testing stuff out. H:50 R:45
 	
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
@@ -164,8 +175,19 @@ void AMyBaseClass::Tick(float DeltaTime)
 void AMyBaseClass::Jump()
 {
 	Super::Jump();
+
+	//Enables the jump ball while jumping
+	BallMesh->SetVisibility(true);
+	
 	JumpDash(); // [IMPROVEMENT] - This was originally done in a separate input action
 	// Now it's being called inside the built in jump function.
+}
+
+// Overriding the built in function in order to attempt to handle a few things
+void AMyBaseClass::Landed(const FHitResult& Hit)
+{
+	Super::Landed(Hit);
+	BallMesh->SetVisibility(false);
 }
 
 void AMyBaseClass::Stomp()

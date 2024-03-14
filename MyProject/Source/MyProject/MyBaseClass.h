@@ -22,10 +22,15 @@ class MYPROJECT_API AMyBaseClass : public ANinjaCharacter
 	/** Follow camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* FollowCamera;
+
 	
 public:
 	AMyBaseClass();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh")
+	UStaticMeshComponent* BallMesh;
+	
+	
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Input)
 	float TurnRateGamepad;
@@ -120,7 +125,10 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	
 	// TODO - Figure out how to override the jump count changing after launching off a ramp/slope
-	virtual void Jump()	override;	
+	virtual void Jump()	override;
+
+	//Used for toggling the jumpball on and off
+	virtual void Landed(const FHitResult& Hit) override;
 	
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
