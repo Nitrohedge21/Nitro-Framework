@@ -47,9 +47,13 @@
             "d:\\ue_5.0\\engine\\plugins\\marketplace\\ninjacharacter\\intermediate\\build\\win64\\unrealeditor\\inc\\ninjacharacter\\ninjacharactermovementcomponent.generated.h",
             "d:\\ue_5.0\\engine\\source\\runtime\\engine\\classes\\gameframework\\springarmcomponent.h",
             "d:\\ue_5.0\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\springarmcomponent.generated.h",
+            "d:\\ue_5.0\\engine\\source\\runtime\\core\\public\\genericplatform\\genericplatformcrashcontext.h",
             "d:\\ue_5.0\\engine\\source\\runtime\\engine\\classes\\kismet\\kismetmathlibrary.h",
             "d:\\ue_5.0\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\kismetmathlibrary.generated.h",
-            "d:\\ue_5.0\\engine\\source\\runtime\\engine\\classes\\kismet\\kismetmathlibrary.inl"
+            "d:\\ue_5.0\\engine\\source\\runtime\\engine\\classes\\kismet\\kismetmathlibrary.inl",
+            "d:\\ue_5.0\\engine\\source\\runtime\\engine\\classes\\kismet\\kismetsystemlibrary.h",
+            "d:\\ue_5.0\\engine\\source\\runtime\\coreuobject\\public\\uobject\\propertyaccessutil.h",
+            "d:\\ue_5.0\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\kismetsystemlibrary.generated.h"
         ],
         "ImportedModules": [],
         "ImportedHeaderUnits": []

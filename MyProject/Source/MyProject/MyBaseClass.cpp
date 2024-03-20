@@ -5,7 +5,9 @@
 #include "NinjaCharacter/Public/NinjaCharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "GenericPlatform/GenericPlatformCrashContext.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 
 AMyBaseClass::AMyBaseClass(const FObjectInitializer& ObjectInitializer)
@@ -163,6 +165,7 @@ void AMyBaseClass::Tick(float DeltaTime)
 	CheckStomp();
 	SlopePhysics();
 	SlopeAlignment();
+	DetectEnemies();
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -280,3 +283,27 @@ void AMyBaseClass::SlopeAlignment()
 		}
 	}
 }
+
+void AMyBaseClass::DetectEnemies()
+{
+	TArray<FHitResult> OutHits;
+	const TArray<AActor*> ActorsToIgnore;
+	const FVector Start = GetActorLocation();
+	const FVector End = Start + (GetActorForwardVector() * 600);
+	const FRotator Rotation = GetActorRotation();
+	const FVector HalfSize = FVector(20,100,60);
+	const FColor TraceColor = FColor::Red;
+	const FColor TraceHitColor = FColor::Green;
+	constexpr ETraceTypeQuery TraceChannel = ETraceTypeQuery::TraceTypeQuery1;
+	bool IsHit = UKismetSystemLibrary::BoxTraceMulti(GetWorld(),Start,End,HalfSize,Rotation,TraceChannel,false,ActorsToIgnore,EDrawDebugTrace::Type::ForDuration,OutHits,true,TraceColor,TraceHitColor,0.0f);
+	//Draws the raycast line
+
+	//GetWorld()->SweepMultiByChannel(OutHits,)
+	//DrawDebugBox(GetWorld(), Start, End, FColor::Red, false, 0, 0, 1);
+
+	if(IsHit)
+	{
+		FString actorname = OutHits.GetData()->GetActor()->GetName();
+	}
+}
+

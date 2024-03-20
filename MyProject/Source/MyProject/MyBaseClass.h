@@ -113,6 +113,9 @@ protected:
 	// Slope Physics functions
 	void SlopePhysics();
 	void SlopeAlignment();
+
+	//Homing Attack functions
+	void DetectEnemies();
 	
 public:
 	// APawn interface
