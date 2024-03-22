@@ -1,4 +1,6 @@
 #include "MyBaseClass.h"
+
+#include "VectorTypes.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
@@ -6,8 +8,12 @@
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GenericPlatform/GenericPlatformCrashContext.h"
+#include "Components/TimelineComponent.h"
+#include "EntitySystem/MovieSceneComponentDebug.h"
+#include "GameFramework/PlayerState.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Logging/LogMacros.h"
 
 
 AMyBaseClass::AMyBaseClass(const FObjectInitializer& ObjectInitializer)
@@ -20,7 +26,6 @@ AMyBaseClass::AMyBaseClass(const FObjectInitializer& ObjectInitializer)
 	boostSpeed = 5000.0f;
 	boostForce = 10.0f;
 	displayTime = 99999999;
-	isJumping = false;
 	isBoosting = false;
 	isStomping = false;
 	pushForce = 10.0f;
@@ -29,7 +34,7 @@ AMyBaseClass::AMyBaseClass(const FObjectInitializer& ObjectInitializer)
 	staminaSprintUsageRate = 0.1f;
 	staminaRechargeRate = 0.1f;
 	RingCount = 0;
-
+	
 	//Slope Physics values
 	SlopeInfluence = 200.0f;
 	SlopeIsAlignedToGravity = true;
@@ -97,7 +102,9 @@ void AMyBaseClass::SetupPlayerInputComponent(class UInputComponent* PlayerInputC
 	check(PlayerInputComponent);
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
-
+	PlayerInputComponent->BindAction("Stomp", IE_Pressed, this, &AMyBaseClass::Stomp);
+	PlayerInputComponent->BindAction("HomingAttack", IE_Pressed, this, &AMyBaseClass::HomingAttack);
+	
 	PlayerInputComponent->BindAxis("Move Forward / Backward", this, &AMyBaseClass::MoveForward);
 	PlayerInputComponent->BindAxis("Move Right / Left", this, &AMyBaseClass::MoveRight);
 	
@@ -105,7 +112,6 @@ void AMyBaseClass::SetupPlayerInputComponent(class UInputComponent* PlayerInputC
 	PlayerInputComponent->BindAxis("Turn Right / Left Gamepad", this, &AMyBaseClass::TurnAtRate);
 	PlayerInputComponent->BindAxis("Look Up / Down Mouse", this, &APawn::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("Look Up / Down Gamepad", this, &AMyBaseClass::LookUpAtRate);
-	PlayerInputComponent->BindAction("Stomp", IE_Pressed, this, &AMyBaseClass::Stomp);
 
 }
 
@@ -191,6 +197,7 @@ void AMyBaseClass::Landed(const FHitResult& Hit)
 {
 	Super::Landed(Hit);
 	BallMesh->SetVisibility(false);
+	//CurrentTarget = nullptr;
 }
 
 void AMyBaseClass::Stomp()
@@ -227,6 +234,7 @@ void AMyBaseClass::JumpDash()
 	}
 }
 
+// Slope physics functions
 void AMyBaseClass::SlopePhysics()
 {
 
@@ -284,6 +292,7 @@ void AMyBaseClass::SlopeAlignment()
 	}
 }
 
+// Homing Attack functions
 void AMyBaseClass::DetectEnemies()
 {
 	TArray<FHitResult> OutHits;
@@ -295,15 +304,117 @@ void AMyBaseClass::DetectEnemies()
 	const FColor TraceColor = FColor::Red;
 	const FColor TraceHitColor = FColor::Green;
 	constexpr ETraceTypeQuery TraceChannel = ETraceTypeQuery::TraceTypeQuery1;
+
 	bool IsHit = UKismetSystemLibrary::BoxTraceMulti(GetWorld(),Start,End,HalfSize,Rotation,TraceChannel,false,ActorsToIgnore,EDrawDebugTrace::Type::ForDuration,OutHits,true,TraceColor,TraceHitColor,0.0f);
-	//Draws the raycast line
+
 
 	//GetWorld()->SweepMultiByChannel(OutHits,)
 	//DrawDebugBox(GetWorld(), Start, End, FColor::Red, false, 0, 0, 1);
 
 	if(IsHit)
 	{
-		FString actorname = OutHits.GetData()->GetActor()->GetName();
+		for (auto Hit : OutHits)
+		{
+			// IsValid node right before the first branch
+			if(IsValid(Hit.GetActor()) && Hit.GetActor()->ActorHasTag("Enemy"))
+			{
+				if(IsValid(CurrentTarget) && (CurrentTarget != Hit.GetActor() && IsHomingAttacking != true))
+				{
+					OldTarget = CurrentTarget;
+					if(OldTarget != Hit.GetActor()) {CurrentTarget = Hit.GetActor();}
+				}
+				if(!IsValid(CurrentTarget)) {CurrentTarget = Hit.GetActor();}
+			}
+			// TODO - There is a logic that sets the current target to nullptr but I might make it happen in somewhere else
+		}
 	}
+}
+
+bool AMyBaseClass::IsChosenTargetInRange()
+{
+	bool returnValue = false;
+	if(IsValid(ChosenTarget))
+	{
+		if(GetDistanceTo(ChosenTarget) <= 10000){ returnValue = true;}
+		else {returnValue = false;}
+	}
+	return returnValue;
+}
+
+void AMyBaseClass::HomingAttack()
+{
+	if(JumpCurrentCount == 1)	//Has to be done while jumping
+	{
+		if(IsValid(OldTarget) && IsValid(CurrentTarget))
+		{
+			//If both of the targets are valid, compare their distance
+
+			const float CurrentTargetDist = GetDistanceTo(CurrentTarget);
+			const float OldTargetDist = GetDistanceTo(OldTarget);
+			
+			if(OldTargetDist > CurrentTargetDist)
+			{
+				ChosenTarget = CurrentTarget;
+				if(IsChosenTargetInRange())
+				{
+					LaunchToTarget();
+				}
+			}
+			else
+			{
+				OldTarget = CurrentTarget;
+				if(IsChosenTargetInRange())
+				{
+					LaunchToTarget();
+				}
+			}
+			
+		}
+		else //If either of the targets are not valid
+		{
+			if(IsValid(OldTarget))
+			{
+				ChosenTarget = OldTarget;
+				if(IsChosenTargetInRange())
+				{
+					LaunchToTarget();
+				}
+			}
+			else
+			{
+				ChosenTarget = CurrentTarget;
+				if(IsChosenTargetInRange())
+				{
+					LaunchToTarget();
+				}
+			}
+		}
+	}
+}
+
+void AMyBaseClass::LaunchToTarget()
+{
+	FVector Vector1 = GetActorLocation();
+	FVector Vector2 = ChosenTarget->GetActorLocation();
+	float tempalpha = 0.0f;
+
+	// TODO - FIGURE OUT HOW TO USE TIMELINE IN C++ ASDHAOIHDOASHALSDKNHDHlk
+	FVector TargetLocation = UKismetMathLibrary::VLerp(Vector1,Vector2,tempalpha);
+	
+		if(IsValid(ChosenTarget))
+		{
+			DisableInput(GetPlayerState()->GetPlayerController());
+			GetCharacterMovement()->GravityScale = 0.0f;
+			SetActorLocation(TargetLocation);
+			IsHomingAttacking = true;
+		}
+		else
+		{
+			IsHomingAttacking = false;
+			GetCharacterMovement()->GravityScale = 2.8f;
+			EnableInput(GetPlayerState()->GetPlayerController());
+			//Missing the last bit of the blueprint code here.
+		}
+	
 }
 

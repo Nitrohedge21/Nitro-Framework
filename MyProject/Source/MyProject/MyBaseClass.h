@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "NinjaCharacter.h"
+#include "Components/TimelineComponent.h"
 #include "MyBaseClass.generated.h"
 
 /**
@@ -47,6 +48,7 @@ public:
 	float stompForce = 2000.0f;
 	float jumpDashForce = 500.0f;
 
+	//Unused at the moment
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Boost Stamina")
 	float currentStamina;
 	float maxStamina;
@@ -61,6 +63,18 @@ public:
 	float MinSlopeSpeed;
 	float MinSlopeAngle;
 	bool SlopeIsAlignedToGravity;
+
+	// These don't get noticed by the blueprints if they're not spread out
+	UPROPERTY(BlueprintReadOnly, Category = "Homing Attack")
+	AActor* OldTarget;
+	UPROPERTY(BlueprintReadOnly, Category = "Homing Attack2")
+	AActor* CurrentTarget;
+	UPROPERTY(BlueprintReadOnly, Category = "Homing Attack3")
+	AActor* ChosenTarget;
+	UPROPERTY()
+	UTimelineComponent* MyTimeline;
+	UPROPERTY(EditAnywhere)
+	UCurveFloat* FloatCurve;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rings")
 	int RingCount = 0;
@@ -72,8 +86,11 @@ public:
 	bool isBoosting;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Stomp State")
 	bool isStomping;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "IsGrounded State")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Grounded State")
 	bool bIsGrounded;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Homing State")
+	bool IsHomingAttacking = false;
+
 	
 protected:
 
@@ -99,8 +116,6 @@ protected:
 	void BoostLaunch(float axis);
 	void boostStart();
 	void boostEnd();
-	
-	//Reset the camera after boosting
 	void camReset();
 
 	//Stomp mechanic's functions
@@ -116,6 +131,12 @@ protected:
 
 	//Homing Attack functions
 	void DetectEnemies();
+	bool IsChosenTargetInRange();
+	void HomingAttack();
+	void LaunchToTarget();
+	void TimelineCallback(float Value);
+	
+	
 	
 public:
 	// APawn interface
