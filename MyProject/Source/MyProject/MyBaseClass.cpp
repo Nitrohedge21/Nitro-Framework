@@ -162,9 +162,11 @@ void AMyBaseClass::MoveRight(float Axis)
 void AMyBaseClass::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	MovementValue.BindUFunction(this,FName("TimelineProgress"));
 
+	FOnTimelineEvent TimelineTickEvent;
+	TimelineTickEvent.BindUFunction(this,FName("TimelineTick"));
+
+	MainTimeline->SetTimelinePostUpdateFunc(TimelineTickEvent);
 	
 }
 
@@ -205,7 +207,10 @@ void AMyBaseClass::Landed(const FHitResult& Hit)
 {
 	Super::Landed(Hit);
 	BallMesh->SetVisibility(false);
-	//CurrentTarget = nullptr;
+	OldTarget = nullptr;
+	CurrentTarget = nullptr;
+	ChosenTarget = nullptr;
+	IsHomingAttacking = false;
 }
 
 void AMyBaseClass::Stomp()
@@ -308,7 +313,7 @@ void AMyBaseClass::DetectEnemies()
 	const FVector Start = GetActorLocation();
 	const FVector End = Start + (GetActorForwardVector() * 600);
 	const FRotator Rotation = GetActorRotation();
-	const FVector HalfSize = FVector(20,100,60);
+	const FVector HalfSize = FVector(20,150,125);
 	const FColor TraceColor = FColor::Red;
 	const FColor TraceHitColor = FColor::Green;
 	constexpr ETraceTypeQuery TraceChannel = ETraceTypeQuery::TraceTypeQuery1;
@@ -336,6 +341,7 @@ void AMyBaseClass::DetectEnemies()
 			else if (!IsValid(Hit.GetActor()))
 			{
 				CurrentTarget = nullptr;
+				ChosenTarget = nullptr;
 			}
 			// TODO - There is a logic that sets the current target to nullptr but I might make it happen in somewhere else
 		}
@@ -410,33 +416,42 @@ void AMyBaseClass::LaunchToTarget()
 	{
 		MainTimeline->AddInterpFloat(FloatCurve,MovementValue);
 	}
-	
-	if(IsValid(ChosenTarget))
-	{        
-		DisableInput(GetPlayerState()->GetPlayerController());
-		//GetNinjaCharacterMovement()->GravityScale = 0.0f;          
-		MainTimeline->PlayFromStart();                     
-		IsHomingAttacking = true;  
-	}
-	else if(!IsValid(ChosenTarget)) 
-	{
-		//MainTimeline->Stop();
-		IsHomingAttacking = false;                           
-		//GetNinjaCharacterMovement()->GravityScale = 2.8f;         
-		EnableInput(GetPlayerState()->GetPlayerController());
-		//Missing the last bit of the blueprint code here.
-		if(SetActorLocation(NewLocation) == true)
-		{
-			LaunchCharacter(FVector(0,0,1500),false,false);
-		}
-	}
+
+	MainTimeline->PlayFromStart();
+	TimelineTick();
 	
 }
 
 // This is the function that handles the Timeline and sets the actor's location
-void AMyBaseClass::TimelineProgress(float Alpha)
+void AMyBaseClass::UpdatePosition(float Alpha)
 {
 	NewLocation = UKismetMathLibrary::VLerp(ActorLocation,ChosenTargetLocation,Alpha);
+	
 	SetActorLocation(NewLocation);
+	IsHomingAttacking = true;
+}
+
+void AMyBaseClass::TimelineTick()
+{
+	if(IsValid(ChosenTarget))
+	{
+		UpdatePosition(FloatCurve->GetFloatValue(MainTimeline->GetPlaybackPosition()));
+		GetNinjaCharacterMovement()->GravityScale = 0.0f;
+		DisableInput(GetPlayerState()->GetPlayerController());
+		CanLaunch = true;
+	}
+	else
+	{
+		IsHomingAttacking = false;                           
+		GetNinjaCharacterMovement()->GravityScale = 2.8f;         
+		EnableInput(GetPlayerState()->GetPlayerController());
+		
+		if(CanLaunch == true)
+		{
+			LaunchCharacter(FVector(0,0,1300),false,false);
+			CanLaunch = false;
+		}
+	}
+	
 }
 

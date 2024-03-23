@@ -67,11 +67,11 @@ public:
 	bool SlopeIsAlignedToGravity;
 
 	// These don't get noticed by the blueprints if they're not spread out
-	UPROPERTY(BlueprintReadOnly, Category = "Homing Attack")
+	UPROPERTY(BlueprintReadWrite, Category = "Homing Attack")
 	AActor* OldTarget;
-	UPROPERTY(BlueprintReadOnly, Category = "Homing Attack2")
+	UPROPERTY(BlueprintReadWrite, Category = "Homing Attack2")
 	AActor* CurrentTarget;
-	UPROPERTY(BlueprintReadOnly, Category = "Homing Attack3")
+	UPROPERTY(BlueprintReadWrite, Category = "Homing Attack3")
 	AActor* ChosenTarget;
 	UPROPERTY()
 	UTimelineComponent* MainTimeline;
@@ -83,6 +83,8 @@ public:
 	FVector	NewLocation;
 	UPROPERTY()
 	FOnTimelineFloat MovementValue;
+	FOnTimelineEvent TimelineUpdate;
+	bool CanLaunch = true;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rings")
 	int RingCount = 0;
@@ -144,7 +146,8 @@ protected:
 	void LaunchToTarget();
 	
 	UFUNCTION()
-	void TimelineProgress(float Alpha);
+	void TimelineTick();
+	void UpdatePosition(float Alpha);
 	
 	
 	

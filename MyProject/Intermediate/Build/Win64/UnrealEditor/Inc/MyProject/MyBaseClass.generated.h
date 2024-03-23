@@ -16,12 +16,12 @@ PRAGMA_DISABLE_DEPRECATION_WARNINGS
 #define FID_MyProject_Source_MyProject_MyBaseClass_h_18_SPARSE_DATA
 #define FID_MyProject_Source_MyProject_MyBaseClass_h_18_RPC_WRAPPERS \
  \
-	DECLARE_FUNCTION(execTimelineProgress);
+	DECLARE_FUNCTION(execTimelineTick);
 
 
 #define FID_MyProject_Source_MyProject_MyBaseClass_h_18_RPC_WRAPPERS_NO_PURE_DECLS \
  \
-	DECLARE_FUNCTION(execTimelineProgress);
+	DECLARE_FUNCTION(execTimelineTick);
 
 
 #define FID_MyProject_Source_MyProject_MyBaseClass_h_18_INCLASS_NO_PURE_DECLS \
