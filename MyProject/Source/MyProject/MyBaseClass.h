@@ -7,6 +7,8 @@
 #include "Components/TimelineComponent.h"
 #include "MyBaseClass.generated.h"
 
+
+class UTimelineComponent;
 /**
  * 
  */
@@ -72,9 +74,15 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category = "Homing Attack3")
 	AActor* ChosenTarget;
 	UPROPERTY()
-	UTimelineComponent* MyTimeline;
+	UTimelineComponent* MainTimeline;
 	UPROPERTY(EditAnywhere)
 	UCurveFloat* FloatCurve;
+	UPROPERTY(EditAnywhere,Category = "TimelineShit")
+	FVector ActorLocation;
+	FVector ChosenTargetLocation;
+	FVector	NewLocation;
+	UPROPERTY()
+	FOnTimelineFloat MovementValue;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rings")
 	int RingCount = 0;
@@ -134,7 +142,9 @@ protected:
 	bool IsChosenTargetInRange();
 	void HomingAttack();
 	void LaunchToTarget();
-	void TimelineCallback(float Value);
+	
+	UFUNCTION()
+	void TimelineProgress(float Alpha);
 	
 	
 	

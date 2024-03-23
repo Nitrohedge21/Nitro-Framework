@@ -83,6 +83,8 @@ AMyBaseClass::AMyBaseClass(const FObjectInitializer& ObjectInitializer)
 	BallMesh->SetRelativeRotation(FRotator(0,-90,0));
 	BallMesh->SetRelativeScale3D(FVector(1.5,1.5,1.5));
 	BallMesh->SetVisibility(false);
+
+	MainTimeline = CreateDefaultSubobject<UTimelineComponent>("TimelineComponent");
 	
 	//Configure capsule half height
 	GetCapsuleComponent()->SetCapsuleHalfHeight(80.0f);
@@ -160,6 +162,10 @@ void AMyBaseClass::MoveRight(float Axis)
 void AMyBaseClass::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	MovementValue.BindUFunction(this,FName("TimelineProgress"));
+
+	
 }
 
 void AMyBaseClass::Tick(float DeltaTime)
@@ -172,6 +178,8 @@ void AMyBaseClass::Tick(float DeltaTime)
 	SlopePhysics();
 	SlopeAlignment();
 	DetectEnemies();
+	ActorLocation = GetActorLocation();
+	if(IsValid(ChosenTarget)) {ChosenTargetLocation= ChosenTarget->GetActorLocation();}
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -325,6 +333,10 @@ void AMyBaseClass::DetectEnemies()
 				}
 				if(!IsValid(CurrentTarget)) {CurrentTarget = Hit.GetActor();}
 			}
+			else if (!IsValid(Hit.GetActor()))
+			{
+				CurrentTarget = nullptr;
+			}
 			// TODO - There is a logic that sets the current target to nullptr but I might make it happen in somewhere else
 		}
 	}
@@ -335,7 +347,7 @@ bool AMyBaseClass::IsChosenTargetInRange()
 	bool returnValue = false;
 	if(IsValid(ChosenTarget))
 	{
-		if(GetDistanceTo(ChosenTarget) <= 10000){ returnValue = true;}
+		if(GetDistanceTo(ChosenTarget) <= 1000){ returnValue = true;}
 		else {returnValue = false;}
 	}
 	return returnValue;
@@ -362,7 +374,7 @@ void AMyBaseClass::HomingAttack()
 			}
 			else
 			{
-				OldTarget = CurrentTarget;
+				ChosenTarget = OldTarget;
 				if(IsChosenTargetInRange())
 				{
 					LaunchToTarget();
@@ -394,27 +406,37 @@ void AMyBaseClass::HomingAttack()
 
 void AMyBaseClass::LaunchToTarget()
 {
-	FVector Vector1 = GetActorLocation();
-	FVector Vector2 = ChosenTarget->GetActorLocation();
-	float tempalpha = 0.0f;
+	if(FloatCurve)
+	{
+		MainTimeline->AddInterpFloat(FloatCurve,MovementValue);
+	}
+	
+	if(IsValid(ChosenTarget))
+	{        
+		DisableInput(GetPlayerState()->GetPlayerController());
+		//GetNinjaCharacterMovement()->GravityScale = 0.0f;          
+		MainTimeline->PlayFromStart();                     
+		IsHomingAttacking = true;  
+	}
+	else if(!IsValid(ChosenTarget)) 
+	{
+		//MainTimeline->Stop();
+		IsHomingAttacking = false;                           
+		//GetNinjaCharacterMovement()->GravityScale = 2.8f;         
+		EnableInput(GetPlayerState()->GetPlayerController());
+		//Missing the last bit of the blueprint code here.
+		if(SetActorLocation(NewLocation) == true)
+		{
+			LaunchCharacter(FVector(0,0,1500),false,false);
+		}
+	}
+	
+}
 
-	// TODO - FIGURE OUT HOW TO USE TIMELINE IN C++ ASDHAOIHDOASHALSDKNHDHlk
-	FVector TargetLocation = UKismetMathLibrary::VLerp(Vector1,Vector2,tempalpha);
-	
-		if(IsValid(ChosenTarget))
-		{
-			DisableInput(GetPlayerState()->GetPlayerController());
-			GetCharacterMovement()->GravityScale = 0.0f;
-			SetActorLocation(TargetLocation);
-			IsHomingAttacking = true;
-		}
-		else
-		{
-			IsHomingAttacking = false;
-			GetCharacterMovement()->GravityScale = 2.8f;
-			EnableInput(GetPlayerState()->GetPlayerController());
-			//Missing the last bit of the blueprint code here.
-		}
-	
+// This is the function that handles the Timeline and sets the actor's location
+void AMyBaseClass::TimelineProgress(float Alpha)
+{
+	NewLocation = UKismetMathLibrary::VLerp(ActorLocation,ChosenTargetLocation,Alpha);
+	SetActorLocation(NewLocation);
 }
 
