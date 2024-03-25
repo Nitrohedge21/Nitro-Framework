@@ -49,6 +49,7 @@ public:
 	float boostForce = 110.0f;
 	float stompForce = 2000.0f;
 	float jumpDashForce = 500.0f;
+	float bounceForce = 1500.0f;
 
 	//Unused at the moment
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Boost Stamina")
@@ -100,6 +101,8 @@ public:
 	bool bIsGrounded;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Homing State")
 	bool IsHomingAttacking = false;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Landed State")
+	bool CanBounce = false;
 
 	
 protected:
@@ -131,6 +134,9 @@ protected:
 	//Stomp mechanic's functions
 	void Stomp();
 	void CheckStomp();
+
+	//Bounce mechanic's function
+	void Bounce();
 	
 	//Jump dash mechanic's function
 	void JumpDash();
@@ -144,10 +150,13 @@ protected:
 	bool IsChosenTargetInRange();
 	void HomingAttack();
 	void LaunchToTarget();
+	void SetTargetLocations();
 	
 	UFUNCTION()
 	void TimelineTick();
 	void UpdatePosition(float Alpha);
+
+	void StompOrBounce();
 	
 	
 	

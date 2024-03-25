@@ -1,6 +1,5 @@
 #include "MyBaseClass.h"
 
-#include "VectorTypes.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
@@ -9,8 +8,8 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "GenericPlatform/GenericPlatformCrashContext.h"
 #include "Components/TimelineComponent.h"
-#include "EntitySystem/MovieSceneComponentDebug.h"
 #include "GameFramework/PlayerState.h"
+#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Logging/LogMacros.h"
@@ -25,10 +24,10 @@ AMyBaseClass::AMyBaseClass(const FObjectInitializer& ObjectInitializer)
 	//Initializing default values
 	boostSpeed = 5000.0f;
 	boostForce = 10.0f;
+	pushForce = 10.0f;
 	displayTime = 99999999;
 	isBoosting = false;
 	isStomping = false;
-	pushForce = 10.0f;
 	currentStamina = 1.0f;
 	maxStamina = 1.0f;
 	staminaSprintUsageRate = 0.1f;
@@ -104,25 +103,24 @@ void AMyBaseClass::SetupPlayerInputComponent(class UInputComponent* PlayerInputC
 	check(PlayerInputComponent);
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
-	PlayerInputComponent->BindAction("Stomp", IE_Pressed, this, &AMyBaseClass::Stomp);
-	PlayerInputComponent->BindAction("HomingAttack", IE_Pressed, this, &AMyBaseClass::HomingAttack);
+	PlayerInputComponent->BindAction("Stomp / Bounce", IE_Pressed, this, &AMyBaseClass::StompOrBounce);
+	//PlayerInputComponent->BindAction("Bounce", IE_MAX, this, &AMyBaseClass::Bounce);
+	//PlayerInputComponent->BindAction("HomingAttack", IE_Pressed, this, &AMyBaseClass::HomingAttack);
 	
 	PlayerInputComponent->BindAxis("Move Forward / Backward", this, &AMyBaseClass::MoveForward);
 	PlayerInputComponent->BindAxis("Move Right / Left", this, &AMyBaseClass::MoveRight);
 	
-	PlayerInputComponent->BindAxis("Turn Right / Left Mouse", this, &APawn::AddControllerYawInput);
-	PlayerInputComponent->BindAxis("Turn Right / Left Gamepad", this, &AMyBaseClass::TurnAtRate);
-	PlayerInputComponent->BindAxis("Look Up / Down Mouse", this, &APawn::AddControllerPitchInput);
-	PlayerInputComponent->BindAxis("Look Up / Down Gamepad", this, &AMyBaseClass::LookUpAtRate);
+	PlayerInputComponent->BindAxis("Turn Right / Left", this, &APawn::AddControllerYawInput);
+	PlayerInputComponent->BindAxis("Look Up / Down", this, &APawn::AddControllerPitchInput);
 
 }
-
+// This is kept in case of anything.
 void AMyBaseClass::TurnAtRate(float Rate)
 {
 	// calculate delta for this frame from the rate information
 	AddControllerYawInput(Rate * TurnRateGamepad * GetWorld()->GetDeltaSeconds());
 }
-
+// This is kept in case of anything.
 void AMyBaseClass::LookUpAtRate(float Rate)
 {
 	// calculate delta for this frame from the rate information
@@ -167,6 +165,7 @@ void AMyBaseClass::BeginPlay()
 	TimelineTickEvent.BindUFunction(this,FName("TimelineTick"));
 
 	MainTimeline->SetTimelinePostUpdateFunc(TimelineTickEvent);
+	//MainTimeline->SetPlayRate(1.5);
 	
 }
 
@@ -180,8 +179,7 @@ void AMyBaseClass::Tick(float DeltaTime)
 	SlopePhysics();
 	SlopeAlignment();
 	DetectEnemies();
-	ActorLocation = GetActorLocation();
-	if(IsValid(ChosenTarget)) {ChosenTargetLocation= ChosenTarget->GetActorLocation();}
+	SetTargetLocations();
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -198,6 +196,7 @@ void AMyBaseClass::Jump()
 	//Enables the jump ball while jumping
 	BallMesh->SetVisibility(true);
 	
+	HomingAttack();
 	JumpDash(); // [IMPROVEMENT] - This was originally done in a separate input action
 	// Now it's being called inside the built in jump function.
 }
@@ -206,6 +205,14 @@ void AMyBaseClass::Jump()
 void AMyBaseClass::Landed(const FHitResult& Hit)
 {
 	Super::Landed(Hit);
+
+	//TODO - Turn this into a function
+	if(CanBounce == true)
+	{
+		LaunchCharacter(GetActorUpVector() * bounceForce,false,true);
+		CanBounce = false;
+		JumpCurrentCount -= 1;
+	}
 	BallMesh->SetVisibility(false);
 	OldTarget = nullptr;
 	CurrentTarget = nullptr;
@@ -213,18 +220,23 @@ void AMyBaseClass::Landed(const FHitResult& Hit)
 	IsHomingAttacking = false;
 }
 
+////////////////////////
+///	Stomp mechanic	///
+///////////////////////
+
 void AMyBaseClass::Stomp()
 {
 	// [IMPORTANT] Check Sonic Unleashed to see if you can stomp without needing to jump first.
 	// BUG - The character can still trigger the jump input even if they're launched off a ramp/slope.
 	if (JumpCurrentCount == 1 && GetNinjaCharacterMovement()->IsFalling())
 	{
-		stompForce = 10000;	// The force value doesn't really matter much as the velocity gets set to zero.
+		stompForce = 10000 * GetNinjaCharacterMovement()->GravityScale;	// The force value doesn't really matter much as the velocity gets set to zero.
 		const FVector Downward = -GetActorUpVector();
 		GetCharacterMovement()->Velocity = FVector::Zero();
 		LaunchCharacter(Downward * stompForce, false, true);
 		JumpCurrentCount = 2; // This is done in order to block the players from jumping while stomping
 		isStomping = true;
+		UE_LOG(LogTemp,Warning,TEXT("Stomping"));
 	}
 }
 
@@ -234,16 +246,42 @@ void AMyBaseClass::CheckStomp()
 	if (bIsGrounded) { isStomping = false; }
 }
 
+////////////////////////
+///	Bounce mechanic	///
+//////////////////////
+void AMyBaseClass::Bounce()
+{
+	const FVector Downward = -GetActorUpVector();
+	
+	if (GetCharacterMovement()->IsFalling() && !isStomping)
+	{
+		stompForce = 10000;	// The force value doesn't really matter much as the velocity gets set to zero.
+		LaunchCharacter(Downward * stompForce, false, true);
+		JumpCurrentCount = 2; // This is done in order to block the players from jumping while stomping
+		CanBounce = true;
+	}
+}
+
+void AMyBaseClass::StompOrBounce()
+{
+
+}
+
+
+////////////////////////////
+///	Jump dash mechanic	///
+//////////////////////////
 // TODO - Check if Sonic can stomp after jump dashes
 void AMyBaseClass::JumpDash()
 {
 	// I had an older comment here saying that the if statement needs to be fixed. Will figure out what went wrong here.
-	if (!bIsGrounded && JumpCurrentCount == 1)
+	if (!bIsGrounded && JumpCurrentCount == 1 && !IsHomingAttacking)
 	{
 		jumpDashForce = 1000;
 		const FVector ForwardDir = GetActorRotation().Vector(); // Adding .ForwardVector at the end, breaks the mechanic.
 		LaunchCharacter(ForwardDir * jumpDashForce, false, false);
 		JumpCurrentCount = 2;
+		UE_LOG(LogTemp,Warning,TEXT("Dashing"));
 	}
 }
 
@@ -329,7 +367,7 @@ void AMyBaseClass::DetectEnemies()
 		for (auto Hit : OutHits)
 		{
 			// IsValid node right before the first branch
-			if(IsValid(Hit.GetActor()) && Hit.GetActor()->ActorHasTag("Enemy"))
+			if(IsValid(Hit.GetActor()) && (Hit.GetActor()->ActorHasTag("Enemy")))
 			{
 				if(IsValid(CurrentTarget) && (CurrentTarget != Hit.GetActor() && IsHomingAttacking != true))
 				{
@@ -442,16 +480,25 @@ void AMyBaseClass::TimelineTick()
 	}
 	else
 	{
-		IsHomingAttacking = false;                           
+		IsHomingAttacking = false;
 		GetNinjaCharacterMovement()->GravityScale = 2.8f;         
 		EnableInput(GetPlayerState()->GetPlayerController());
 		
-		if(CanLaunch == true)
+		if(CanLaunch == true)	//TODO - Implement a logic that only does this if the target isn't a spring
 		{
 			LaunchCharacter(FVector(0,0,1300),false,false);
 			CanLaunch = false;
+			JumpCurrentCount = 1; // This is done in order to do the jump dash after homing attacking.
 		}
 	}
 	
 }
 
+void AMyBaseClass::SetTargetLocations()
+{
+	ActorLocation = GetActorLocation();
+	if(IsValid(ChosenTarget))
+	{
+		ChosenTargetLocation= ChosenTarget->GetActorLocation();
+	}
+}
