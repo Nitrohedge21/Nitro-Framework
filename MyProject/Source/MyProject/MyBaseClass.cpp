@@ -22,7 +22,7 @@ AMyBaseClass::AMyBaseClass(const FObjectInitializer& ObjectInitializer)
 	//Initializing default values
 	isStomping = false;
 	RingCount = 0;
-	
+	JumpMaxHoldTime = 0.2f;
 	//Slope Physics values
 	SlopeInfluence = 200.0f;
 	SlopeIsAlignedToGravity = true;
@@ -90,7 +90,7 @@ void AMyBaseClass::SetupPlayerInputComponent(class UInputComponent* PlayerInputC
 {
 	// Set up gameplay key bindings
 	check(PlayerInputComponent);
-	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
+	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AMyBaseClass::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 	
 	PlayerInputComponent->BindAction("Stomp", IE_Pressed, this, &AMyBaseClass::Stomp);
@@ -183,8 +183,8 @@ void AMyBaseClass::Jump()
 	Super::Jump();
 
 	//Enables the jump ball while jumping
-	BallMesh->SetVisibility(true);
-	
+	if(!isStomping){BallMesh->SetVisibility(true);}
+	if(IsBouncing) {JumpCurrentCount = 1;}
 	HomingAttack();
 	JumpDash(); // [IMPROVEMENT] - This was originally done in a separate input action
 	// Now it's being called inside the built in jump function.
@@ -195,8 +195,9 @@ void AMyBaseClass::Landed(const FHitResult& Hit)
 {
 	Super::Landed(Hit);
 	
-	BounceUp();
 	BallMesh->SetVisibility(false);
+	GetMesh()->SetVisibility(true);
+	BounceUp();
 	OldTarget = nullptr;
 	CurrentTarget = nullptr;
 	ChosenTarget = nullptr;
@@ -234,6 +235,7 @@ void AMyBaseClass::CheckStomp()
 //////////////////////
 void AMyBaseClass::BounceDown()
 {
+	IsBouncing = true;
 	const FVector Downward = -GetActorUpVector();
 	
 	if (GetCharacterMovement()->IsFalling() && !isStomping)
@@ -242,6 +244,8 @@ void AMyBaseClass::BounceDown()
 		LaunchCharacter(Downward * stompForce, false, true);
 		JumpCurrentCount = 2; // This is done in order to block the players from jumping while stomping
 		CanBounce = true;
+		BallMesh->SetVisibility(true);
+		GetMesh()->SetVisibility(false);
 		UE_LOG(LogTemp,Warning,TEXT("Bouncing down"));
 	}
 }
@@ -249,12 +253,14 @@ void AMyBaseClass::BounceDown()
 void AMyBaseClass::BounceUp()
 {
 	const FVector Upward  = GetActorUpVector();
-	
+	IsBouncing = true;
 	if(CanBounce == true)
 	{
 		LaunchCharacter(Upward * bounceForce,false,true);
 		CanBounce = false;
-		JumpCurrentCount = 1;//This is done as an attempt to make sonic able to dash or homing attack after bounce
+		BallMesh->SetVisibility(true);
+		GetMesh()->SetVisibility(false);
+		JumpCurrentCount = 2;//This is done as an attempt to make sonic able to dash or homing attack after bounce
 		UE_LOG(LogTemp,Warning,TEXT("Bouncing up"));  
 	}
 }
@@ -347,11 +353,9 @@ void AMyBaseClass::DetectEnemies()
 	const FColor TraceHitColor = FColor::Green;
 	constexpr ETraceTypeQuery TraceChannel = ETraceTypeQuery::TraceTypeQuery1;
 
-	bool IsHit = UKismetSystemLibrary::BoxTraceMulti(GetWorld(),Start,End,HalfSize,Rotation,TraceChannel,false,ActorsToIgnore,EDrawDebugTrace::Type::ForDuration,OutHits,true,TraceColor,TraceHitColor,0.0f);
+	bool IsHit = UKismetSystemLibrary::BoxTraceMulti(GetWorld(),Start,End,HalfSize,Rotation,TraceChannel,false,ActorsToIgnore,EDrawDebugTrace::Type::None,OutHits,true,TraceColor,TraceHitColor,0.0f);
 
 
-	//GetWorld()->SweepMultiByChannel(OutHits,)
-	//DrawDebugBox(GetWorld(), Start, End, FColor::Red, false, 0, 0, 1);
 
 	if(IsHit)
 	{
