@@ -182,9 +182,10 @@ void AMyBaseClass::Jump()
 {
 	Super::Jump();
 
+	BlockJumpWhileFalling();
+	
 	//Enables the jump ball while jumping
 	if(!isStomping){BallMesh->SetVisibility(true);}
-	if(IsBouncing) {JumpCurrentCount = 1;}
 	HomingAttack();
 	JumpDash(); // [IMPROVEMENT] - This was originally done in a separate input action
 	// Now it's being called inside the built in jump function.
@@ -253,15 +254,14 @@ void AMyBaseClass::BounceDown()
 void AMyBaseClass::BounceUp()
 {
 	const FVector Upward  = GetActorUpVector();
-	IsBouncing = true;
+
 	if(CanBounce == true)
 	{
 		LaunchCharacter(Upward * bounceForce,false,true);
 		CanBounce = false;
 		BallMesh->SetVisibility(true);
 		GetMesh()->SetVisibility(false);
-		JumpCurrentCount = 2;//This is done as an attempt to make sonic able to dash or homing attack after bounce
-		UE_LOG(LogTemp,Warning,TEXT("Bouncing up"));  
+		IsBouncing = true;
 	}
 }
 
@@ -272,13 +272,12 @@ void AMyBaseClass::BounceUp()
 void AMyBaseClass::JumpDash()
 {
 	// I had an older comment here saying that the if statement needs to be fixed. Will figure out what went wrong here.
-	if (!bIsGrounded && JumpCurrentCount == 1 && !IsHomingAttacking)
+	if (!IsValid(CurrentTarget) && !bIsGrounded && JumpCurrentCount <= 1)
 	{
 		jumpDashForce = 1000;
 		const FVector ForwardDir = GetActorRotation().Vector(); // Adding .ForwardVector at the end, breaks the mechanic.
 		LaunchCharacter(ForwardDir * jumpDashForce, false, false);
 		JumpCurrentCount = 2;
-		UE_LOG(LogTemp,Warning,TEXT("Dashing"));
 	}
 }
 
@@ -395,7 +394,8 @@ bool AMyBaseClass::IsChosenTargetInRange()
 
 void AMyBaseClass::HomingAttack()
 {
-	if(JumpCurrentCount == 1)	//Has to be done while jumping
+	//First parameter of this if statement is for the normal checking, the second one is for bouncing check
+	if(JumpCurrentCount == 1 || (JumpCurrentCount <= 1 && !bIsGrounded ))
 	{
 		if(IsValid(OldTarget) && IsValid(CurrentTarget))
 		{
@@ -479,7 +479,7 @@ void AMyBaseClass::TimelineTick()
 		IsHomingAttacking = false;
 		GetNinjaCharacterMovement()->GravityScale = 2.8f;         
 		EnableInput(GetPlayerState()->GetPlayerController());
-		
+		OldTarget = nullptr;
 		if(CanLaunch == true)	//TODO - Implement a logic that only does this if the target isn't a spring
 		{
 			LaunchCharacter(FVector(0,0,1300),false,false);
@@ -496,5 +496,19 @@ void AMyBaseClass::SetTargetLocations()
 	if(IsValid(ChosenTarget))
 	{
 		ChosenTargetLocation= ChosenTarget->GetActorLocation();
+	}
+}
+
+void AMyBaseClass::BlockJumpWhileFalling()
+{
+	if (GetMovementComponent()->IsFalling())
+	{
+		// Character is falling, prevent jumping
+		GetMovementComponent()->SetJumpAllowed(false);
+	}
+	else
+	{
+		// Character is not falling, allow jumping
+		GetMovementComponent()->SetJumpAllowed(true);
 	}
 }

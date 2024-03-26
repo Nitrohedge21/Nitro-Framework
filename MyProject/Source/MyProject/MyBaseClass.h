@@ -8,6 +8,16 @@
 #include "MyBaseClass.generated.h"
 
 
+UENUM()
+enum class CharacterStates : uint8
+{
+	Walking,
+	Jumping,
+	Bouncing,
+	Stomping,
+	Spindashing
+};
+
 class UTimelineComponent;
 /**
  * 
@@ -107,6 +117,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bounce State")
 	bool IsBouncing = false;	//This is currently unused cuz I couldn't figure out how to reset it
 
+	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category = "Character State")
+	CharacterStates CurrentState;
 	
 protected:
 
@@ -159,6 +171,8 @@ protected:
 	UFUNCTION()
 	void TimelineTick();
 	void UpdatePosition(float Alpha);
+
+	void BlockJumpWhileFalling();
 	
 public:
 	// APawn interface

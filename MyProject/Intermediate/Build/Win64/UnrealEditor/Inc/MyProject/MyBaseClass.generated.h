@@ -13,18 +13,18 @@ PRAGMA_DISABLE_DEPRECATION_WARNINGS
 #endif
 #define MYPROJECT_MyBaseClass_generated_h
 
-#define FID_MyProject_Source_MyProject_MyBaseClass_h_18_SPARSE_DATA
-#define FID_MyProject_Source_MyProject_MyBaseClass_h_18_RPC_WRAPPERS \
+#define FID_MyProject_Source_MyProject_MyBaseClass_h_28_SPARSE_DATA
+#define FID_MyProject_Source_MyProject_MyBaseClass_h_28_RPC_WRAPPERS \
  \
 	DECLARE_FUNCTION(execTimelineTick);
 
 
-#define FID_MyProject_Source_MyProject_MyBaseClass_h_18_RPC_WRAPPERS_NO_PURE_DECLS \
+#define FID_MyProject_Source_MyProject_MyBaseClass_h_28_RPC_WRAPPERS_NO_PURE_DECLS \
  \
 	DECLARE_FUNCTION(execTimelineTick);
 
 
-#define FID_MyProject_Source_MyProject_MyBaseClass_h_18_INCLASS_NO_PURE_DECLS \
+#define FID_MyProject_Source_MyProject_MyBaseClass_h_28_INCLASS_NO_PURE_DECLS \
 private: \
 	static void StaticRegisterNativesAMyBaseClass(); \
 	friend struct Z_Construct_UClass_AMyBaseClass_Statics; \
@@ -33,7 +33,7 @@ public: \
 	DECLARE_SERIALIZER(AMyBaseClass)
 
 
-#define FID_MyProject_Source_MyProject_MyBaseClass_h_18_INCLASS \
+#define FID_MyProject_Source_MyProject_MyBaseClass_h_28_INCLASS \
 private: \
 	static void StaticRegisterNativesAMyBaseClass(); \
 	friend struct Z_Construct_UClass_AMyBaseClass_Statics; \
@@ -42,7 +42,7 @@ public: \
 	DECLARE_SERIALIZER(AMyBaseClass)
 
 
-#define FID_MyProject_Source_MyProject_MyBaseClass_h_18_STANDARD_CONSTRUCTORS \
+#define FID_MyProject_Source_MyProject_MyBaseClass_h_28_STANDARD_CONSTRUCTORS \
 	/** Standard constructor, called after all reflected properties have been initialized */ \
 	NO_API AMyBaseClass(const FObjectInitializer& ObjectInitializer); \
 	DEFINE_DEFAULT_OBJECT_INITIALIZER_CONSTRUCTOR_CALL(AMyBaseClass) \
@@ -55,7 +55,7 @@ private: \
 public:
 
 
-#define FID_MyProject_Source_MyProject_MyBaseClass_h_18_ENHANCED_CONSTRUCTORS \
+#define FID_MyProject_Source_MyProject_MyBaseClass_h_28_ENHANCED_CONSTRUCTORS \
 private: \
 	/** Private move- and copy-constructors, should never be used */ \
 	NO_API AMyBaseClass(AMyBaseClass&&); \
@@ -66,25 +66,25 @@ public: \
 	DEFINE_DEFAULT_OBJECT_INITIALIZER_CONSTRUCTOR_CALL(AMyBaseClass)
 
 
-#define FID_MyProject_Source_MyProject_MyBaseClass_h_15_PROLOG
-#define FID_MyProject_Source_MyProject_MyBaseClass_h_18_GENERATED_BODY_LEGACY \
+#define FID_MyProject_Source_MyProject_MyBaseClass_h_25_PROLOG
+#define FID_MyProject_Source_MyProject_MyBaseClass_h_28_GENERATED_BODY_LEGACY \
 PRAGMA_DISABLE_DEPRECATION_WARNINGS \
 public: \
-	FID_MyProject_Source_MyProject_MyBaseClass_h_18_SPARSE_DATA \
-	FID_MyProject_Source_MyProject_MyBaseClass_h_18_RPC_WRAPPERS \
-	FID_MyProject_Source_MyProject_MyBaseClass_h_18_INCLASS \
-	FID_MyProject_Source_MyProject_MyBaseClass_h_18_STANDARD_CONSTRUCTORS \
+	FID_MyProject_Source_MyProject_MyBaseClass_h_28_SPARSE_DATA \
+	FID_MyProject_Source_MyProject_MyBaseClass_h_28_RPC_WRAPPERS \
+	FID_MyProject_Source_MyProject_MyBaseClass_h_28_INCLASS \
+	FID_MyProject_Source_MyProject_MyBaseClass_h_28_STANDARD_CONSTRUCTORS \
 public: \
 PRAGMA_ENABLE_DEPRECATION_WARNINGS
 
 
-#define FID_MyProject_Source_MyProject_MyBaseClass_h_18_GENERATED_BODY \
+#define FID_MyProject_Source_MyProject_MyBaseClass_h_28_GENERATED_BODY \
 PRAGMA_DISABLE_DEPRECATION_WARNINGS \
 public: \
-	FID_MyProject_Source_MyProject_MyBaseClass_h_18_SPARSE_DATA \
-	FID_MyProject_Source_MyProject_MyBaseClass_h_18_RPC_WRAPPERS_NO_PURE_DECLS \
-	FID_MyProject_Source_MyProject_MyBaseClass_h_18_INCLASS_NO_PURE_DECLS \
-	FID_MyProject_Source_MyProject_MyBaseClass_h_18_ENHANCED_CONSTRUCTORS \
+	FID_MyProject_Source_MyProject_MyBaseClass_h_28_SPARSE_DATA \
+	FID_MyProject_Source_MyProject_MyBaseClass_h_28_RPC_WRAPPERS_NO_PURE_DECLS \
+	FID_MyProject_Source_MyProject_MyBaseClass_h_28_INCLASS_NO_PURE_DECLS \
+	FID_MyProject_Source_MyProject_MyBaseClass_h_28_ENHANCED_CONSTRUCTORS \
 private: \
 PRAGMA_ENABLE_DEPRECATION_WARNINGS
 
@@ -94,5 +94,15 @@ template<> MYPROJECT_API UClass* StaticClass<class AMyBaseClass>();
 #undef CURRENT_FILE_ID
 #define CURRENT_FILE_ID FID_MyProject_Source_MyProject_MyBaseClass_h
 
+
+#define FOREACH_ENUM_CHARACTERSTATES(op) \
+	op(CharacterStates::Walking) \
+	op(CharacterStates::Jumping) \
+	op(CharacterStates::Bouncing) \
+	op(CharacterStates::Stomping) \
+	op(CharacterStates::Spindashing) 
+
+enum class CharacterStates : uint8;
+template<> MYPROJECT_API UEnum* StaticEnum<CharacterStates>();
 
 PRAGMA_ENABLE_DEPRECATION_WARNINGS
