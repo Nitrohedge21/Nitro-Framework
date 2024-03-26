@@ -90,6 +90,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rings")
 	int RingCount = 0;
 
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Bounce Stuff")
+	bool CanBounce = false;
+	
 	// These are most likely gonna be replaced by enums later. - Ersan 04.03.2024
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Jumping State")
 	bool isJumping;
@@ -101,8 +104,8 @@ public:
 	bool bIsGrounded;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Homing State")
 	bool IsHomingAttacking = false;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Landed State")
-	bool CanBounce = false;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bounce State")
+	bool IsBouncing = false;	//This is currently unused cuz I couldn't figure out how to reset it
 
 	
 protected:
@@ -136,7 +139,8 @@ protected:
 	void CheckStomp();
 
 	//Bounce mechanic's function
-	void Bounce();
+	void BounceDown();
+	void BounceUp();
 	
 	//Jump dash mechanic's function
 	void JumpDash();
@@ -155,10 +159,6 @@ protected:
 	UFUNCTION()
 	void TimelineTick();
 	void UpdatePosition(float Alpha);
-
-	void StompOrBounce();
-	
-	
 	
 public:
 	// APawn interface

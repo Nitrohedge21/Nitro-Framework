@@ -6,10 +6,8 @@
 #include "NinjaCharacter/Public/NinjaCharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "GenericPlatform/GenericPlatformCrashContext.h"
 #include "Components/TimelineComponent.h"
 #include "GameFramework/PlayerState.h"
-#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Logging/LogMacros.h"
@@ -22,16 +20,7 @@ AMyBaseClass::AMyBaseClass(const FObjectInitializer& ObjectInitializer)
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
 
 	//Initializing default values
-	boostSpeed = 5000.0f;
-	boostForce = 10.0f;
-	pushForce = 10.0f;
-	displayTime = 99999999;
-	isBoosting = false;
 	isStomping = false;
-	currentStamina = 1.0f;
-	maxStamina = 1.0f;
-	staminaSprintUsageRate = 0.1f;
-	staminaRechargeRate = 0.1f;
 	RingCount = 0;
 	
 	//Slope Physics values
@@ -103,9 +92,9 @@ void AMyBaseClass::SetupPlayerInputComponent(class UInputComponent* PlayerInputC
 	check(PlayerInputComponent);
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
-	PlayerInputComponent->BindAction("Stomp / Bounce", IE_Pressed, this, &AMyBaseClass::StompOrBounce);
-	//PlayerInputComponent->BindAction("Bounce", IE_MAX, this, &AMyBaseClass::Bounce);
-	//PlayerInputComponent->BindAction("HomingAttack", IE_Pressed, this, &AMyBaseClass::HomingAttack);
+	
+	PlayerInputComponent->BindAction("Stomp", IE_Pressed, this, &AMyBaseClass::Stomp);
+	PlayerInputComponent->BindAction("Bounce", IE_Pressed, this, &AMyBaseClass::BounceDown);
 	
 	PlayerInputComponent->BindAxis("Move Forward / Backward", this, &AMyBaseClass::MoveForward);
 	PlayerInputComponent->BindAxis("Move Right / Left", this, &AMyBaseClass::MoveRight);
@@ -205,14 +194,8 @@ void AMyBaseClass::Jump()
 void AMyBaseClass::Landed(const FHitResult& Hit)
 {
 	Super::Landed(Hit);
-
-	//TODO - Turn this into a function
-	if(CanBounce == true)
-	{
-		LaunchCharacter(GetActorUpVector() * bounceForce,false,true);
-		CanBounce = false;
-		JumpCurrentCount -= 1;
-	}
+	
+	BounceUp();
 	BallMesh->SetVisibility(false);
 	OldTarget = nullptr;
 	CurrentTarget = nullptr;
@@ -228,7 +211,7 @@ void AMyBaseClass::Stomp()
 {
 	// [IMPORTANT] Check Sonic Unleashed to see if you can stomp without needing to jump first.
 	// BUG - The character can still trigger the jump input even if they're launched off a ramp/slope.
-	if (JumpCurrentCount == 1 && GetNinjaCharacterMovement()->IsFalling())
+	if (/*JumpCurrentCount >= 1 &&*/GetNinjaCharacterMovement()->IsFalling())
 	{
 		stompForce = 10000 * GetNinjaCharacterMovement()->GravityScale;	// The force value doesn't really matter much as the velocity gets set to zero.
 		const FVector Downward = -GetActorUpVector();
@@ -249,7 +232,7 @@ void AMyBaseClass::CheckStomp()
 ////////////////////////
 ///	Bounce mechanic	///
 //////////////////////
-void AMyBaseClass::Bounce()
+void AMyBaseClass::BounceDown()
 {
 	const FVector Downward = -GetActorUpVector();
 	
@@ -259,14 +242,22 @@ void AMyBaseClass::Bounce()
 		LaunchCharacter(Downward * stompForce, false, true);
 		JumpCurrentCount = 2; // This is done in order to block the players from jumping while stomping
 		CanBounce = true;
+		UE_LOG(LogTemp,Warning,TEXT("Bouncing down"));
 	}
 }
 
-void AMyBaseClass::StompOrBounce()
+void AMyBaseClass::BounceUp()
 {
-
+	const FVector Upward  = GetActorUpVector();
+	
+	if(CanBounce == true)
+	{
+		LaunchCharacter(Upward * bounceForce,false,true);
+		CanBounce = false;
+		JumpCurrentCount = 1;//This is done as an attempt to make sonic able to dash or homing attack after bounce
+		UE_LOG(LogTemp,Warning,TEXT("Bouncing up"));  
+	}
 }
-
 
 ////////////////////////////
 ///	Jump dash mechanic	///
@@ -391,6 +382,7 @@ bool AMyBaseClass::IsChosenTargetInRange()
 	bool returnValue = false;
 	if(IsValid(ChosenTarget))
 	{
+		//TODO - Make it so that sonic can only attack when the target is below or on his axis.
 		if(GetDistanceTo(ChosenTarget) <= 1000){ returnValue = true;}
 		else {returnValue = false;}
 	}
