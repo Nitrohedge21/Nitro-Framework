@@ -7,7 +7,7 @@
 #include "Components/TimelineComponent.h"
 #include "MyBaseClass.generated.h"
 
-
+//Unused enum states
 UENUM()
 enum class CharacterStates : uint8
 {
@@ -41,7 +41,7 @@ public:
 	AMyBaseClass();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh")
-	UStaticMeshComponent* BallMesh;
+	UStaticMeshComponent* JumpBallMesh;
 	
 	
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
@@ -54,21 +54,26 @@ public:
 	float boostSpeed = 1.0f;
 	float displayTime = 1.0f;
 
-	UPROPERTY(EditAnywhere, Category = "Forces")
+	UPROPERTY(EditAnywhere,Category = "Spindash stuff")
+	bool ChargingSpindash = false;
+	float SpindashIncreaseRate = 1000.0f;
+	FTimerHandle SpindashTimer;
+	
+	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category = "Forces")
 	float pushForce = 50.0f;
-	float boostForce = 110.0f;
+	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category = "Forces")
 	float stompForce = 2000.0f;
+	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category = "Forces")
 	float jumpDashForce = 500.0f;
+	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category = "Forces")
 	float bounceForce = 1500.0f;
-
-	//Unused at the moment
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Boost Stamina")
-	float currentStamina;
-	float maxStamina;
-	float staminaSprintUsageRate;
-	float staminaRechargeRate;
-	float delayForStaminaRecharge;
-	float canStaminaRecharge;
+	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category = "Forces")
+	float MinSpindashForce = 2500.0f;
+	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category = "Forces")
+	float MaxSpindashForce = 20000.0f;
+	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category = "Forces")
+	float CurrentSpindashForce = MinSpindashForce;
+	
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Slope Physics")
 	float GroundAngle;
@@ -140,12 +145,6 @@ protected:
 	 */
 	void LookUpAtRate(float Rate);
 
-	//Boost mechanic's functions
-	void BoostLaunch(float axis);
-	void boostStart();
-	void boostEnd();
-	void camReset();
-
 	//Stomp mechanic's functions
 	void Stomp();
 	void CheckStomp();
@@ -154,9 +153,10 @@ protected:
 	void BounceDown();
 	void BounceUp();
 	
-	//Jump dash mechanic's function
+	//Jump related functions
 	void JumpDash();
-
+	void BlockJumpWhileFalling();
+	
 	// Slope Physics functions
 	void SlopePhysics();
 	void SlopeAlignment();
@@ -168,11 +168,16 @@ protected:
 	void LaunchToTarget();
 	void SetTargetLocations();
 	
+	//Timeline functions that are required for homing attack to work
 	UFUNCTION()
 	void TimelineTick();
 	void UpdatePosition(float Alpha);
 
-	void BlockJumpWhileFalling();
+	// Spindash functions
+	void Spindash();
+	void ChargeSpindash();
+	void ReleaseSpindash();
+	void SpindashLaunch();
 	
 public:
 	// APawn interface

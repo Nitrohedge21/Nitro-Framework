@@ -65,12 +65,12 @@ AMyBaseClass::AMyBaseClass(const FObjectInitializer& ObjectInitializer)
 	GetMesh()->SetRelativeLocationAndRotation(FVector(0, 0, -80), FRotator(0, -90, 0));
 
 	//Configure the jumpball mesh
-	BallMesh = CreateDefaultSubobject<UStaticMeshComponent>("SpinballMesh");
-	BallMesh->SetupAttachment(RootComponent);
-	BallMesh->SetRelativeLocation(FVector(0,0,-15));
-	BallMesh->SetRelativeRotation(FRotator(0,-90,0));
-	BallMesh->SetRelativeScale3D(FVector(1.5,1.5,1.5));
-	BallMesh->SetVisibility(false);
+	JumpBallMesh = CreateDefaultSubobject<UStaticMeshComponent>("SpinballMesh");
+	JumpBallMesh->SetupAttachment(RootComponent);
+	JumpBallMesh->SetRelativeLocation(FVector(0,0,-15));
+	JumpBallMesh->SetRelativeRotation(FRotator(0,-90,0));
+	JumpBallMesh->SetRelativeScale3D(FVector(1.5,1.5,1.5));
+	JumpBallMesh->SetVisibility(false);
 
 	MainTimeline = CreateDefaultSubobject<UTimelineComponent>("TimelineComponent");
 	
@@ -95,6 +95,9 @@ void AMyBaseClass::SetupPlayerInputComponent(class UInputComponent* PlayerInputC
 	
 	PlayerInputComponent->BindAction("Stomp", IE_Pressed, this, &AMyBaseClass::Stomp);
 	PlayerInputComponent->BindAction("Bounce", IE_Pressed, this, &AMyBaseClass::BounceDown);
+
+	PlayerInputComponent->BindAction("Spindash", IE_Repeat, this,&AMyBaseClass::Spindash);
+	PlayerInputComponent->BindAction("Spindash", IE_Released, this,&AMyBaseClass::ReleaseSpindash);
 	
 	PlayerInputComponent->BindAxis("Move Forward / Backward", this, &AMyBaseClass::MoveForward);
 	PlayerInputComponent->BindAxis("Move Right / Left", this, &AMyBaseClass::MoveRight);
@@ -177,7 +180,6 @@ void AMyBaseClass::Tick(float DeltaTime)
 //																					 //
 //////////////////////////////////////////////////////////////////////////////////////
 
-// TODO - Figure out how to override the jump count changing after launching off a ramp/slope
 void AMyBaseClass::Jump()
 {
 	Super::Jump();
@@ -185,7 +187,7 @@ void AMyBaseClass::Jump()
 	BlockJumpWhileFalling();
 	
 	//Enables the jump ball while jumping
-	if(!isStomping){BallMesh->SetVisibility(true);}
+	if(!isStomping){JumpBallMesh->SetVisibility(true);}
 	HomingAttack();
 	JumpDash(); // [IMPROVEMENT] - This was originally done in a separate input action
 	// Now it's being called inside the built in jump function.
@@ -195,9 +197,13 @@ void AMyBaseClass::Jump()
 void AMyBaseClass::Landed(const FHitResult& Hit)
 {
 	Super::Landed(Hit);
+
+	if(!ChargingSpindash)
+	{
+		JumpBallMesh->SetVisibility(false);
+		GetMesh()->SetVisibility(true);
+	}
 	
-	BallMesh->SetVisibility(false);
-	GetMesh()->SetVisibility(true);
 	BounceUp();
 	OldTarget = nullptr;
 	CurrentTarget = nullptr;
@@ -213,7 +219,7 @@ void AMyBaseClass::Stomp()
 {
 	// [IMPORTANT] Check Sonic Unleashed to see if you can stomp without needing to jump first.
 	// BUG - The character can still trigger the jump input even if they're launched off a ramp/slope.
-	if (/*JumpCurrentCount >= 1 &&*/GetNinjaCharacterMovement()->IsFalling())
+	if (/*JumpCurrentCount >= 1 && */GetNinjaCharacterMovement()->IsFalling() && !isStomping)
 	{
 		stompForce = 10000 * GetNinjaCharacterMovement()->GravityScale;	// The force value doesn't really matter much as the velocity gets set to zero.
 		const FVector Downward = -GetActorUpVector();
@@ -221,7 +227,6 @@ void AMyBaseClass::Stomp()
 		LaunchCharacter(Downward * stompForce, false, true);
 		JumpCurrentCount = 2; // This is done in order to block the players from jumping while stomping
 		isStomping = true;
-		UE_LOG(LogTemp,Warning,TEXT("Stomping"));
 	}
 }
 
@@ -245,7 +250,7 @@ void AMyBaseClass::BounceDown()
 		LaunchCharacter(Downward * stompForce, false, true);
 		JumpCurrentCount = 2; // This is done in order to block the players from jumping while stomping
 		CanBounce = true;
-		BallMesh->SetVisibility(true);
+		JumpBallMesh->SetVisibility(true);
 		GetMesh()->SetVisibility(false);
 		UE_LOG(LogTemp,Warning,TEXT("Bouncing down"));
 	}
@@ -259,7 +264,7 @@ void AMyBaseClass::BounceUp()
 	{
 		LaunchCharacter(Upward * bounceForce,false,true);
 		CanBounce = false;
-		BallMesh->SetVisibility(true);
+		JumpBallMesh->SetVisibility(true);
 		GetMesh()->SetVisibility(false);
 		IsBouncing = true;
 	}
@@ -511,4 +516,45 @@ void AMyBaseClass::BlockJumpWhileFalling()
 		// Character is not falling, allow jumping
 		GetMovementComponent()->SetJumpAllowed(true);
 	}
+}
+
+// Spindash mechanic's functions
+
+void AMyBaseClass::Spindash()
+{
+	GetWorld()->GetTimerManager().SetTimer(SpindashTimer, this, &AMyBaseClass::ChargeSpindash, 5, false);
+	if(bIsGrounded && !GetCharacterMovement()->IsFalling()){ChargeSpindash();}
+}
+
+void AMyBaseClass::ChargeSpindash()
+{
+	if(bIsGrounded && !GetCharacterMovement()->IsFalling() && !isStomping)
+	{
+		ChargingSpindash = true;
+		CurrentSpindashForce = FMath::Clamp(CurrentSpindashForce + SpindashIncreaseRate,MinSpindashForce,MaxSpindashForce);
+		JumpBallMesh->SetVisibility(true);
+		GetMesh()->SetVisibility(false);
+	}
+}
+void AMyBaseClass::ReleaseSpindash()
+{
+	if(bIsGrounded && !GetCharacterMovement()->IsFalling() && !isStomping)
+	{
+		GetWorld()->GetTimerManager().ClearTimer(SpindashTimer);
+		SpindashTimer.Invalidate();
+		GetMovementComponent()->Velocity = FVector(GetMovementComponent()->Velocity + GetActorForwardVector() * CurrentSpindashForce);
+		SpindashLaunch();
+		
+	}
+}
+
+void AMyBaseClass::SpindashLaunch()
+{
+	ChargingSpindash = false;
+
+	//Disable jumpbass, enable sonic mesh
+	JumpBallMesh->SetVisibility(false);
+	GetMesh()->SetVisibility(true);
+	
+	CurrentSpindashForce = MinSpindashForce;
 }

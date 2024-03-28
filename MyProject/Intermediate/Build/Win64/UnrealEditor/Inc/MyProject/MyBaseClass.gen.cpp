@@ -54,10 +54,12 @@ void EmptyLinkFunctionForGeneratedCodeMyBaseClass() {}
 #if WITH_METADATA
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UEnum_MyProject_CharacterStates_Statics::Enum_MetaDataParams[] = {
 		{ "Bouncing.Name", "CharacterStates::Bouncing" },
+		{ "Comment", "//Unused enum states\n" },
 		{ "Jumping.Name", "CharacterStates::Jumping" },
 		{ "ModuleRelativePath", "MyBaseClass.h" },
 		{ "Spindashing.Name", "CharacterStates::Spindashing" },
 		{ "Stomping.Name", "CharacterStates::Stomping" },
+		{ "ToolTip", "Unused enum states" },
 		{ "Walking.Name", "CharacterStates::Walking" },
 	};
 #endif
@@ -105,7 +107,9 @@ void EmptyLinkFunctionForGeneratedCodeMyBaseClass() {}
 	};
 #if WITH_METADATA
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UFunction_AMyBaseClass_TimelineTick_Statics::Function_MetaDataParams[] = {
+		{ "Comment", "//Timeline functions that are required for homing attack to work\n" },
 		{ "ModuleRelativePath", "MyBaseClass.h" },
+		{ "ToolTip", "Timeline functions that are required for homing attack to work" },
 	};
 #endif
 	const UECodeGen_Private::FFunctionParams Z_Construct_UFunction_AMyBaseClass_TimelineTick_Statics::FuncParams = { (UObject*(*)())Z_Construct_UClass_AMyBaseClass, nullptr, "TimelineTick", nullptr, nullptr, 0, nullptr, 0, RF_Public|RF_Transient|RF_MarkAsNative, (EFunctionFlags)0x00080401, 0, 0, METADATA_PARAMS(Z_Construct_UFunction_AMyBaseClass_TimelineTick_Statics::Function_MetaDataParams, UE_ARRAY_COUNT(Z_Construct_UFunction_AMyBaseClass_TimelineTick_Statics::Function_MetaDataParams)) };
@@ -139,9 +143,9 @@ void EmptyLinkFunctionForGeneratedCodeMyBaseClass() {}
 #endif
 		static const UECodeGen_Private::FObjectPropertyParams NewProp_FollowCamera;
 #if WITH_METADATA
-		static const UECodeGen_Private::FMetaDataPairParam NewProp_BallMesh_MetaData[];
+		static const UECodeGen_Private::FMetaDataPairParam NewProp_JumpBallMesh_MetaData[];
 #endif
-		static const UECodeGen_Private::FObjectPropertyParams NewProp_BallMesh;
+		static const UECodeGen_Private::FObjectPropertyParams NewProp_JumpBallMesh;
 #if WITH_METADATA
 		static const UECodeGen_Private::FMetaDataPairParam NewProp_TurnRateGamepad_MetaData[];
 #endif
@@ -151,13 +155,38 @@ void EmptyLinkFunctionForGeneratedCodeMyBaseClass() {}
 #endif
 		static const UECodeGen_Private::FFloatPropertyParams NewProp_speed;
 #if WITH_METADATA
+		static const UECodeGen_Private::FMetaDataPairParam NewProp_ChargingSpindash_MetaData[];
+#endif
+		static void NewProp_ChargingSpindash_SetBit(void* Obj);
+		static const UECodeGen_Private::FBoolPropertyParams NewProp_ChargingSpindash;
+#if WITH_METADATA
 		static const UECodeGen_Private::FMetaDataPairParam NewProp_pushForce_MetaData[];
 #endif
 		static const UECodeGen_Private::FFloatPropertyParams NewProp_pushForce;
 #if WITH_METADATA
-		static const UECodeGen_Private::FMetaDataPairParam NewProp_currentStamina_MetaData[];
+		static const UECodeGen_Private::FMetaDataPairParam NewProp_stompForce_MetaData[];
 #endif
-		static const UECodeGen_Private::FFloatPropertyParams NewProp_currentStamina;
+		static const UECodeGen_Private::FFloatPropertyParams NewProp_stompForce;
+#if WITH_METADATA
+		static const UECodeGen_Private::FMetaDataPairParam NewProp_jumpDashForce_MetaData[];
+#endif
+		static const UECodeGen_Private::FFloatPropertyParams NewProp_jumpDashForce;
+#if WITH_METADATA
+		static const UECodeGen_Private::FMetaDataPairParam NewProp_bounceForce_MetaData[];
+#endif
+		static const UECodeGen_Private::FFloatPropertyParams NewProp_bounceForce;
+#if WITH_METADATA
+		static const UECodeGen_Private::FMetaDataPairParam NewProp_MinSpindashForce_MetaData[];
+#endif
+		static const UECodeGen_Private::FFloatPropertyParams NewProp_MinSpindashForce;
+#if WITH_METADATA
+		static const UECodeGen_Private::FMetaDataPairParam NewProp_MaxSpindashForce_MetaData[];
+#endif
+		static const UECodeGen_Private::FFloatPropertyParams NewProp_MaxSpindashForce;
+#if WITH_METADATA
+		static const UECodeGen_Private::FMetaDataPairParam NewProp_CurrentSpindashForce_MetaData[];
+#endif
+		static const UECodeGen_Private::FFloatPropertyParams NewProp_CurrentSpindashForce;
 #if WITH_METADATA
 		static const UECodeGen_Private::FMetaDataPairParam NewProp_GroundAngle_MetaData[];
 #endif
@@ -243,7 +272,7 @@ void EmptyLinkFunctionForGeneratedCodeMyBaseClass() {}
 		(UObject* (*)())Z_Construct_UPackage__Script_MyProject,
 	};
 	const FClassFunctionLinkInfo Z_Construct_UClass_AMyBaseClass_Statics::FuncInfo[] = {
-		{ &Z_Construct_UFunction_AMyBaseClass_TimelineTick, "TimelineTick" }, // 2536790072
+		{ &Z_Construct_UFunction_AMyBaseClass_TimelineTick, "TimelineTick" }, // 2482431242
 	};
 #if WITH_METADATA
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AMyBaseClass_Statics::Class_MetaDataParams[] = {
@@ -277,13 +306,13 @@ void EmptyLinkFunctionForGeneratedCodeMyBaseClass() {}
 #endif
 	const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_AMyBaseClass_Statics::NewProp_FollowCamera = { "FollowCamera", nullptr, (EPropertyFlags)0x00400000000a001d, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AMyBaseClass, FollowCamera), Z_Construct_UClass_UCameraComponent_NoRegister, METADATA_PARAMS(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_FollowCamera_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_FollowCamera_MetaData)) };
 #if WITH_METADATA
-	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AMyBaseClass_Statics::NewProp_BallMesh_MetaData[] = {
+	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AMyBaseClass_Statics::NewProp_JumpBallMesh_MetaData[] = {
 		{ "Category", "Mesh" },
 		{ "EditInline", "true" },
 		{ "ModuleRelativePath", "MyBaseClass.h" },
 	};
 #endif
-	const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_AMyBaseClass_Statics::NewProp_BallMesh = { "BallMesh", nullptr, (EPropertyFlags)0x001000000008000d, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AMyBaseClass, BallMesh), Z_Construct_UClass_UStaticMeshComponent_NoRegister, METADATA_PARAMS(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_BallMesh_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_BallMesh_MetaData)) };
+	const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_AMyBaseClass_Statics::NewProp_JumpBallMesh = { "JumpBallMesh", nullptr, (EPropertyFlags)0x001000000008000d, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AMyBaseClass, JumpBallMesh), Z_Construct_UClass_UStaticMeshComponent_NoRegister, METADATA_PARAMS(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_JumpBallMesh_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_JumpBallMesh_MetaData)) };
 #if WITH_METADATA
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AMyBaseClass_Statics::NewProp_TurnRateGamepad_MetaData[] = {
 		{ "Category", "Input" },
@@ -301,21 +330,65 @@ void EmptyLinkFunctionForGeneratedCodeMyBaseClass() {}
 #endif
 	const UECodeGen_Private::FFloatPropertyParams Z_Construct_UClass_AMyBaseClass_Statics::NewProp_speed = { "speed", nullptr, (EPropertyFlags)0x0010000000000001, UECodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AMyBaseClass, speed), METADATA_PARAMS(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_speed_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_speed_MetaData)) };
 #if WITH_METADATA
+	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AMyBaseClass_Statics::NewProp_ChargingSpindash_MetaData[] = {
+		{ "Category", "Spindash stuff" },
+		{ "ModuleRelativePath", "MyBaseClass.h" },
+	};
+#endif
+	void Z_Construct_UClass_AMyBaseClass_Statics::NewProp_ChargingSpindash_SetBit(void* Obj)
+	{
+		((AMyBaseClass*)Obj)->ChargingSpindash = 1;
+	}
+	const UECodeGen_Private::FBoolPropertyParams Z_Construct_UClass_AMyBaseClass_Statics::NewProp_ChargingSpindash = { "ChargingSpindash", nullptr, (EPropertyFlags)0x0010000000000001, UECodeGen_Private::EPropertyGenFlags::Bool | UECodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, 1, sizeof(bool), sizeof(AMyBaseClass), &Z_Construct_UClass_AMyBaseClass_Statics::NewProp_ChargingSpindash_SetBit, METADATA_PARAMS(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_ChargingSpindash_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_ChargingSpindash_MetaData)) };
+#if WITH_METADATA
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AMyBaseClass_Statics::NewProp_pushForce_MetaData[] = {
 		{ "Category", "Forces" },
 		{ "ModuleRelativePath", "MyBaseClass.h" },
 	};
 #endif
-	const UECodeGen_Private::FFloatPropertyParams Z_Construct_UClass_AMyBaseClass_Statics::NewProp_pushForce = { "pushForce", nullptr, (EPropertyFlags)0x0010000000000001, UECodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AMyBaseClass, pushForce), METADATA_PARAMS(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_pushForce_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_pushForce_MetaData)) };
+	const UECodeGen_Private::FFloatPropertyParams Z_Construct_UClass_AMyBaseClass_Statics::NewProp_pushForce = { "pushForce", nullptr, (EPropertyFlags)0x0010000000000015, UECodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AMyBaseClass, pushForce), METADATA_PARAMS(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_pushForce_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_pushForce_MetaData)) };
 #if WITH_METADATA
-	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AMyBaseClass_Statics::NewProp_currentStamina_MetaData[] = {
-		{ "Category", "Boost Stamina" },
-		{ "Comment", "//Unused at the moment\n" },
+	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AMyBaseClass_Statics::NewProp_stompForce_MetaData[] = {
+		{ "Category", "Forces" },
 		{ "ModuleRelativePath", "MyBaseClass.h" },
-		{ "ToolTip", "Unused at the moment" },
 	};
 #endif
-	const UECodeGen_Private::FFloatPropertyParams Z_Construct_UClass_AMyBaseClass_Statics::NewProp_currentStamina = { "currentStamina", nullptr, (EPropertyFlags)0x0010000000000015, UECodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AMyBaseClass, currentStamina), METADATA_PARAMS(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_currentStamina_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_currentStamina_MetaData)) };
+	const UECodeGen_Private::FFloatPropertyParams Z_Construct_UClass_AMyBaseClass_Statics::NewProp_stompForce = { "stompForce", nullptr, (EPropertyFlags)0x0010000000000015, UECodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AMyBaseClass, stompForce), METADATA_PARAMS(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_stompForce_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_stompForce_MetaData)) };
+#if WITH_METADATA
+	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AMyBaseClass_Statics::NewProp_jumpDashForce_MetaData[] = {
+		{ "Category", "Forces" },
+		{ "ModuleRelativePath", "MyBaseClass.h" },
+	};
+#endif
+	const UECodeGen_Private::FFloatPropertyParams Z_Construct_UClass_AMyBaseClass_Statics::NewProp_jumpDashForce = { "jumpDashForce", nullptr, (EPropertyFlags)0x0010000000000015, UECodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AMyBaseClass, jumpDashForce), METADATA_PARAMS(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_jumpDashForce_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_jumpDashForce_MetaData)) };
+#if WITH_METADATA
+	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AMyBaseClass_Statics::NewProp_bounceForce_MetaData[] = {
+		{ "Category", "Forces" },
+		{ "ModuleRelativePath", "MyBaseClass.h" },
+	};
+#endif
+	const UECodeGen_Private::FFloatPropertyParams Z_Construct_UClass_AMyBaseClass_Statics::NewProp_bounceForce = { "bounceForce", nullptr, (EPropertyFlags)0x0010000000000015, UECodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AMyBaseClass, bounceForce), METADATA_PARAMS(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_bounceForce_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_bounceForce_MetaData)) };
+#if WITH_METADATA
+	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AMyBaseClass_Statics::NewProp_MinSpindashForce_MetaData[] = {
+		{ "Category", "Forces" },
+		{ "ModuleRelativePath", "MyBaseClass.h" },
+	};
+#endif
+	const UECodeGen_Private::FFloatPropertyParams Z_Construct_UClass_AMyBaseClass_Statics::NewProp_MinSpindashForce = { "MinSpindashForce", nullptr, (EPropertyFlags)0x0010000000000015, UECodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AMyBaseClass, MinSpindashForce), METADATA_PARAMS(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_MinSpindashForce_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_MinSpindashForce_MetaData)) };
+#if WITH_METADATA
+	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AMyBaseClass_Statics::NewProp_MaxSpindashForce_MetaData[] = {
+		{ "Category", "Forces" },
+		{ "ModuleRelativePath", "MyBaseClass.h" },
+	};
+#endif
+	const UECodeGen_Private::FFloatPropertyParams Z_Construct_UClass_AMyBaseClass_Statics::NewProp_MaxSpindashForce = { "MaxSpindashForce", nullptr, (EPropertyFlags)0x0010000000000015, UECodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AMyBaseClass, MaxSpindashForce), METADATA_PARAMS(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_MaxSpindashForce_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_MaxSpindashForce_MetaData)) };
+#if WITH_METADATA
+	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AMyBaseClass_Statics::NewProp_CurrentSpindashForce_MetaData[] = {
+		{ "Category", "Forces" },
+		{ "ModuleRelativePath", "MyBaseClass.h" },
+	};
+#endif
+	const UECodeGen_Private::FFloatPropertyParams Z_Construct_UClass_AMyBaseClass_Statics::NewProp_CurrentSpindashForce = { "CurrentSpindashForce", nullptr, (EPropertyFlags)0x0010000000000015, UECodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AMyBaseClass, CurrentSpindashForce), METADATA_PARAMS(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_CurrentSpindashForce_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_CurrentSpindashForce_MetaData)) };
 #if WITH_METADATA
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AMyBaseClass_Statics::NewProp_GroundAngle_MetaData[] = {
 		{ "Category", "Slope Physics" },
@@ -468,15 +541,21 @@ void EmptyLinkFunctionForGeneratedCodeMyBaseClass() {}
 		{ "ToolTip", "This is currently unused cuz I couldn't figure out how to reset it" },
 	};
 #endif
-	const UECodeGen_Private::FEnumPropertyParams Z_Construct_UClass_AMyBaseClass_Statics::NewProp_CurrentState = { "CurrentState", nullptr, (EPropertyFlags)0x0010000000000015, UECodeGen_Private::EPropertyGenFlags::Enum, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AMyBaseClass, CurrentState), Z_Construct_UEnum_MyProject_CharacterStates, METADATA_PARAMS(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_CurrentState_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_CurrentState_MetaData)) }; // 2737975952
+	const UECodeGen_Private::FEnumPropertyParams Z_Construct_UClass_AMyBaseClass_Statics::NewProp_CurrentState = { "CurrentState", nullptr, (EPropertyFlags)0x0010000000000015, UECodeGen_Private::EPropertyGenFlags::Enum, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AMyBaseClass, CurrentState), Z_Construct_UEnum_MyProject_CharacterStates, METADATA_PARAMS(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_CurrentState_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_CurrentState_MetaData)) }; // 2683037699
 	const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UClass_AMyBaseClass_Statics::PropPointers[] = {
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMyBaseClass_Statics::NewProp_CameraBoom,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMyBaseClass_Statics::NewProp_FollowCamera,
-		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMyBaseClass_Statics::NewProp_BallMesh,
+		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMyBaseClass_Statics::NewProp_JumpBallMesh,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMyBaseClass_Statics::NewProp_TurnRateGamepad,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMyBaseClass_Statics::NewProp_speed,
+		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMyBaseClass_Statics::NewProp_ChargingSpindash,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMyBaseClass_Statics::NewProp_pushForce,
-		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMyBaseClass_Statics::NewProp_currentStamina,
+		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMyBaseClass_Statics::NewProp_stompForce,
+		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMyBaseClass_Statics::NewProp_jumpDashForce,
+		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMyBaseClass_Statics::NewProp_bounceForce,
+		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMyBaseClass_Statics::NewProp_MinSpindashForce,
+		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMyBaseClass_Statics::NewProp_MaxSpindashForce,
+		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMyBaseClass_Statics::NewProp_CurrentSpindashForce,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMyBaseClass_Statics::NewProp_GroundAngle,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMyBaseClass_Statics::NewProp_OldTarget,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMyBaseClass_Statics::NewProp_CurrentTarget,
@@ -533,12 +612,12 @@ void EmptyLinkFunctionForGeneratedCodeMyBaseClass() {}
 		static const FClassRegisterCompiledInInfo ClassInfo[];
 	};
 	const FEnumRegisterCompiledInInfo Z_CompiledInDeferFile_FID_MyProject_Source_MyProject_MyBaseClass_h_Statics::EnumInfo[] = {
-		{ CharacterStates_StaticEnum, TEXT("CharacterStates"), &Z_Registration_Info_UEnum_CharacterStates, CONSTRUCT_RELOAD_VERSION_INFO(FEnumReloadVersionInfo, 2737975952U) },
+		{ CharacterStates_StaticEnum, TEXT("CharacterStates"), &Z_Registration_Info_UEnum_CharacterStates, CONSTRUCT_RELOAD_VERSION_INFO(FEnumReloadVersionInfo, 2683037699U) },
 	};
 	const FClassRegisterCompiledInInfo Z_CompiledInDeferFile_FID_MyProject_Source_MyProject_MyBaseClass_h_Statics::ClassInfo[] = {
-		{ Z_Construct_UClass_AMyBaseClass, AMyBaseClass::StaticClass, TEXT("AMyBaseClass"), &Z_Registration_Info_UClass_AMyBaseClass, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(AMyBaseClass), 2427161515U) },
+		{ Z_Construct_UClass_AMyBaseClass, AMyBaseClass::StaticClass, TEXT("AMyBaseClass"), &Z_Registration_Info_UClass_AMyBaseClass, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(AMyBaseClass), 1848016852U) },
 	};
-	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_MyProject_Source_MyProject_MyBaseClass_h_377017438(TEXT("/Script/MyProject"),
+	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_MyProject_Source_MyProject_MyBaseClass_h_209602334(TEXT("/Script/MyProject"),
 		Z_CompiledInDeferFile_FID_MyProject_Source_MyProject_MyBaseClass_h_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_MyProject_Source_MyProject_MyBaseClass_h_Statics::ClassInfo),
 		nullptr, 0,
 		Z_CompiledInDeferFile_FID_MyProject_Source_MyProject_MyBaseClass_h_Statics::EnumInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_MyProject_Source_MyProject_MyBaseClass_h_Statics::EnumInfo));
