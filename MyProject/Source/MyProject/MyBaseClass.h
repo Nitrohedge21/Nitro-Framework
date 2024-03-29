@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "InputAction.h"
 #include "NinjaCharacter.h"
 #include "Components/TimelineComponent.h"
 #include "MyBaseClass.generated.h"
@@ -19,6 +20,7 @@ enum class CharacterStates : uint8
 };
 
 class UTimelineComponent;
+class UInputMappingContext;
 /**
  * 
  */
@@ -98,7 +100,7 @@ public:
 	FVector ChosenTargetLocation;
 	FVector	NewLocation;
 	UPROPERTY()
-	FOnTimelineFloat MovementValue;
+	FOnTimelineFloat TLMovementValue;
 	FOnTimelineEvent TimelineUpdate;
 	bool CanLaunch = true;
 	
@@ -124,27 +126,28 @@ public:
 
 	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category = "Character State")
 	CharacterStates CurrentState;
-	
+
+	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category = "Inputs")
+	UInputMappingContext* InputMappingContext;
+	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category = "Actions")
+	UInputAction* LookAction;
+	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category = "Actions")
+	UInputAction* MoveAction;
+	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category = "Actions")
+	UInputAction* JumpAction;
+	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category = "Actions")
+	UInputAction* StompAction;
+	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category = "Actions")
+	UInputAction* BounceAction;
+	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category = "Actions")
+	UInputAction* SpindashAction;
+
 protected:
-
-	/** Called for forwards/backward input */
-	void MoveForward(float Axis);
-
-	/** Called for side to side input */
-	void MoveRight(float Axis);
-
-	/** 
-	 * Called via input to turn at a given rate. 
-	 * @param Rate	This is a normalized rate, i.e. 1.0 means 100% of desired turn rate
-	 */
-	void TurnAtRate(float Rate);
-
-	/**
-	 * Called via input to turn look up/down at a given rate. 
-	 * @param Rate	This is a normalized rate, i.e. 1.0 means 100% of desired turn rate
-	 */
-	void LookUpAtRate(float Rate);
-
+	
+	void Move(const FInputActionValue& Value);
+	void Look(const FInputActionValue& Value);
+	
+	
 	//Stomp mechanic's functions
 	void Stomp();
 	void CheckStomp();

@@ -260,6 +260,9 @@ D:\GitHub\Ninja-Character-Test\MyProject\Source\MyProject\MyBaseClass.cpp
 /I Runtime\AugmentedReality\Public
 /I ..\Intermediate\Build\Win64\UnrealEditor\Inc\MRMesh
 /I Runtime\MRMesh\Public
+/I ..\Plugins\Experimental\EnhancedInput\Intermediate\Build\Win64\UnrealEditor\Inc\EnhancedInput
+/I ..\Plugins\Experimental\EnhancedInput\Source
+/I ..\Plugins\Experimental\EnhancedInput\Source\EnhancedInput\Public
 /I ThirdParty\mimalloc\include
 /I ThirdParty\LibTiff\Source\Win64
 /I ThirdParty\LibTiff\Source

@@ -1,4 +1,4 @@
-D:\NinjaTest\MyProject\Intermediate\Build\Win64\UnrealEditor\Inc\MyProject\NinjaMovementComponent.gen.cpp
+D:\GitHub\Ninja-Character-Test\MyProject\Intermediate\Build\Win64\UnrealEditor\Inc\MyProject\NinjaMovementComponent.gen.cpp
 /I .
 /I ..\Intermediate\Build\Win64\UnrealEditor\Inc\Engine
 /I Runtime
@@ -254,8 +254,8 @@ D:\NinjaTest\MyProject\Intermediate\Build\Win64\UnrealEditor\Inc\MyProject\Ninja
 /I ..\Plugins\Marketplace\NinjaCharacter\Intermediate\Build\Win64\UnrealEditor\Inc\NinjaCharacter
 /I ..\Plugins\Marketplace\NinjaCharacter\Source
 /I ..\Plugins\Marketplace\NinjaCharacter\Source\NinjaCharacter\Public
-/I D:\NinjaTest\MyProject\Intermediate\Build\Win64\UnrealEditor\Inc\MyProject
-/I D:\NinjaTest\MyProject\Source
+/I D:\GitHub\Ninja-Character-Test\MyProject\Intermediate\Build\Win64\UnrealEditor\Inc\MyProject
+/I D:\GitHub\Ninja-Character-Test\MyProject\Source
 /I ..\Intermediate\Build\Win64\UnrealEditor\Inc\AugmentedReality
 /I Runtime\AugmentedReality\Public
 /I ..\Intermediate\Build\Win64\UnrealEditor\Inc\MRMesh
@@ -280,12 +280,12 @@ D:\NinjaTest\MyProject\Intermediate\Build\Win64\UnrealEditor\Inc\MyProject\Ninja
 /I "C:\Program Files (x86)\Windows Kits\10\include\10.0.22621.0\shared"
 /I "C:\Program Files (x86)\Windows Kits\10\include\10.0.22621.0\um"
 /I "C:\Program Files (x86)\Windows Kits\10\include\10.0.22621.0\winrt"
-/FI"D:\NinjaTest\MyProject\Intermediate\Build\Win64\MyProjectEditor\Development\Engine\SharedPCH.Engine.ShadowErrors.h"
-/FI"D:\NinjaTest\MyProject\Intermediate\Build\Win64\UnrealEditor\Development\MyProject\Definitions.MyProject.h"
-/Yu"D:\NinjaTest\MyProject\Intermediate\Build\Win64\MyProjectEditor\Development\Engine\SharedPCH.Engine.ShadowErrors.h"
-/Fp"D:\NinjaTest\MyProject\Intermediate\Build\Win64\MyProjectEditor\Development\Engine\SharedPCH.Engine.ShadowErrors.h.pch"
-/Fo"D:\NinjaTest\MyProject\Intermediate\Build\Win64\UnrealEditor\Development\MyProject\NinjaMovementComponent.gen.cpp.obj"
-/sourceDependencies D:\NinjaTest\MyProject\Intermediate\Build\Win64\UnrealEditor\Development\MyProject\NinjaMovementComponent.gen.cpp.json
+/FI"D:\GitHub\Ninja-Character-Test\MyProject\Intermediate\Build\Win64\MyProjectEditor\Development\Engine\SharedPCH.Engine.ShadowErrors.h"
+/FI"D:\GitHub\Ninja-Character-Test\MyProject\Intermediate\Build\Win64\UnrealEditor\Development\MyProject\Definitions.MyProject.h"
+/Yu"D:\GitHub\Ninja-Character-Test\MyProject\Intermediate\Build\Win64\MyProjectEditor\Development\Engine\SharedPCH.Engine.ShadowErrors.h"
+/Fp"D:\GitHub\Ninja-Character-Test\MyProject\Intermediate\Build\Win64\MyProjectEditor\Development\Engine\SharedPCH.Engine.ShadowErrors.h.pch"
+/Fo"D:\GitHub\Ninja-Character-Test\MyProject\Intermediate\Build\Win64\UnrealEditor\Development\MyProject\NinjaMovementComponent.gen.cpp.obj"
+/sourceDependencies D:\GitHub\Ninja-Character-Test\MyProject\Intermediate\Build\Win64\UnrealEditor\Development\MyProject\NinjaMovementComponent.gen.cpp.json
 /Zc:inline
 /nologo
 /Oi

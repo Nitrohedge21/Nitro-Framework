@@ -3,6 +3,8 @@
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
+#include "EnhancedInputComponent.h"
+#include "EnhancedInputSubsystems.h"
 #include "NinjaCharacter/Public/NinjaCharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -90,62 +92,43 @@ void AMyBaseClass::SetupPlayerInputComponent(class UInputComponent* PlayerInputC
 {
 	// Set up gameplay key bindings
 	check(PlayerInputComponent);
-	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AMyBaseClass::Jump);
-	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
-	
-	PlayerInputComponent->BindAction("Stomp", IE_Pressed, this, &AMyBaseClass::Stomp);
-	PlayerInputComponent->BindAction("Bounce", IE_Pressed, this, &AMyBaseClass::BounceDown);
-
-	PlayerInputComponent->BindAction("Spindash", IE_Repeat, this,&AMyBaseClass::Spindash);
-	PlayerInputComponent->BindAction("Spindash", IE_Released, this,&AMyBaseClass::ReleaseSpindash);
-	
-	PlayerInputComponent->BindAxis("Move Forward / Backward", this, &AMyBaseClass::MoveForward);
-	PlayerInputComponent->BindAxis("Move Right / Left", this, &AMyBaseClass::MoveRight);
-	
-	PlayerInputComponent->BindAxis("Turn Right / Left", this, &APawn::AddControllerYawInput);
-	PlayerInputComponent->BindAxis("Look Up / Down", this, &APawn::AddControllerPitchInput);
-
-}
-// This is kept in case of anything.
-void AMyBaseClass::TurnAtRate(float Rate)
-{
-	// calculate delta for this frame from the rate information
-	AddControllerYawInput(Rate * TurnRateGamepad * GetWorld()->GetDeltaSeconds());
-}
-// This is kept in case of anything.
-void AMyBaseClass::LookUpAtRate(float Rate)
-{
-	// calculate delta for this frame from the rate information
-	AddControllerPitchInput(Rate * TurnRateGamepad * GetWorld()->GetDeltaSeconds());
-}
-
-void AMyBaseClass::MoveForward(float Axis)
-{
-	if ((Controller != nullptr) && (Axis != 0.0f))
+	if(UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
 	{
-		const FRotator Rotation = Controller->GetControlRotation();
-		const FVector UpVector = GetCapsuleComponent()->GetComponentQuat().GetUpVector();
+		EnhancedInputComponent->BindAction(LookAction,ETriggerEvent::Triggered,this, &AMyBaseClass::Look);
+		EnhancedInputComponent->BindAction(MoveAction,ETriggerEvent::Triggered,this, &AMyBaseClass::Move);
+		EnhancedInputComponent->BindAction(JumpAction,ETriggerEvent::Started,this, &AMyBaseClass::Jump);
+		EnhancedInputComponent->BindAction(JumpAction,ETriggerEvent::Completed,this, &AMyBaseClass::StopJumping);
+		EnhancedInputComponent->BindAction(StompAction,ETriggerEvent::Triggered,this, &AMyBaseClass::Stomp);
+		EnhancedInputComponent->BindAction(BounceAction,ETriggerEvent::Triggered,this, &AMyBaseClass::BounceDown);
+		EnhancedInputComponent->BindAction(SpindashAction,ETriggerEvent::Triggered,this, &AMyBaseClass::Spindash);
+		EnhancedInputComponent->BindAction(SpindashAction,ETriggerEvent::Completed,this, &AMyBaseClass::ReleaseSpindash);
+	}
 	
-		FVector Direction = FVector3d::CrossProduct(Rotation.RotateVector(FVector::RightVector),UpVector);
-		Direction.Normalize(0.0001);
-		
-		AddMovementInput(Direction, Axis);
+}
+
+void AMyBaseClass::Look(const FInputActionValue& Value)
+{
+	const FVector2d LookAxisValue = Value.Get<FVector2d>();
+	if(GetController() && LookAxisValue != FVector2d::Zero())
+	{
+		AddControllerYawInput(LookAxisValue.X);
+		AddControllerPitchInput(LookAxisValue.Y);
 	}
 }
 
-void AMyBaseClass::MoveRight(float Axis)
+void AMyBaseClass::Move(const FInputActionValue& Value)
 {
-	//While rotating on a loop-de-loop and upon reaching 90ish degrees, turning left or right
-	//is bugged for some reason. I'll just leave it as it is - Ersan
-	if ( (Controller != nullptr) && (Axis != 0.0f) )
+	const FVector2d MovementValue = Value.Get<FVector2d>();
+	if (GetController())
 	{
-		// find out which way is right
 		const FRotator Rotation = Controller->GetControlRotation();
-	
-		// get right vector 
-		const FVector Direction = Rotation.RotateVector(FVector::RightVector);
-		// add movement in that direction
-		AddMovementInput(Direction, Axis);
+		const FVector UpVector = GetCapsuleComponent()->GetComponentQuat().GetUpVector();
+		const FVector RightDirection = Rotation.RotateVector(FVector::RightVector);
+		FVector ForwardDirection = FVector3d::CrossProduct(Rotation.RotateVector(FVector::RightVector),UpVector);
+		ForwardDirection.Normalize(0.0001);
+		
+		AddMovementInput(ForwardDirection,MovementValue.X);
+		AddMovementInput(RightDirection,MovementValue.Y);
 	}
 }
 
@@ -153,6 +136,14 @@ void AMyBaseClass::BeginPlay()
 {
 	Super::BeginPlay();
 
+	if(APlayerController* PlayerController = Cast<APlayerController>(GetController()))
+	{
+		if(UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+		{
+			Subsystem->AddMappingContext(InputMappingContext,0);
+		}
+	}
+	
 	FOnTimelineEvent TimelineTickEvent;
 	TimelineTickEvent.BindUFunction(this,FName("TimelineTick"));
 
@@ -453,7 +444,7 @@ void AMyBaseClass::LaunchToTarget()
 {
 	if(FloatCurve)
 	{
-		MainTimeline->AddInterpFloat(FloatCurve,MovementValue);
+		MainTimeline->AddInterpFloat(FloatCurve,TLMovementValue);
 	}
 
 	MainTimeline->PlayFromStart();
