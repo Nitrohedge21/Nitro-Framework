@@ -59,7 +59,6 @@ public:
 	UPROPERTY(EditAnywhere,Category = "Spindash stuff")
 	bool ChargingSpindash = false;
 	float SpindashIncreaseRate = 1000.0f;
-	FTimerHandle SpindashTimer;
 	
 	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category = "Forces")
 	float pushForce = 50.0f;
@@ -177,7 +176,6 @@ protected:
 	void UpdatePosition(float Alpha);
 
 	// Spindash functions
-	void Spindash();
 	void ChargeSpindash();
 	void ReleaseSpindash();
 	void SpindashLaunch();

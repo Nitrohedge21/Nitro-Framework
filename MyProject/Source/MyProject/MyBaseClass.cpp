@@ -18,9 +18,6 @@
 AMyBaseClass::AMyBaseClass(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer.SetDefaultSubobjectClass<UNinjaCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
-	// Set size for collision capsule
-	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
-
 	//Initializing default values
 	isStomping = false;
 	RingCount = 0;
@@ -39,7 +36,7 @@ AMyBaseClass::AMyBaseClass(const FObjectInitializer& ObjectInitializer)
 
 	// Configure character movement
 	GetNinjaCharacterMovement()->bOrientRotationToMovement = true; // Character moves in the direction of input...	
-	GetNinjaCharacterMovement()->RotationRate = FRotator(0.0f, 520.0f, 0.0f); // ...at this rotation rate
+	GetNinjaCharacterMovement()->RotationRate = FRotator(520.0f, 520.0f, 520.0f); // ...at this rotation rate
 	GetNinjaCharacterMovement()->JumpZVelocity = 700.f;
 	GetNinjaCharacterMovement()->AirControl = 0.35f;
 	GetNinjaCharacterMovement()->MaxWalkSpeed = 500.f;
@@ -79,15 +76,13 @@ AMyBaseClass::AMyBaseClass(const FObjectInitializer& ObjectInitializer)
 	//Configure capsule half height
 	GetCapsuleComponent()->SetCapsuleHalfHeight(80.0f);
 	GetCapsuleComponent()->SetCapsuleRadius(42.0f);
-	//Spinball height might be different, just testing stuff out. H:50 R:45
 	
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
 }
 
 //////////////////////////////////////////////////////////////////////////
-// Input
-
+// Setting up the player input component
 void AMyBaseClass::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
 	// Set up gameplay key bindings
@@ -100,7 +95,7 @@ void AMyBaseClass::SetupPlayerInputComponent(class UInputComponent* PlayerInputC
 		EnhancedInputComponent->BindAction(JumpAction,ETriggerEvent::Completed,this, &AMyBaseClass::StopJumping);
 		EnhancedInputComponent->BindAction(StompAction,ETriggerEvent::Triggered,this, &AMyBaseClass::Stomp);
 		EnhancedInputComponent->BindAction(BounceAction,ETriggerEvent::Triggered,this, &AMyBaseClass::BounceDown);
-		EnhancedInputComponent->BindAction(SpindashAction,ETriggerEvent::Triggered,this, &AMyBaseClass::Spindash);
+		EnhancedInputComponent->BindAction(SpindashAction,ETriggerEvent::Triggered,this, &AMyBaseClass::ChargeSpindash);
 		EnhancedInputComponent->BindAction(SpindashAction,ETriggerEvent::Completed,this, &AMyBaseClass::ReleaseSpindash);
 	}
 	
@@ -510,32 +505,26 @@ void AMyBaseClass::BlockJumpWhileFalling()
 }
 
 // Spindash mechanic's functions
-
-void AMyBaseClass::Spindash()
-{
-	GetWorld()->GetTimerManager().SetTimer(SpindashTimer, this, &AMyBaseClass::ChargeSpindash, 5, false);
-	if(bIsGrounded && !GetCharacterMovement()->IsFalling()){ChargeSpindash();}
-}
-
 void AMyBaseClass::ChargeSpindash()
 {
-	if(bIsGrounded && !GetCharacterMovement()->IsFalling() && !isStomping)
+	if(bIsGrounded && !GetCharacterMovement()->IsFalling() && GroundAngle < 90 && !isStomping)
 	{
+		GetMovementComponent()->SetJumpAllowed(false);
+		GetMovementComponent()->Velocity = FVector::Zero();
 		ChargingSpindash = true;
 		CurrentSpindashForce = FMath::Clamp(CurrentSpindashForce + SpindashIncreaseRate,MinSpindashForce,MaxSpindashForce);
 		JumpBallMesh->SetVisibility(true);
 		GetMesh()->SetVisibility(false);
 	}
 }
+
 void AMyBaseClass::ReleaseSpindash()
 {
+	GetMovementComponent()->SetJumpAllowed(true);
 	if(bIsGrounded && !GetCharacterMovement()->IsFalling() && !isStomping)
 	{
-		GetWorld()->GetTimerManager().ClearTimer(SpindashTimer);
-		SpindashTimer.Invalidate();
 		GetMovementComponent()->Velocity = FVector(GetMovementComponent()->Velocity + GetActorForwardVector() * CurrentSpindashForce);
 		SpindashLaunch();
-		
 	}
 }
 
