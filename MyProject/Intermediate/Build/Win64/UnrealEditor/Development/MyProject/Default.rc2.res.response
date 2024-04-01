@@ -64,6 +64,6 @@
 /DPROJECT_COMPANY_NAME=Nitrohedge21
 /DPROJECT_COPYRIGHT_STRING="Fill out your copyright notice in the Description page of Project Settings."
 /DPROJECT_PRODUCT_NAME="Sonic in UE5"
-/DPROJECT_PRODUCT_IDENTIFIER=MyProject
+/DPROJECT_PRODUCT_IDENTIFIER=NitroFramework
 /fo "D:\GitHub\Ninja-Character-Test\MyProject\Intermediate\Build\Win64\UnrealEditor\Development\MyProject\Default.rc2.res"
 "..\Build\Windows\Resources\Default.rc2"

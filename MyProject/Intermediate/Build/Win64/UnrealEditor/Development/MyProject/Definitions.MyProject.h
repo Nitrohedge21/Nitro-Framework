@@ -55,7 +55,7 @@
 #define NDEBUG 1
 #define UE_BUILD_DEVELOPMENT 1
 #define UE_IS_ENGINE_MODULE 0
-#define UE_PROJECT_NAME MyProject
+#define UE_PROJECT_NAME NitroFramework
 #define UE_TARGET_NAME MyProjectEditor
 #define UE_MODULE_NAME "MyProject"
 #define UE_PLUGIN_NAME ""

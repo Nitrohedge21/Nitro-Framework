@@ -4,7 +4,7 @@
 	"Configuration": "Development",
 	"TargetType": "Editor",
 	"Architecture": "",
-	"Project": "../../MyProject.uproject",
+	"Project": "../../NitroFramework.uproject",
 	"Launch": "$(EngineDir)/Binaries/Win64/UnrealEditor.exe",
 	"LaunchCmd": "$(EngineDir)/Binaries/Win64/UnrealEditor-Cmd.exe",
 	"Version": 
@@ -3119,7 +3119,7 @@
 	],
 	"RuntimeDependencies": [
 		{
-			"Path": "$(ProjectDir)/MyProject.uproject",
+			"Path": "$(ProjectDir)/NitroFramework.uproject",
 			"Type": "UFS"
 		},
 		{
