@@ -437,28 +437,29 @@ void EmptyLinkFunctionForGeneratedCodeMyBaseClass() {}
 	const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_AMyBaseClass_Statics::NewProp_OldTarget = { "OldTarget", nullptr, (EPropertyFlags)0x0010000000000004, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AMyBaseClass, OldTarget), Z_Construct_UClass_AActor_NoRegister, METADATA_PARAMS(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_OldTarget_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_OldTarget_MetaData)) };
 #if WITH_METADATA
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AMyBaseClass_Statics::NewProp_CurrentTarget_MetaData[] = {
-		{ "Category", "Homing Attack2" },
+		{ "Category", "Homing Attack" },
 		{ "ModuleRelativePath", "MyBaseClass.h" },
 	};
 #endif
 	const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_AMyBaseClass_Statics::NewProp_CurrentTarget = { "CurrentTarget", nullptr, (EPropertyFlags)0x0010000000000004, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AMyBaseClass, CurrentTarget), Z_Construct_UClass_AActor_NoRegister, METADATA_PARAMS(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_CurrentTarget_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_CurrentTarget_MetaData)) };
 #if WITH_METADATA
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AMyBaseClass_Statics::NewProp_ChosenTarget_MetaData[] = {
-		{ "Category", "Homing Attack3" },
+		{ "Category", "Homing Attack" },
 		{ "ModuleRelativePath", "MyBaseClass.h" },
 	};
 #endif
 	const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_AMyBaseClass_Statics::NewProp_ChosenTarget = { "ChosenTarget", nullptr, (EPropertyFlags)0x0010000000000004, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AMyBaseClass, ChosenTarget), Z_Construct_UClass_AActor_NoRegister, METADATA_PARAMS(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_ChosenTarget_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_ChosenTarget_MetaData)) };
 #if WITH_METADATA
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AMyBaseClass_Statics::NewProp_MainTimeline_MetaData[] = {
+		{ "Category", "TimelineShit" },
 		{ "EditInline", "true" },
 		{ "ModuleRelativePath", "MyBaseClass.h" },
 	};
 #endif
-	const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_AMyBaseClass_Statics::NewProp_MainTimeline = { "MainTimeline", nullptr, (EPropertyFlags)0x0010000000080008, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AMyBaseClass, MainTimeline), Z_Construct_UClass_UTimelineComponent_NoRegister, METADATA_PARAMS(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_MainTimeline_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_MainTimeline_MetaData)) };
+	const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_AMyBaseClass_Statics::NewProp_MainTimeline = { "MainTimeline", nullptr, (EPropertyFlags)0x001000000008001c, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AMyBaseClass, MainTimeline), Z_Construct_UClass_UTimelineComponent_NoRegister, METADATA_PARAMS(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_MainTimeline_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_MainTimeline_MetaData)) };
 #if WITH_METADATA
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AMyBaseClass_Statics::NewProp_FloatCurve_MetaData[] = {
-		{ "Category", "MyBaseClass" },
+		{ "Category", "TimelineShit" },
 		{ "ModuleRelativePath", "MyBaseClass.h" },
 	};
 #endif
@@ -472,10 +473,11 @@ void EmptyLinkFunctionForGeneratedCodeMyBaseClass() {}
 	const UECodeGen_Private::FStructPropertyParams Z_Construct_UClass_AMyBaseClass_Statics::NewProp_ActorLocation = { "ActorLocation", nullptr, (EPropertyFlags)0x0010000000000001, UECodeGen_Private::EPropertyGenFlags::Struct, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AMyBaseClass, ActorLocation), Z_Construct_UScriptStruct_FVector, METADATA_PARAMS(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_ActorLocation_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_ActorLocation_MetaData)) };
 #if WITH_METADATA
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AMyBaseClass_Statics::NewProp_TLMovementValue_MetaData[] = {
+		{ "Category", "TimelineShit" },
 		{ "ModuleRelativePath", "MyBaseClass.h" },
 	};
 #endif
-	const UECodeGen_Private::FDelegatePropertyParams Z_Construct_UClass_AMyBaseClass_Statics::NewProp_TLMovementValue = { "TLMovementValue", nullptr, (EPropertyFlags)0x0010000000080000, UECodeGen_Private::EPropertyGenFlags::Delegate, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AMyBaseClass, TLMovementValue), Z_Construct_UDelegateFunction_Engine_OnTimelineFloat__DelegateSignature, METADATA_PARAMS(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_TLMovementValue_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_TLMovementValue_MetaData)) }; // 1025672532
+	const UECodeGen_Private::FDelegatePropertyParams Z_Construct_UClass_AMyBaseClass_Statics::NewProp_TLMovementValue = { "TLMovementValue", nullptr, (EPropertyFlags)0x0010000000080014, UECodeGen_Private::EPropertyGenFlags::Delegate, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AMyBaseClass, TLMovementValue), Z_Construct_UDelegateFunction_Engine_OnTimelineFloat__DelegateSignature, METADATA_PARAMS(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_TLMovementValue_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_TLMovementValue_MetaData)) }; // 1025672532
 #if WITH_METADATA
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AMyBaseClass_Statics::NewProp_RingCount_MetaData[] = {
 		{ "Category", "Rings" },
@@ -701,9 +703,9 @@ void EmptyLinkFunctionForGeneratedCodeMyBaseClass() {}
 		{ CharacterStates_StaticEnum, TEXT("CharacterStates"), &Z_Registration_Info_UEnum_CharacterStates, CONSTRUCT_RELOAD_VERSION_INFO(FEnumReloadVersionInfo, 2683037699U) },
 	};
 	const FClassRegisterCompiledInInfo Z_CompiledInDeferFile_FID_MyProject_Source_MyProject_MyBaseClass_h_Statics::ClassInfo[] = {
-		{ Z_Construct_UClass_AMyBaseClass, AMyBaseClass::StaticClass, TEXT("AMyBaseClass"), &Z_Registration_Info_UClass_AMyBaseClass, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(AMyBaseClass), 3876313179U) },
+		{ Z_Construct_UClass_AMyBaseClass, AMyBaseClass::StaticClass, TEXT("AMyBaseClass"), &Z_Registration_Info_UClass_AMyBaseClass, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(AMyBaseClass), 3484011232U) },
 	};
-	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_MyProject_Source_MyProject_MyBaseClass_h_3977589244(TEXT("/Script/MyProject"),
+	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_MyProject_Source_MyProject_MyBaseClass_h_3424034822(TEXT("/Script/MyProject"),
 		Z_CompiledInDeferFile_FID_MyProject_Source_MyProject_MyBaseClass_h_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_MyProject_Source_MyProject_MyBaseClass_h_Statics::ClassInfo),
 		nullptr, 0,
 		Z_CompiledInDeferFile_FID_MyProject_Source_MyProject_MyBaseClass_h_Statics::EnumInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_MyProject_Source_MyProject_MyBaseClass_h_Statics::EnumInfo));

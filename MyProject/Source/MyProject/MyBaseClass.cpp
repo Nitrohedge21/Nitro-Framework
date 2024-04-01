@@ -138,12 +138,14 @@ void AMyBaseClass::BeginPlay()
 			Subsystem->AddMappingContext(InputMappingContext,0);
 		}
 	}
-	
+
+	//These are required for the homing attack to work.
 	FOnTimelineEvent TimelineTickEvent;
 	TimelineTickEvent.BindUFunction(this,FName("TimelineTick"));
 
 	MainTimeline->SetTimelinePostUpdateFunc(TimelineTickEvent);
-	//MainTimeline->SetPlayRate(1.5);
+	//Sets the speed of the homing attack
+	MainTimeline->SetPlayRate(5);
 	
 }
 
@@ -238,7 +240,6 @@ void AMyBaseClass::BounceDown()
 		CanBounce = true;
 		JumpBallMesh->SetVisibility(true);
 		GetMesh()->SetVisibility(false);
-		UE_LOG(LogTemp,Warning,TEXT("Bouncing down"));
 	}
 }
 
@@ -330,7 +331,9 @@ void AMyBaseClass::SlopeAlignment()
 	}
 }
 
-// Homing Attack functions
+////////////////////////////////
+///	Homing attack mechanic	///
+//////////////////////////////
 void AMyBaseClass::DetectEnemies()
 {
 	TArray<FHitResult> OutHits;
@@ -473,10 +476,26 @@ void AMyBaseClass::TimelineTick()
 		OldTarget = nullptr;
 		if(CanLaunch == true)	//TODO - Implement a logic that only does this if the target isn't a spring
 		{
-			LaunchCharacter(FVector(0,0,1300),false,false);
+			LaunchCharacter(FVector(0,0,1500),false,false);
 			CanLaunch = false;
 			JumpCurrentCount = 1; // This is done in order to do the jump dash after homing attacking.
 		}
+	}
+	//Failsafe - An attempt to fix a bug where sonic gets soft locked inside the target
+	if(IsHomingAttacking && GetActorLocation() == ChosenTargetLocation)
+	{
+		ChosenTarget->Destroy();
+		IsHomingAttacking = false;
+		GetNinjaCharacterMovement()->GravityScale = 2.8f;         
+		EnableInput(GetPlayerState()->GetPlayerController());
+		OldTarget = nullptr;
+		if(CanLaunch == true)	//TODO - Implement a logic that only does this if the target isn't a spring
+		{
+			LaunchCharacter(FVector(0,0,1500),false,false);
+			CanLaunch = false;
+			JumpCurrentCount = 1; // This is done in order to do the jump dash after homing attacking.
+		}
+		UE_LOG(LogTemp,Warning,TEXT("Homing attack failsafe executed!"));
 	}
 	
 }
@@ -504,7 +523,9 @@ void AMyBaseClass::BlockJumpWhileFalling()
 	}
 }
 
-// Spindash mechanic's functions
+//////////////////////////
+///	Spindash mechanic ///
+////////////////////////
 void AMyBaseClass::ChargeSpindash()
 {
 	if(bIsGrounded && !GetCharacterMovement()->IsFalling() && GroundAngle < 90 && !isStomping)

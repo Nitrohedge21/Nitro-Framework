@@ -86,19 +86,19 @@ public:
 	// These don't get noticed by the blueprints if they're not spread out
 	UPROPERTY(BlueprintReadWrite, Category = "Homing Attack")
 	AActor* OldTarget;
-	UPROPERTY(BlueprintReadWrite, Category = "Homing Attack2")
+	UPROPERTY(BlueprintReadWrite, Category = "Homing Attack")
 	AActor* CurrentTarget;
-	UPROPERTY(BlueprintReadWrite, Category = "Homing Attack3")
+	UPROPERTY(BlueprintReadWrite, Category = "Homing Attack")
 	AActor* ChosenTarget;
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly, Category = "TimelineShit")
 	UTimelineComponent* MainTimeline;
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere,Category = "TimelineShit")
 	UCurveFloat* FloatCurve;
 	UPROPERTY(EditAnywhere,Category = "TimelineShit")
 	FVector ActorLocation;
 	FVector ChosenTargetLocation;
 	FVector	NewLocation;
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly, Category = "TimelineShit")
 	FOnTimelineFloat TLMovementValue;
 	FOnTimelineEvent TimelineUpdate;
 	bool CanLaunch = true;
