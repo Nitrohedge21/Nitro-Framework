@@ -191,7 +191,8 @@ void AMyBaseClass::Landed(const FHitResult& Hit)
 		JumpBallMesh->SetVisibility(false);
 		GetMesh()->SetVisibility(true);
 	}
-	
+	//Needs to be reset in the case of a jump dash.
+	GetCharacterMovement()->BrakingFriction = 5.0f;
 	BounceUp();
 	OldTarget = nullptr;
 	CurrentTarget = nullptr;
@@ -205,6 +206,8 @@ void AMyBaseClass::Landed(const FHitResult& Hit)
 
 void AMyBaseClass::Stomp()
 {
+	// In case of jumpball mesh being active
+	JumpBallMesh->SetVisibility(false);
 	// [IMPORTANT] Check Sonic Unleashed to see if you can stomp without needing to jump first.
 	// BUG - The character can still trigger the jump input even if they're launched off a ramp/slope.
 	if (/*JumpCurrentCount >= 1 && */GetNinjaCharacterMovement()->IsFalling() && !isStomping)
@@ -266,7 +269,8 @@ void AMyBaseClass::JumpDash()
 	// I had an older comment here saying that the if statement needs to be fixed. Will figure out what went wrong here.
 	if (!IsValid(CurrentTarget) && !bIsGrounded && JumpCurrentCount <= 1)
 	{
-		jumpDashForce = 1000;
+		jumpDashForce = 3000;
+		GetCharacterMovement()->BrakingFriction = 1.0f;
 		const FVector ForwardDir = GetActorRotation().Vector(); // Adding .ForwardVector at the end, breaks the mechanic.
 		LaunchCharacter(ForwardDir * jumpDashForce, false, false);
 		JumpCurrentCount = 2;
