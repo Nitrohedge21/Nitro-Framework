@@ -10,6 +10,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Components/TimelineComponent.h"
 #include "GameFramework/PlayerState.h"
+#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Logging/LogMacros.h"
@@ -97,6 +98,8 @@ void AMyBaseClass::SetupPlayerInputComponent(class UInputComponent* PlayerInputC
 		EnhancedInputComponent->BindAction(BounceAction,ETriggerEvent::Triggered,this, &AMyBaseClass::BounceDown);
 		EnhancedInputComponent->BindAction(SpindashAction,ETriggerEvent::Triggered,this, &AMyBaseClass::ChargeSpindash);
 		EnhancedInputComponent->BindAction(SpindashAction,ETriggerEvent::Completed,this, &AMyBaseClass::ReleaseSpindash);
+		EnhancedInputComponent->BindAction(RestartAction,ETriggerEvent::Triggered,this, &AMyBaseClass::RestartLevel);
+
 	}
 	
 }
@@ -160,6 +163,7 @@ void AMyBaseClass::Tick(float DeltaTime)
 	SlopeAlignment();
 	DetectEnemies();
 	SetTargetLocations();
+	HandleFOV();
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -212,7 +216,7 @@ void AMyBaseClass::Stomp()
 	// BUG - The character can still trigger the jump input even if they're launched off a ramp/slope.
 	if (/*JumpCurrentCount >= 1 && */GetNinjaCharacterMovement()->IsFalling() && !isStomping)
 	{
-		stompForce = 10000 * GetNinjaCharacterMovement()->GravityScale;	// The force value doesn't really matter much as the velocity gets set to zero.
+		stompForce = 20000 * GetNinjaCharacterMovement()->GravityScale;	// The force value doesn't really matter much as the velocity gets set to zero.
 		const FVector Downward = -GetActorUpVector();
 		GetCharacterMovement()->Velocity = FVector::Zero();
 		LaunchCharacter(Downward * stompForce, false, true);
@@ -562,4 +566,24 @@ void AMyBaseClass::SpindashLaunch()
 	GetMesh()->SetVisibility(true);
 	
 	CurrentSpindashForce = MinSpindashForce;
+}
+
+// RestartLevel
+void AMyBaseClass::RestartLevel()
+{
+	UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
+}
+
+void AMyBaseClass::HandleFOV()
+{
+	float CurrentSpeed = GetVelocity().Size();
+	
+	if(CurrentSpeed > 4000 && !isStomping)
+	{
+		FollowCamera->FieldOfView = FMath::Clamp(FollowCamera->FieldOfView + 1,90,120);
+	}
+	else
+	{
+		FollowCamera->FieldOfView = FMath::Clamp(FollowCamera->FieldOfView - 1,90,120);
+	}
 }

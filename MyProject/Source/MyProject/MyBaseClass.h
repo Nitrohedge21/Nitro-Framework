@@ -82,7 +82,7 @@ public:
 	float MinSlopeSpeed;
 	float MinSlopeAngle;
 	bool SlopeIsAlignedToGravity;
-
+	
 	// These don't get noticed by the blueprints if they're not spread out
 	UPROPERTY(BlueprintReadWrite, Category = "Homing Attack")
 	AActor* OldTarget;
@@ -112,9 +112,7 @@ public:
 	// These are most likely gonna be replaced by enums later. - Ersan 04.03.2024
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Jumping State")
 	bool isJumping;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Boost State")
-	bool isBoosting;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Stomp State")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stomp State")
 	bool isStomping;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Grounded State")
 	bool bIsGrounded;
@@ -140,6 +138,8 @@ public:
 	UInputAction* BounceAction;
 	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category = "Actions")
 	UInputAction* SpindashAction;
+	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category = "Actions")
+	UInputAction* RestartAction;
 
 protected:
 	
@@ -179,6 +179,9 @@ protected:
 	void ChargeSpindash();
 	void ReleaseSpindash();
 	void SpindashLaunch();
+
+	void RestartLevel();
+	void HandleFOV();
 	
 public:
 	// APawn interface
