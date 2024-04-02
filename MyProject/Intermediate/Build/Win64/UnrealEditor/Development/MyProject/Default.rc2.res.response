@@ -60,7 +60,7 @@
 /DORIGINAL_FILE_NAME="UnrealEditor-MyProject.dll"
 /DBUILT_FROM_CHANGELIST=20979098
 /DBUILD_VERSION=++UE5+Release-5.0-CL-20979098
-/DBUILD_ICON_FILE_NAME="\"..\\Build\\Windows\\Resources\\Default.ico\""
+/DBUILD_ICON_FILE_NAME="\"D:\\GitHub\\Ninja-Character-Test\\MyProject\\Build\\Windows\\Application.ico\""
 /DPROJECT_COMPANY_NAME=Nitrohedge21
 /DPROJECT_COPYRIGHT_STRING="Fill out your copyright notice in the Description page of Project Settings."
 /DPROJECT_PRODUCT_NAME="Sonic in UE5"
