@@ -110,18 +110,18 @@ public:
 	bool CanBounce = false;
 	
 	// These are most likely gonna be replaced by enums later. - Ersan 04.03.2024
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Jumping State")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "State bools")
 	bool isJumping;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stomp State")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State bools")
 	bool isStomping;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Grounded State")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State bools")
 	bool bIsGrounded;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Homing State")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State bools")
 	bool IsHomingAttacking = false;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bounce State")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State bools")
 	bool IsBouncing = false;	//This is currently unused cuz I couldn't figure out how to reset it
 
-	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category = "Character State")
+	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category = "UNUSED | Character State")
 	CharacterStates CurrentState;
 
 	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category = "Inputs")

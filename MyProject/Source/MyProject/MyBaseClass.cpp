@@ -212,8 +212,6 @@ void AMyBaseClass::Stomp()
 {
 	// In case of jumpball mesh being active
 	JumpBallMesh->SetVisibility(false);
-	// [IMPORTANT] Check Sonic Unleashed to see if you can stomp without needing to jump first.
-	// BUG - The character can still trigger the jump input even if they're launched off a ramp/slope.
 	if (/*JumpCurrentCount >= 1 && */GetNinjaCharacterMovement()->IsFalling() && !isStomping)
 	{
 		stompForce = 20000 * GetNinjaCharacterMovement()->GravityScale;	// The force value doesn't really matter much as the velocity gets set to zero.
@@ -539,6 +537,7 @@ void AMyBaseClass::ChargeSpindash()
 	if(bIsGrounded && !GetCharacterMovement()->IsFalling() && GroundAngle < 90 && !isStomping)
 	{
 		GetMovementComponent()->SetJumpAllowed(false);
+		// TODO - Figure out a way to disable the movement input rather than killing velocity.
 		GetMovementComponent()->Velocity = FVector::Zero();
 		ChargingSpindash = true;
 		CurrentSpindashForce = FMath::Clamp(CurrentSpindashForce + SpindashIncreaseRate,MinSpindashForce,MaxSpindashForce);
