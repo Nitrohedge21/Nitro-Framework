@@ -148,7 +148,7 @@ void AMyBaseClass::BeginPlay()
 
 	MainTimeline->SetTimelinePostUpdateFunc(TimelineTickEvent);
 	//Sets the speed of the homing attack
-	MainTimeline->SetPlayRate(5);
+	MainTimeline->SetPlayRate(2.5);
 	
 }
 
@@ -347,14 +347,14 @@ void AMyBaseClass::DetectEnemies()
 	TArray<FHitResult> OutHits;
 	const TArray<AActor*> ActorsToIgnore;
 	const FVector Start = GetActorLocation();
-	const FVector End = Start + (GetActorForwardVector() * 600);
+	const FVector End = Start + (GetActorForwardVector() * 1000);
 	const FRotator Rotation = GetActorRotation();
-	const FVector HalfSize = FVector(20,150,125);
+	const FVector HalfSize = FVector(0,400,400);
 	const FColor TraceColor = FColor::Red;
 	const FColor TraceHitColor = FColor::Green;
 	constexpr ETraceTypeQuery TraceChannel = ETraceTypeQuery::TraceTypeQuery1;
 
-	bool IsHit = UKismetSystemLibrary::BoxTraceMulti(GetWorld(),Start,End,HalfSize,Rotation,TraceChannel,false,ActorsToIgnore,EDrawDebugTrace::Type::None,OutHits,true,TraceColor,TraceHitColor,0.0f);
+	bool IsHit = UKismetSystemLibrary::BoxTraceMulti(GetWorld(),Start,End,HalfSize,Rotation,TraceChannel,false,ActorsToIgnore,EDrawDebugTrace::Type::ForDuration,OutHits,true,TraceColor,TraceHitColor,0.0f);
 
 
 

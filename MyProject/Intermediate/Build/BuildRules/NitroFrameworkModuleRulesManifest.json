@@ -1,8 +1,8 @@
 {
 	"SourceFiles": [
-		"D:\\GitHub\\Ninja-Character-Test\\MyProject\\Source\\MyProject\\MyProject.Build.cs",
-		"D:\\GitHub\\Ninja-Character-Test\\MyProject\\Source\\MyProject.Target.cs",
-		"D:\\GitHub\\Ninja-Character-Test\\MyProject\\Source\\MyProjectEditor.Target.cs"
+		"D:\\GitHub\\Nitro-Framework\\MyProject\\Source\\MyProject\\MyProject.Build.cs",
+		"D:\\GitHub\\Nitro-Framework\\MyProject\\Source\\MyProject.Target.cs",
+		"D:\\GitHub\\Nitro-Framework\\MyProject\\Source\\MyProjectEditor.Target.cs"
 	],
 	"EngineVersion": "5.0.3"
 }
