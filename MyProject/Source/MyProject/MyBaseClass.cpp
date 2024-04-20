@@ -196,7 +196,7 @@ void AMyBaseClass::Landed(const FHitResult& Hit)
 		GetMesh()->SetVisibility(true);
 	}
 	//Needs to be reset in the case of a jump dash.
-	GetCharacterMovement()->BrakingFriction = 5.0f;
+	GetCharacterMovement()->BrakingFriction = 2.5f;
 	BounceUp();
 	OldTarget = nullptr;
 	CurrentTarget = nullptr;
@@ -345,14 +345,14 @@ void AMyBaseClass::DetectEnemies()
 	TArray<FHitResult> OutHits;
 	const TArray<AActor*> ActorsToIgnore;
 	const FVector Start = GetActorLocation();
-	const FVector End = Start + (GetActorForwardVector() * 1000);
+	const FVector End = Start + (GetActorForwardVector() * 1750);
 	const FRotator Rotation = GetActorRotation();
-	const FVector HalfSize = FVector(0,400,400);
+	const FVector HalfSize = FVector(0,400,500);
 	const FColor TraceColor = FColor::Red;
 	const FColor TraceHitColor = FColor::Green;
 	constexpr ETraceTypeQuery TraceChannel = ETraceTypeQuery::TraceTypeQuery1;
 
-	bool IsHit = UKismetSystemLibrary::BoxTraceMulti(GetWorld(),Start,End,HalfSize,Rotation,TraceChannel,false,ActorsToIgnore,EDrawDebugTrace::Type::ForDuration,OutHits,true,TraceColor,TraceHitColor,0.0f);
+	bool IsHit = UKismetSystemLibrary::BoxTraceMulti(GetWorld(),Start,End,HalfSize,Rotation,TraceChannel,false,ActorsToIgnore,EDrawDebugTrace::Type::None,OutHits,true,TraceColor,TraceHitColor,0.0f);
 
 
 
@@ -386,7 +386,7 @@ bool AMyBaseClass::IsChosenTargetInRange()
 	if(IsValid(ChosenTarget))
 	{
 		//TODO - Make it so that sonic can only attack when the target is below or on his axis.
-		if(GetDistanceTo(ChosenTarget) <= 1000){ returnValue = true;}
+		if(GetDistanceTo(ChosenTarget) <= 1700){ returnValue = true;}
 		else {returnValue = false;}
 	}
 	return returnValue;
