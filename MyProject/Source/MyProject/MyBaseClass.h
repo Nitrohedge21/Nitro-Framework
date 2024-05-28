@@ -140,6 +140,8 @@ public:
 	UInputAction* SpindashAction;
 	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category = "Actions")
 	UInputAction* RestartAction;
+	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category = "Actions")
+	UInputAction* PauseAction;
 
 protected:
 	
@@ -181,6 +183,7 @@ protected:
 	void SpindashLaunch();
 
 	void RestartLevel();
+	void PauseGame();
 	void HandleFOV();
 	
 public:
@@ -203,4 +206,5 @@ public:
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+	
 };

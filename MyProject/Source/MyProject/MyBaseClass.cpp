@@ -99,9 +99,10 @@ void AMyBaseClass::SetupPlayerInputComponent(class UInputComponent* PlayerInputC
 		EnhancedInputComponent->BindAction(SpindashAction,ETriggerEvent::Triggered,this, &AMyBaseClass::ChargeSpindash);
 		EnhancedInputComponent->BindAction(SpindashAction,ETriggerEvent::Completed,this, &AMyBaseClass::ReleaseSpindash);
 		EnhancedInputComponent->BindAction(RestartAction,ETriggerEvent::Triggered,this, &AMyBaseClass::RestartLevel);
-
+		EnhancedInputComponent->BindAction(PauseAction,ETriggerEvent::Triggered,this, &AMyBaseClass::PauseGame);
 	}
-	
+
+
 }
 
 void AMyBaseClass::Look(const FInputActionValue& Value)
@@ -141,7 +142,7 @@ void AMyBaseClass::BeginPlay()
 			Subsystem->AddMappingContext(InputMappingContext,0);
 		}
 	}
-
+	
 	//These are required for the homing attack to work.
 	FOnTimelineEvent TimelineTickEvent;
 	TimelineTickEvent.BindUFunction(this,FName("TimelineTick"));
@@ -572,6 +573,13 @@ void AMyBaseClass::RestartLevel()
 {
 	UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
 }
+
+void AMyBaseClass::PauseGame()
+{
+	UGameplayStatics::SetGamePaused(this,true);
+	// TODO - Need to add logic to add the level select widget to the screen
+}
+
 
 void AMyBaseClass::HandleFOV()
 {
