@@ -577,10 +577,9 @@ void AMyBaseClass::RestartLevel()
 
 void AMyBaseClass::PauseGame()
 {
-
-	// TODO - UN-PAUSING DOES NOT WORK, FIGURE OUT HOW TO FIX IT
 	if(!UGameplayStatics::IsGamePaused(this))
 	{
+		FInputModeUIOnly InputMode;
 		UGameplayStatics::SetGamePaused(this,true);
 	
 		if (PauseMenuWidget)
@@ -594,16 +593,21 @@ void AMyBaseClass::PauseGame()
 				
 				//TODO - Find a way to fix the fucking double click issue.
 				MyWidgetInstance->bIsFocusable = true;
-				//MyWidgetInstance->SetFocus();
+				MyWidgetInstance->SetFocus();
+				
+				InputMode.SetWidgetToFocus(MyWidgetInstance->TakeWidget()); // Set the widget to focus if you have one
+				InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+				//GetWorld()->GetFirstPlayerController()->SetInputMode(InputMode);
 				GetWorld()->GetFirstPlayerController()->bShowMouseCursor = true;
-				GetWorld()->GetFirstPlayerController()->bEnableClickEvents = true;
 			}
 		}	
 	}
 	else 
 	{
+		FInputModeGameOnly GameMode;
 		UGameplayStatics::SetGamePaused(this,false);
 		MyWidgetInstance->RemoveFromParent();
+		GetWorld()->GetFirstPlayerController()->SetInputMode(GameMode);
 		GetWorld()->GetFirstPlayerController()->bShowMouseCursor = false;
 		GetWorld()->GetFirstPlayerController()->bEnableClickEvents = false;
 	}
