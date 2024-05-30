@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "InputAction.h"
 #include "NinjaCharacter.h"
+#include "Blueprint/UserWidget.h"
 #include "Components/TimelineComponent.h"
 #include "MyBaseClass.generated.h"
 
@@ -187,6 +188,14 @@ protected:
 	void HandleFOV();
 	
 public:
+
+	UPROPERTY(EditAnywhere, Category = "UI")
+	TSubclassOf<UUserWidget> PauseMenuWidget;
+
+	//This is required to create the widget
+	UPROPERTY()
+	UUserWidget* MyWidgetInstance;
+	
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	// End of APawn interface
@@ -206,5 +215,4 @@ public:
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
-	
 };

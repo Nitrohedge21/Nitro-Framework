@@ -5,6 +5,7 @@
 #include "Components/InputComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Blueprint/UserWidget.h"
 #include "NinjaCharacter/Public/NinjaCharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -576,8 +577,36 @@ void AMyBaseClass::RestartLevel()
 
 void AMyBaseClass::PauseGame()
 {
-	UGameplayStatics::SetGamePaused(this,true);
-	// TODO - Need to add logic to add the level select widget to the screen
+
+	// TODO - UN-PAUSING DOES NOT WORK, FIGURE OUT HOW TO FIX IT
+	if(!UGameplayStatics::IsGamePaused(this))
+	{
+		UGameplayStatics::SetGamePaused(this,true);
+	
+		if (PauseMenuWidget)
+		{
+			MyWidgetInstance = CreateWidget<UUserWidget>(GetWorld()->GetFirstPlayerController(), PauseMenuWidget);
+
+			if (MyWidgetInstance)
+			{
+
+				MyWidgetInstance->AddToViewport();
+				
+				//TODO - Find a way to fix the fucking double click issue.
+				MyWidgetInstance->bIsFocusable = true;
+				//MyWidgetInstance->SetFocus();
+				GetWorld()->GetFirstPlayerController()->bShowMouseCursor = true;
+				GetWorld()->GetFirstPlayerController()->bEnableClickEvents = true;
+			}
+		}	
+	}
+	else 
+	{
+		UGameplayStatics::SetGamePaused(this,false);
+		MyWidgetInstance->RemoveFromParent();
+		GetWorld()->GetFirstPlayerController()->bShowMouseCursor = false;
+		GetWorld()->GetFirstPlayerController()->bEnableClickEvents = false;
+	}
 }
 
 
