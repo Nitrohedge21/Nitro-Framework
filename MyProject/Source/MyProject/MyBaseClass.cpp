@@ -579,7 +579,7 @@ void AMyBaseClass::PauseGame()
 {
 	if(!UGameplayStatics::IsGamePaused(this))
 	{
-		FInputModeUIOnly InputMode;
+		FInputModeGameAndUI InputMode;
 		UGameplayStatics::SetGamePaused(this,true);
 	
 		if (PauseMenuWidget)
