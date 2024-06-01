@@ -284,42 +284,46 @@ void AMyBaseClass::JumpDash()
 // Slope physics functions
 void AMyBaseClass::SlopePhysics()
 {
-
-	FHitResult HitResult;
-	const FVector Start = GetActorLocation();
-	const FVector End = (GetActorUpVector() * -100.0f) + Start;
-	
-	FCollisionQueryParams CollisionParams;
-	FCollisionObjectQueryParams ObjectCollisionParams;
-	ObjectCollisionParams.AddObjectTypesToQuery(ECollisionChannel::ECC_WorldDynamic);
-	ObjectCollisionParams.AddObjectTypesToQuery(ECollisionChannel::ECC_WorldStatic);
-	CollisionParams.AddIgnoredActor(this);	//Ignores the actor itself
-
-	//This is originally a multi line trace in nova's framework but 
-	//I found it unnecessary so I made mine a single line trace
-	bool IsHit = GetWorld()->LineTraceSingleByObjectType(HitResult,Start,End,ObjectCollisionParams,CollisionParams);
-
-
-	//Draws the raycast line
-	//DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 0, 0, 1);
-
-	//The rest handles the math calculations
-	float DotProduct = FVector3d::DotProduct(HitResult.Normal, FVector3d(0.0f,0.0f,1.0f));
-	GroundAngle = UKismetMathLibrary::DegAcos(DotProduct);
-
-	FVector HitResVec = FVector(HitResult.Normal.X,HitResult.Normal.Y,UKismetMathLibrary::DegSin(HitResult.Normal.Z));
-	FVector PlaneVector = FVector::VectorPlaneProject(HitResVec,HitResult.Normal);
-
-	bool Condition = (GroundAngle < 90.0f) && (GroundAngle > 20.0f);
-	float TempFloat = (GroundAngle * SlopeInfluence) * GetWorld()->GetDeltaSeconds();
-	float Multiplier = UKismetMathLibrary::SelectFloat(TempFloat,0.0f,Condition);
-	FVector Impulse = PlaneVector * Multiplier;
-
-	//Applies an impulse as the slope physics' force or something
-	if(IsHit)
+	if(!IsAutomated)
 	{
-		GetNinjaCharacterMovement()->AddImpulse(Impulse,true);
+		FHitResult HitResult;
+		const FVector Start = GetActorLocation();
+		const FVector End = (GetActorUpVector() * -100.0f) + Start;
+	
+		FCollisionQueryParams CollisionParams;
+		FCollisionObjectQueryParams ObjectCollisionParams;
+		ObjectCollisionParams.AddObjectTypesToQuery(ECollisionChannel::ECC_WorldDynamic);
+		ObjectCollisionParams.AddObjectTypesToQuery(ECollisionChannel::ECC_WorldStatic);
+		CollisionParams.AddIgnoredActor(this);	//Ignores the actor itself
+
+		//This is originally a multi line trace in nova's framework but 
+		//I found it unnecessary so I made mine a single line trace
+		bool IsHit = GetWorld()->LineTraceSingleByObjectType(HitResult,Start,End,ObjectCollisionParams,CollisionParams);
+
+
+		//Draws the raycast line
+		//DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 0, 0, 1);
+
+		//The rest handles the math calculations
+		float DotProduct = FVector3d::DotProduct(HitResult.Normal, FVector3d(0.0f,0.0f,1.0f));
+		GroundAngle = UKismetMathLibrary::DegAcos(DotProduct);
+
+		FVector HitResVec = FVector(HitResult.Normal.X,HitResult.Normal.Y,UKismetMathLibrary::DegSin(HitResult.Normal.Z));
+		FVector PlaneVector = FVector::VectorPlaneProject(HitResVec,HitResult.Normal);
+
+		bool Condition = (GroundAngle < 90.0f) && (GroundAngle > 20.0f);
+		float TempFloat = (GroundAngle * SlopeInfluence) * GetWorld()->GetDeltaSeconds();
+		float Multiplier = UKismetMathLibrary::SelectFloat(TempFloat,0.0f,Condition);
+		FVector Impulse = PlaneVector * Multiplier;
+
+		//Applies an impulse as the slope physics' force or something
+		if(IsHit)
+		{
+			GetNinjaCharacterMovement()->AddImpulse(Impulse,true);
+		}
 	}
+
+	
 	
 }
 

@@ -121,6 +121,8 @@ public:
 	bool IsHomingAttacking = false;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State bools")
 	bool IsBouncing = false;	//This is currently unused cuz I couldn't figure out how to reset it
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State bools")
+	bool IsAutomated = false;
 
 	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category = "UNUSED | Character State")
 	CharacterStates CurrentState;

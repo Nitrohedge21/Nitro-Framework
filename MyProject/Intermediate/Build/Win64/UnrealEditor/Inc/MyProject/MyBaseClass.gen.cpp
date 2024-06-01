@@ -257,6 +257,11 @@ void EmptyLinkFunctionForGeneratedCodeMyBaseClass() {}
 #endif
 		static void NewProp_IsBouncing_SetBit(void* Obj);
 		static const UECodeGen_Private::FBoolPropertyParams NewProp_IsBouncing;
+#if WITH_METADATA
+		static const UECodeGen_Private::FMetaDataPairParam NewProp_IsAutomated_MetaData[];
+#endif
+		static void NewProp_IsAutomated_SetBit(void* Obj);
+		static const UECodeGen_Private::FBoolPropertyParams NewProp_IsAutomated;
 		static const UECodeGen_Private::FBytePropertyParams NewProp_CurrentState_Underlying;
 #if WITH_METADATA
 		static const UECodeGen_Private::FMetaDataPairParam NewProp_CurrentState_MetaData[];
@@ -566,13 +571,24 @@ void EmptyLinkFunctionForGeneratedCodeMyBaseClass() {}
 		((AMyBaseClass*)Obj)->IsBouncing = 1;
 	}
 	const UECodeGen_Private::FBoolPropertyParams Z_Construct_UClass_AMyBaseClass_Statics::NewProp_IsBouncing = { "IsBouncing", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Bool | UECodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, 1, sizeof(bool), sizeof(AMyBaseClass), &Z_Construct_UClass_AMyBaseClass_Statics::NewProp_IsBouncing_SetBit, METADATA_PARAMS(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_IsBouncing_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_IsBouncing_MetaData)) };
+#if WITH_METADATA
+	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AMyBaseClass_Statics::NewProp_IsAutomated_MetaData[] = {
+		{ "Category", "State bools" },
+		{ "Comment", "//This is currently unused cuz I couldn't figure out how to reset it\n" },
+		{ "ModuleRelativePath", "MyBaseClass.h" },
+		{ "ToolTip", "This is currently unused cuz I couldn't figure out how to reset it" },
+	};
+#endif
+	void Z_Construct_UClass_AMyBaseClass_Statics::NewProp_IsAutomated_SetBit(void* Obj)
+	{
+		((AMyBaseClass*)Obj)->IsAutomated = 1;
+	}
+	const UECodeGen_Private::FBoolPropertyParams Z_Construct_UClass_AMyBaseClass_Statics::NewProp_IsAutomated = { "IsAutomated", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Bool | UECodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, 1, sizeof(bool), sizeof(AMyBaseClass), &Z_Construct_UClass_AMyBaseClass_Statics::NewProp_IsAutomated_SetBit, METADATA_PARAMS(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_IsAutomated_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_IsAutomated_MetaData)) };
 	const UECodeGen_Private::FBytePropertyParams Z_Construct_UClass_AMyBaseClass_Statics::NewProp_CurrentState_Underlying = { "UnderlyingType", nullptr, (EPropertyFlags)0x0000000000000000, UECodeGen_Private::EPropertyGenFlags::Byte, RF_Public|RF_Transient|RF_MarkAsNative, 1, 0, nullptr, METADATA_PARAMS(nullptr, 0) };
 #if WITH_METADATA
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AMyBaseClass_Statics::NewProp_CurrentState_MetaData[] = {
 		{ "Category", "UNUSED | Character State" },
-		{ "Comment", "//This is currently unused cuz I couldn't figure out how to reset it\n" },
 		{ "ModuleRelativePath", "MyBaseClass.h" },
-		{ "ToolTip", "This is currently unused cuz I couldn't figure out how to reset it" },
 	};
 #endif
 	const UECodeGen_Private::FEnumPropertyParams Z_Construct_UClass_AMyBaseClass_Statics::NewProp_CurrentState = { "CurrentState", nullptr, (EPropertyFlags)0x0010000000000015, UECodeGen_Private::EPropertyGenFlags::Enum, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AMyBaseClass, CurrentState), Z_Construct_UEnum_MyProject_CharacterStates, METADATA_PARAMS(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_CurrentState_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_CurrentState_MetaData)) }; // 2683037699
@@ -684,6 +700,7 @@ void EmptyLinkFunctionForGeneratedCodeMyBaseClass() {}
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMyBaseClass_Statics::NewProp_bIsGrounded,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMyBaseClass_Statics::NewProp_IsHomingAttacking,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMyBaseClass_Statics::NewProp_IsBouncing,
+		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMyBaseClass_Statics::NewProp_IsAutomated,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMyBaseClass_Statics::NewProp_CurrentState_Underlying,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMyBaseClass_Statics::NewProp_CurrentState,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMyBaseClass_Statics::NewProp_InputMappingContext,
@@ -738,9 +755,9 @@ void EmptyLinkFunctionForGeneratedCodeMyBaseClass() {}
 		{ CharacterStates_StaticEnum, TEXT("CharacterStates"), &Z_Registration_Info_UEnum_CharacterStates, CONSTRUCT_RELOAD_VERSION_INFO(FEnumReloadVersionInfo, 2683037699U) },
 	};
 	const FClassRegisterCompiledInInfo Z_CompiledInDeferFile_FID_MyProject_Source_MyProject_MyBaseClass_h_Statics::ClassInfo[] = {
-		{ Z_Construct_UClass_AMyBaseClass, AMyBaseClass::StaticClass, TEXT("AMyBaseClass"), &Z_Registration_Info_UClass_AMyBaseClass, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(AMyBaseClass), 9741279U) },
+		{ Z_Construct_UClass_AMyBaseClass, AMyBaseClass::StaticClass, TEXT("AMyBaseClass"), &Z_Registration_Info_UClass_AMyBaseClass, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(AMyBaseClass), 3514885614U) },
 	};
-	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_MyProject_Source_MyProject_MyBaseClass_h_2722057826(TEXT("/Script/MyProject"),
+	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_MyProject_Source_MyProject_MyBaseClass_h_3351274864(TEXT("/Script/MyProject"),
 		Z_CompiledInDeferFile_FID_MyProject_Source_MyProject_MyBaseClass_h_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_MyProject_Source_MyProject_MyBaseClass_h_Statics::ClassInfo),
 		nullptr, 0,
 		Z_CompiledInDeferFile_FID_MyProject_Source_MyProject_MyBaseClass_h_Statics::EnumInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_MyProject_Source_MyProject_MyBaseClass_h_Statics::EnumInfo));
