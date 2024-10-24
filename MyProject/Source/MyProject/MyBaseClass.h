@@ -112,17 +112,19 @@ public:
 	
 	// These are most likely gonna be replaced by enums later. - Ersan 04.03.2024
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "State bools")
-	bool isJumping;
+	bool bIsJumping;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "State bools")
+	bool bIsJumpDashing;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State bools")
-	bool isStomping;
+	bool bIsStomping;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State bools")
 	bool bIsGrounded;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State bools")
-	bool IsHomingAttacking = false;
+	bool bIsHomingAttacking = false;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State bools")
-	bool IsBouncing = false;	//This is currently unused cuz I couldn't figure out how to reset it
+	bool bIsBouncing = false;	//This is currently unused cuz I couldn't figure out how to reset it
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State bools")
-	bool IsAutomated = false;
+	bool bIsAutomated = false;
 
 	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category = "UNUSED | Character State")
 	CharacterStates CurrentState;
@@ -146,6 +148,17 @@ public:
 	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category = "Actions")
 	UInputAction* PauseAction;
 
+	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category = "SoundFX")
+	USoundBase* JumpSFX;
+	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category = "SoundFX")
+	USoundBase* JumpDashSFX;
+	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category = "SoundFX")
+	USoundBase* ChargeSpinDashSFX;
+	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category = "SoundFX")
+	USoundBase* ReleaseSpinDashSFX;
+	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category = "SoundFX")
+	USoundBase* StompSFX;
+
 protected:
 	
 	void Move(const FInputActionValue& Value);
@@ -155,6 +168,7 @@ protected:
 	//Stomp mechanic's functions
 	void Stomp();
 	void CheckStomp();
+	void PlayStompSFX();
 
 	//Bounce mechanic's function
 	void BounceDown();
@@ -184,6 +198,7 @@ protected:
 	void ChargeSpindash();
 	void ReleaseSpindash();
 	void SpindashLaunch();
+	void PlaySpinDashChargeSFX();
 
 	void RestartLevel();
 	void PauseGame();

@@ -10,6 +10,7 @@
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Components/TimelineComponent.h"
+#include "Components/AudioComponent.h"
 #include "GameFramework/PlayerState.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -21,7 +22,7 @@ AMyBaseClass::AMyBaseClass(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer.SetDefaultSubobjectClass<UNinjaCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
 	//Initializing default values
-	isStomping = false;
+	bIsStomping = false;
 	RingCount = 0;
 	JumpMaxHoldTime = 0.2f;
 	//Slope Physics values
@@ -74,6 +75,10 @@ AMyBaseClass::AMyBaseClass(const FObjectInitializer& ObjectInitializer)
 	JumpBallMesh->SetVisibility(false);
 
 	MainTimeline = CreateDefaultSubobject<UTimelineComponent>("TimelineComponent");
+	JumpSFX = CreateDefaultSubobject<USoundBase>("Jump SFX");
+	ChargeSpinDashSFX = CreateDefaultSubobject<USoundBase>("Spindash Charge SFX");
+	ReleaseSpinDashSFX = CreateDefaultSubobject<USoundBase>("Spindash Release SFX");
+	StompSFX = CreateDefaultSubobject<USoundBase>("Stomp SFX");
 	
 	//Configure capsule half height
 	GetCapsuleComponent()->SetCapsuleHalfHeight(80.0f);
@@ -96,8 +101,10 @@ void AMyBaseClass::SetupPlayerInputComponent(class UInputComponent* PlayerInputC
 		EnhancedInputComponent->BindAction(JumpAction,ETriggerEvent::Started,this, &AMyBaseClass::Jump);
 		EnhancedInputComponent->BindAction(JumpAction,ETriggerEvent::Completed,this, &AMyBaseClass::StopJumping);
 		EnhancedInputComponent->BindAction(StompAction,ETriggerEvent::Triggered,this, &AMyBaseClass::Stomp);
+		EnhancedInputComponent->BindAction(StompAction,ETriggerEvent::Started,this, &AMyBaseClass::PlayStompSFX);
 		EnhancedInputComponent->BindAction(BounceAction,ETriggerEvent::Triggered,this, &AMyBaseClass::BounceDown);
 		EnhancedInputComponent->BindAction(SpindashAction,ETriggerEvent::Triggered,this, &AMyBaseClass::ChargeSpindash);
+		EnhancedInputComponent->BindAction(SpindashAction,ETriggerEvent::Started,this, &AMyBaseClass::PlaySpinDashChargeSFX);
 		EnhancedInputComponent->BindAction(SpindashAction,ETriggerEvent::Completed,this, &AMyBaseClass::ReleaseSpindash);
 		EnhancedInputComponent->BindAction(RestartAction,ETriggerEvent::Triggered,this, &AMyBaseClass::RestartLevel);
 		EnhancedInputComponent->BindAction(PauseAction,ETriggerEvent::Triggered,this, &AMyBaseClass::PauseGame);
@@ -177,11 +184,15 @@ void AMyBaseClass::Tick(float DeltaTime)
 void AMyBaseClass::Jump()
 {
 	Super::Jump();
-
-	BlockJumpWhileFalling();
+	BlockJumpWhileFalling(); // This is required as the Jump logic is being overwritten to enable jump dash.
+	
+	if(JumpCurrentCount == 0 && !ChargingSpindash && (!bIsJumpDashing || bIsHomingAttacking))
+	{
+		UGameplayStatics::PlaySound2D(GetWorld(),JumpSFX,1,1,0);
+	}
 	
 	//Enables the jump ball while jumping
-	if(!isStomping){JumpBallMesh->SetVisibility(true);}
+	if(!bIsStomping){JumpBallMesh->SetVisibility(true);}
 	HomingAttack();
 	JumpDash(); // [IMPROVEMENT] - This was originally done in a separate input action
 	// Now it's being called inside the built in jump function.
@@ -203,7 +214,8 @@ void AMyBaseClass::Landed(const FHitResult& Hit)
 	OldTarget = nullptr;
 	CurrentTarget = nullptr;
 	ChosenTarget = nullptr;
-	IsHomingAttacking = false;
+	bIsHomingAttacking = false;
+	bIsJumpDashing = false;
 }
 
 ////////////////////////
@@ -214,21 +226,21 @@ void AMyBaseClass::Stomp()
 {
 	// In case of jumpball mesh being active
 	JumpBallMesh->SetVisibility(false);
-	if (/*JumpCurrentCount >= 1 && */GetNinjaCharacterMovement()->IsFalling() && !isStomping)
+	if (/*JumpCurrentCount >= 1 && */GetNinjaCharacterMovement()->IsFalling() && !bIsStomping)
 	{
 		stompForce = 20000 * GetNinjaCharacterMovement()->GravityScale;	// The force value doesn't really matter much as the velocity gets set to zero.
 		const FVector Downward = -GetActorUpVector();
 		GetCharacterMovement()->Velocity = FVector::Zero();
 		LaunchCharacter(Downward * stompForce, false, true);
 		JumpCurrentCount = 2; // This is done in order to block the players from jumping while stomping
-		isStomping = true;
+		bIsStomping = true;
 	}
 }
 
 //Check if the character is on the ground. If so, reset the "isStomping" to false.
 void AMyBaseClass::CheckStomp()
 {
-	if (bIsGrounded) { isStomping = false; }
+	if (bIsGrounded) { bIsStomping = false; }
 }
 
 ////////////////////////
@@ -236,10 +248,10 @@ void AMyBaseClass::CheckStomp()
 //////////////////////
 void AMyBaseClass::BounceDown()
 {
-	IsBouncing = true;
+	bIsBouncing = true;
 	const FVector Downward = -GetActorUpVector();
 	
-	if (GetCharacterMovement()->IsFalling() && !isStomping)
+	if (GetCharacterMovement()->IsFalling() && !bIsStomping)
 	{
 		stompForce = 10000;	// The force value doesn't really matter much as the velocity gets set to zero.
 		LaunchCharacter(Downward * stompForce, false, true);
@@ -260,7 +272,7 @@ void AMyBaseClass::BounceUp()
 		CanBounce = false;
 		JumpBallMesh->SetVisibility(true);
 		GetMesh()->SetVisibility(false);
-		IsBouncing = true;
+		bIsBouncing = true;
 	}
 }
 
@@ -273,6 +285,8 @@ void AMyBaseClass::JumpDash()
 	// I had an older comment here saying that the if statement needs to be fixed. Will figure out what went wrong here.
 	if (!IsValid(CurrentTarget) && !bIsGrounded && JumpCurrentCount <= 1)
 	{
+		bIsJumpDashing = true;
+		UGameplayStatics::PlaySound2D(GetWorld(),JumpDashSFX,1,1,0);
 		jumpDashForce = 3000;
 		GetCharacterMovement()->BrakingFriction = 1.0f;
 		const FVector ForwardDir = GetActorRotation().Vector(); // Adding .ForwardVector at the end, breaks the mechanic.
@@ -284,7 +298,7 @@ void AMyBaseClass::JumpDash()
 // Slope physics functions
 void AMyBaseClass::SlopePhysics()
 {
-	if(!IsAutomated)
+	if(!bIsAutomated)
 	{
 		FHitResult HitResult;
 		const FVector Start = GetActorLocation();
@@ -369,7 +383,7 @@ void AMyBaseClass::DetectEnemies()
 			// IsValid node right before the first branch
 			if(IsValid(Hit.GetActor()) && (Hit.GetActor()->ActorHasTag("Enemy")))
 			{
-				if(IsValid(CurrentTarget) && (CurrentTarget != Hit.GetActor() && IsHomingAttacking != true))
+				if(IsValid(CurrentTarget) && (CurrentTarget != Hit.GetActor() && bIsHomingAttacking != true))
 				{
 					OldTarget = CurrentTarget;
 					if(OldTarget != Hit.GetActor()) {CurrentTarget = Hit.GetActor();}
@@ -457,6 +471,7 @@ void AMyBaseClass::LaunchToTarget()
 		MainTimeline->AddInterpFloat(FloatCurve,TLMovementValue);
 	}
 
+	UGameplayStatics::PlaySound2D(GetWorld(),JumpDashSFX,1,1,0);
 	MainTimeline->PlayFromStart();
 	TimelineTick();
 	
@@ -468,7 +483,7 @@ void AMyBaseClass::UpdatePosition(float Alpha)
 	NewLocation = UKismetMathLibrary::VLerp(ActorLocation,ChosenTargetLocation,Alpha);
 	
 	SetActorLocation(NewLocation);
-	IsHomingAttacking = true;
+	bIsHomingAttacking = true;
 }
 
 void AMyBaseClass::TimelineTick()
@@ -482,7 +497,7 @@ void AMyBaseClass::TimelineTick()
 	}
 	else
 	{
-		IsHomingAttacking = false;
+		bIsHomingAttacking = false;
 		GetNinjaCharacterMovement()->GravityScale = 2.8f;         
 		EnableInput(GetPlayerState()->GetPlayerController());
 		OldTarget = nullptr;
@@ -494,10 +509,10 @@ void AMyBaseClass::TimelineTick()
 		}
 	}
 	//Failsafe - An attempt to fix a bug where sonic gets soft locked inside the target
-	if(IsHomingAttacking && GetActorLocation() == ChosenTargetLocation)
+	if(bIsHomingAttacking && GetActorLocation() == ChosenTargetLocation)
 	{
 		ChosenTarget->Destroy();
-		IsHomingAttacking = false;
+		bIsHomingAttacking = false;
 		GetNinjaCharacterMovement()->GravityScale = 2.8f;         
 		EnableInput(GetPlayerState()->GetPlayerController());
 		OldTarget = nullptr;
@@ -540,7 +555,7 @@ void AMyBaseClass::BlockJumpWhileFalling()
 ////////////////////////
 void AMyBaseClass::ChargeSpindash()
 {
-	if(bIsGrounded && !GetCharacterMovement()->IsFalling() && GroundAngle < 90 && !isStomping)
+	if(bIsGrounded && !GetCharacterMovement()->IsFalling() && GroundAngle < 90 && !bIsStomping)
 	{
 		GetMovementComponent()->SetJumpAllowed(false);
 		// TODO - Figure out a way to disable the movement input rather than killing velocity.
@@ -555,8 +570,9 @@ void AMyBaseClass::ChargeSpindash()
 void AMyBaseClass::ReleaseSpindash()
 {
 	GetMovementComponent()->SetJumpAllowed(true);
-	if(bIsGrounded && !GetCharacterMovement()->IsFalling() && !isStomping)
+	if(bIsGrounded && !GetCharacterMovement()->IsFalling() && !bIsStomping)
 	{
+		UGameplayStatics::PlaySound2D(GetWorld(),ReleaseSpinDashSFX,1,1,0);
 		GetMovementComponent()->Velocity = FVector(GetMovementComponent()->Velocity + GetActorForwardVector() * CurrentSpindashForce);
 		SpindashLaunch();
 	}
@@ -571,6 +587,23 @@ void AMyBaseClass::SpindashLaunch()
 	GetMesh()->SetVisibility(true);
 	
 	CurrentSpindashForce = MinSpindashForce;
+}
+
+// These are separated from the main function due to the fact that I couldn't figure out how to play it only once.
+void AMyBaseClass::PlaySpinDashChargeSFX()
+{
+	if(bIsGrounded)
+	{
+		UGameplayStatics::PlaySound2D(GetWorld(),ChargeSpinDashSFX,1,1,0);
+	}
+}
+
+void AMyBaseClass::PlayStompSFX()
+{
+	if(!bIsStomping && !bIsGrounded)
+	{
+		UGameplayStatics::PlaySound2D(GetWorld(),StompSFX,1,1,0);
+	}
 }
 
 // RestartLevel
@@ -622,7 +655,7 @@ void AMyBaseClass::HandleFOV()
 {
 	float CurrentSpeed = GetVelocity().Size();
 	
-	if(CurrentSpeed > 4000 && !isStomping)
+	if(CurrentSpeed > 4000 && !bIsStomping)
 	{
 		FollowCamera->FieldOfView = FMath::Clamp(FollowCamera->FieldOfView + 1,90,120);
 	}

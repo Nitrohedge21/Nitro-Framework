@@ -24,6 +24,7 @@ void EmptyLinkFunctionForGeneratedCodeMyBaseClass() {}
 	ENGINE_API UFunction* Z_Construct_UDelegateFunction_Engine_OnTimelineFloat__DelegateSignature();
 	ENHANCEDINPUT_API UClass* Z_Construct_UClass_UInputMappingContext_NoRegister();
 	ENHANCEDINPUT_API UClass* Z_Construct_UClass_UInputAction_NoRegister();
+	ENGINE_API UClass* Z_Construct_UClass_USoundBase_NoRegister();
 	COREUOBJECT_API UClass* Z_Construct_UClass_UClass();
 	UMG_API UClass* Z_Construct_UClass_UUserWidget_NoRegister();
 // End Cross Module References
@@ -233,35 +234,40 @@ void EmptyLinkFunctionForGeneratedCodeMyBaseClass() {}
 		static void NewProp_CanBounce_SetBit(void* Obj);
 		static const UECodeGen_Private::FBoolPropertyParams NewProp_CanBounce;
 #if WITH_METADATA
-		static const UECodeGen_Private::FMetaDataPairParam NewProp_isJumping_MetaData[];
+		static const UECodeGen_Private::FMetaDataPairParam NewProp_bIsJumping_MetaData[];
 #endif
-		static void NewProp_isJumping_SetBit(void* Obj);
-		static const UECodeGen_Private::FBoolPropertyParams NewProp_isJumping;
+		static void NewProp_bIsJumping_SetBit(void* Obj);
+		static const UECodeGen_Private::FBoolPropertyParams NewProp_bIsJumping;
 #if WITH_METADATA
-		static const UECodeGen_Private::FMetaDataPairParam NewProp_isStomping_MetaData[];
+		static const UECodeGen_Private::FMetaDataPairParam NewProp_bIsJumpDashing_MetaData[];
 #endif
-		static void NewProp_isStomping_SetBit(void* Obj);
-		static const UECodeGen_Private::FBoolPropertyParams NewProp_isStomping;
+		static void NewProp_bIsJumpDashing_SetBit(void* Obj);
+		static const UECodeGen_Private::FBoolPropertyParams NewProp_bIsJumpDashing;
+#if WITH_METADATA
+		static const UECodeGen_Private::FMetaDataPairParam NewProp_bIsStomping_MetaData[];
+#endif
+		static void NewProp_bIsStomping_SetBit(void* Obj);
+		static const UECodeGen_Private::FBoolPropertyParams NewProp_bIsStomping;
 #if WITH_METADATA
 		static const UECodeGen_Private::FMetaDataPairParam NewProp_bIsGrounded_MetaData[];
 #endif
 		static void NewProp_bIsGrounded_SetBit(void* Obj);
 		static const UECodeGen_Private::FBoolPropertyParams NewProp_bIsGrounded;
 #if WITH_METADATA
-		static const UECodeGen_Private::FMetaDataPairParam NewProp_IsHomingAttacking_MetaData[];
+		static const UECodeGen_Private::FMetaDataPairParam NewProp_bIsHomingAttacking_MetaData[];
 #endif
-		static void NewProp_IsHomingAttacking_SetBit(void* Obj);
-		static const UECodeGen_Private::FBoolPropertyParams NewProp_IsHomingAttacking;
+		static void NewProp_bIsHomingAttacking_SetBit(void* Obj);
+		static const UECodeGen_Private::FBoolPropertyParams NewProp_bIsHomingAttacking;
 #if WITH_METADATA
-		static const UECodeGen_Private::FMetaDataPairParam NewProp_IsBouncing_MetaData[];
+		static const UECodeGen_Private::FMetaDataPairParam NewProp_bIsBouncing_MetaData[];
 #endif
-		static void NewProp_IsBouncing_SetBit(void* Obj);
-		static const UECodeGen_Private::FBoolPropertyParams NewProp_IsBouncing;
+		static void NewProp_bIsBouncing_SetBit(void* Obj);
+		static const UECodeGen_Private::FBoolPropertyParams NewProp_bIsBouncing;
 #if WITH_METADATA
-		static const UECodeGen_Private::FMetaDataPairParam NewProp_IsAutomated_MetaData[];
+		static const UECodeGen_Private::FMetaDataPairParam NewProp_bIsAutomated_MetaData[];
 #endif
-		static void NewProp_IsAutomated_SetBit(void* Obj);
-		static const UECodeGen_Private::FBoolPropertyParams NewProp_IsAutomated;
+		static void NewProp_bIsAutomated_SetBit(void* Obj);
+		static const UECodeGen_Private::FBoolPropertyParams NewProp_bIsAutomated;
 		static const UECodeGen_Private::FBytePropertyParams NewProp_CurrentState_Underlying;
 #if WITH_METADATA
 		static const UECodeGen_Private::FMetaDataPairParam NewProp_CurrentState_MetaData[];
@@ -303,6 +309,26 @@ void EmptyLinkFunctionForGeneratedCodeMyBaseClass() {}
 		static const UECodeGen_Private::FMetaDataPairParam NewProp_PauseAction_MetaData[];
 #endif
 		static const UECodeGen_Private::FObjectPropertyParams NewProp_PauseAction;
+#if WITH_METADATA
+		static const UECodeGen_Private::FMetaDataPairParam NewProp_JumpSFX_MetaData[];
+#endif
+		static const UECodeGen_Private::FObjectPropertyParams NewProp_JumpSFX;
+#if WITH_METADATA
+		static const UECodeGen_Private::FMetaDataPairParam NewProp_JumpDashSFX_MetaData[];
+#endif
+		static const UECodeGen_Private::FObjectPropertyParams NewProp_JumpDashSFX;
+#if WITH_METADATA
+		static const UECodeGen_Private::FMetaDataPairParam NewProp_ChargeSpinDashSFX_MetaData[];
+#endif
+		static const UECodeGen_Private::FObjectPropertyParams NewProp_ChargeSpinDashSFX;
+#if WITH_METADATA
+		static const UECodeGen_Private::FMetaDataPairParam NewProp_ReleaseSpinDashSFX_MetaData[];
+#endif
+		static const UECodeGen_Private::FObjectPropertyParams NewProp_ReleaseSpinDashSFX;
+#if WITH_METADATA
+		static const UECodeGen_Private::FMetaDataPairParam NewProp_StompSFX_MetaData[];
+#endif
+		static const UECodeGen_Private::FObjectPropertyParams NewProp_StompSFX;
 #if WITH_METADATA
 		static const UECodeGen_Private::FMetaDataPairParam NewProp_PauseMenuWidget_MetaData[];
 #endif
@@ -515,29 +541,40 @@ void EmptyLinkFunctionForGeneratedCodeMyBaseClass() {}
 	}
 	const UECodeGen_Private::FBoolPropertyParams Z_Construct_UClass_AMyBaseClass_Statics::NewProp_CanBounce = { "CanBounce", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Bool | UECodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, 1, sizeof(bool), sizeof(AMyBaseClass), &Z_Construct_UClass_AMyBaseClass_Statics::NewProp_CanBounce_SetBit, METADATA_PARAMS(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_CanBounce_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_CanBounce_MetaData)) };
 #if WITH_METADATA
-	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AMyBaseClass_Statics::NewProp_isJumping_MetaData[] = {
+	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AMyBaseClass_Statics::NewProp_bIsJumping_MetaData[] = {
 		{ "Category", "State bools" },
 		{ "Comment", "// These are most likely gonna be replaced by enums later. - Ersan 04.03.2024\n" },
 		{ "ModuleRelativePath", "MyBaseClass.h" },
 		{ "ToolTip", "These are most likely gonna be replaced by enums later. - Ersan 04.03.2024" },
 	};
 #endif
-	void Z_Construct_UClass_AMyBaseClass_Statics::NewProp_isJumping_SetBit(void* Obj)
+	void Z_Construct_UClass_AMyBaseClass_Statics::NewProp_bIsJumping_SetBit(void* Obj)
 	{
-		((AMyBaseClass*)Obj)->isJumping = 1;
+		((AMyBaseClass*)Obj)->bIsJumping = 1;
 	}
-	const UECodeGen_Private::FBoolPropertyParams Z_Construct_UClass_AMyBaseClass_Statics::NewProp_isJumping = { "isJumping", nullptr, (EPropertyFlags)0x0010000000000015, UECodeGen_Private::EPropertyGenFlags::Bool | UECodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, 1, sizeof(bool), sizeof(AMyBaseClass), &Z_Construct_UClass_AMyBaseClass_Statics::NewProp_isJumping_SetBit, METADATA_PARAMS(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_isJumping_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_isJumping_MetaData)) };
+	const UECodeGen_Private::FBoolPropertyParams Z_Construct_UClass_AMyBaseClass_Statics::NewProp_bIsJumping = { "bIsJumping", nullptr, (EPropertyFlags)0x0010000000000015, UECodeGen_Private::EPropertyGenFlags::Bool | UECodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, 1, sizeof(bool), sizeof(AMyBaseClass), &Z_Construct_UClass_AMyBaseClass_Statics::NewProp_bIsJumping_SetBit, METADATA_PARAMS(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_bIsJumping_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_bIsJumping_MetaData)) };
 #if WITH_METADATA
-	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AMyBaseClass_Statics::NewProp_isStomping_MetaData[] = {
+	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AMyBaseClass_Statics::NewProp_bIsJumpDashing_MetaData[] = {
 		{ "Category", "State bools" },
 		{ "ModuleRelativePath", "MyBaseClass.h" },
 	};
 #endif
-	void Z_Construct_UClass_AMyBaseClass_Statics::NewProp_isStomping_SetBit(void* Obj)
+	void Z_Construct_UClass_AMyBaseClass_Statics::NewProp_bIsJumpDashing_SetBit(void* Obj)
 	{
-		((AMyBaseClass*)Obj)->isStomping = 1;
+		((AMyBaseClass*)Obj)->bIsJumpDashing = 1;
 	}
-	const UECodeGen_Private::FBoolPropertyParams Z_Construct_UClass_AMyBaseClass_Statics::NewProp_isStomping = { "isStomping", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Bool | UECodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, 1, sizeof(bool), sizeof(AMyBaseClass), &Z_Construct_UClass_AMyBaseClass_Statics::NewProp_isStomping_SetBit, METADATA_PARAMS(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_isStomping_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_isStomping_MetaData)) };
+	const UECodeGen_Private::FBoolPropertyParams Z_Construct_UClass_AMyBaseClass_Statics::NewProp_bIsJumpDashing = { "bIsJumpDashing", nullptr, (EPropertyFlags)0x0010000000000015, UECodeGen_Private::EPropertyGenFlags::Bool | UECodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, 1, sizeof(bool), sizeof(AMyBaseClass), &Z_Construct_UClass_AMyBaseClass_Statics::NewProp_bIsJumpDashing_SetBit, METADATA_PARAMS(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_bIsJumpDashing_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_bIsJumpDashing_MetaData)) };
+#if WITH_METADATA
+	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AMyBaseClass_Statics::NewProp_bIsStomping_MetaData[] = {
+		{ "Category", "State bools" },
+		{ "ModuleRelativePath", "MyBaseClass.h" },
+	};
+#endif
+	void Z_Construct_UClass_AMyBaseClass_Statics::NewProp_bIsStomping_SetBit(void* Obj)
+	{
+		((AMyBaseClass*)Obj)->bIsStomping = 1;
+	}
+	const UECodeGen_Private::FBoolPropertyParams Z_Construct_UClass_AMyBaseClass_Statics::NewProp_bIsStomping = { "bIsStomping", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Bool | UECodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, 1, sizeof(bool), sizeof(AMyBaseClass), &Z_Construct_UClass_AMyBaseClass_Statics::NewProp_bIsStomping_SetBit, METADATA_PARAMS(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_bIsStomping_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_bIsStomping_MetaData)) };
 #if WITH_METADATA
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AMyBaseClass_Statics::NewProp_bIsGrounded_MetaData[] = {
 		{ "Category", "State bools" },
@@ -550,40 +587,40 @@ void EmptyLinkFunctionForGeneratedCodeMyBaseClass() {}
 	}
 	const UECodeGen_Private::FBoolPropertyParams Z_Construct_UClass_AMyBaseClass_Statics::NewProp_bIsGrounded = { "bIsGrounded", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Bool | UECodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, 1, sizeof(bool), sizeof(AMyBaseClass), &Z_Construct_UClass_AMyBaseClass_Statics::NewProp_bIsGrounded_SetBit, METADATA_PARAMS(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_bIsGrounded_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_bIsGrounded_MetaData)) };
 #if WITH_METADATA
-	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AMyBaseClass_Statics::NewProp_IsHomingAttacking_MetaData[] = {
+	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AMyBaseClass_Statics::NewProp_bIsHomingAttacking_MetaData[] = {
 		{ "Category", "State bools" },
 		{ "ModuleRelativePath", "MyBaseClass.h" },
 	};
 #endif
-	void Z_Construct_UClass_AMyBaseClass_Statics::NewProp_IsHomingAttacking_SetBit(void* Obj)
+	void Z_Construct_UClass_AMyBaseClass_Statics::NewProp_bIsHomingAttacking_SetBit(void* Obj)
 	{
-		((AMyBaseClass*)Obj)->IsHomingAttacking = 1;
+		((AMyBaseClass*)Obj)->bIsHomingAttacking = 1;
 	}
-	const UECodeGen_Private::FBoolPropertyParams Z_Construct_UClass_AMyBaseClass_Statics::NewProp_IsHomingAttacking = { "IsHomingAttacking", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Bool | UECodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, 1, sizeof(bool), sizeof(AMyBaseClass), &Z_Construct_UClass_AMyBaseClass_Statics::NewProp_IsHomingAttacking_SetBit, METADATA_PARAMS(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_IsHomingAttacking_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_IsHomingAttacking_MetaData)) };
+	const UECodeGen_Private::FBoolPropertyParams Z_Construct_UClass_AMyBaseClass_Statics::NewProp_bIsHomingAttacking = { "bIsHomingAttacking", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Bool | UECodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, 1, sizeof(bool), sizeof(AMyBaseClass), &Z_Construct_UClass_AMyBaseClass_Statics::NewProp_bIsHomingAttacking_SetBit, METADATA_PARAMS(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_bIsHomingAttacking_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_bIsHomingAttacking_MetaData)) };
 #if WITH_METADATA
-	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AMyBaseClass_Statics::NewProp_IsBouncing_MetaData[] = {
+	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AMyBaseClass_Statics::NewProp_bIsBouncing_MetaData[] = {
 		{ "Category", "State bools" },
 		{ "ModuleRelativePath", "MyBaseClass.h" },
 	};
 #endif
-	void Z_Construct_UClass_AMyBaseClass_Statics::NewProp_IsBouncing_SetBit(void* Obj)
+	void Z_Construct_UClass_AMyBaseClass_Statics::NewProp_bIsBouncing_SetBit(void* Obj)
 	{
-		((AMyBaseClass*)Obj)->IsBouncing = 1;
+		((AMyBaseClass*)Obj)->bIsBouncing = 1;
 	}
-	const UECodeGen_Private::FBoolPropertyParams Z_Construct_UClass_AMyBaseClass_Statics::NewProp_IsBouncing = { "IsBouncing", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Bool | UECodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, 1, sizeof(bool), sizeof(AMyBaseClass), &Z_Construct_UClass_AMyBaseClass_Statics::NewProp_IsBouncing_SetBit, METADATA_PARAMS(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_IsBouncing_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_IsBouncing_MetaData)) };
+	const UECodeGen_Private::FBoolPropertyParams Z_Construct_UClass_AMyBaseClass_Statics::NewProp_bIsBouncing = { "bIsBouncing", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Bool | UECodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, 1, sizeof(bool), sizeof(AMyBaseClass), &Z_Construct_UClass_AMyBaseClass_Statics::NewProp_bIsBouncing_SetBit, METADATA_PARAMS(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_bIsBouncing_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_bIsBouncing_MetaData)) };
 #if WITH_METADATA
-	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AMyBaseClass_Statics::NewProp_IsAutomated_MetaData[] = {
+	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AMyBaseClass_Statics::NewProp_bIsAutomated_MetaData[] = {
 		{ "Category", "State bools" },
 		{ "Comment", "//This is currently unused cuz I couldn't figure out how to reset it\n" },
 		{ "ModuleRelativePath", "MyBaseClass.h" },
 		{ "ToolTip", "This is currently unused cuz I couldn't figure out how to reset it" },
 	};
 #endif
-	void Z_Construct_UClass_AMyBaseClass_Statics::NewProp_IsAutomated_SetBit(void* Obj)
+	void Z_Construct_UClass_AMyBaseClass_Statics::NewProp_bIsAutomated_SetBit(void* Obj)
 	{
-		((AMyBaseClass*)Obj)->IsAutomated = 1;
+		((AMyBaseClass*)Obj)->bIsAutomated = 1;
 	}
-	const UECodeGen_Private::FBoolPropertyParams Z_Construct_UClass_AMyBaseClass_Statics::NewProp_IsAutomated = { "IsAutomated", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Bool | UECodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, 1, sizeof(bool), sizeof(AMyBaseClass), &Z_Construct_UClass_AMyBaseClass_Statics::NewProp_IsAutomated_SetBit, METADATA_PARAMS(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_IsAutomated_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_IsAutomated_MetaData)) };
+	const UECodeGen_Private::FBoolPropertyParams Z_Construct_UClass_AMyBaseClass_Statics::NewProp_bIsAutomated = { "bIsAutomated", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Bool | UECodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, 1, sizeof(bool), sizeof(AMyBaseClass), &Z_Construct_UClass_AMyBaseClass_Statics::NewProp_bIsAutomated_SetBit, METADATA_PARAMS(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_bIsAutomated_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_bIsAutomated_MetaData)) };
 	const UECodeGen_Private::FBytePropertyParams Z_Construct_UClass_AMyBaseClass_Statics::NewProp_CurrentState_Underlying = { "UnderlyingType", nullptr, (EPropertyFlags)0x0000000000000000, UECodeGen_Private::EPropertyGenFlags::Byte, RF_Public|RF_Transient|RF_MarkAsNative, 1, 0, nullptr, METADATA_PARAMS(nullptr, 0) };
 #if WITH_METADATA
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AMyBaseClass_Statics::NewProp_CurrentState_MetaData[] = {
@@ -656,6 +693,41 @@ void EmptyLinkFunctionForGeneratedCodeMyBaseClass() {}
 #endif
 	const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_AMyBaseClass_Statics::NewProp_PauseAction = { "PauseAction", nullptr, (EPropertyFlags)0x0010000000000015, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AMyBaseClass, PauseAction), Z_Construct_UClass_UInputAction_NoRegister, METADATA_PARAMS(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_PauseAction_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_PauseAction_MetaData)) };
 #if WITH_METADATA
+	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AMyBaseClass_Statics::NewProp_JumpSFX_MetaData[] = {
+		{ "Category", "SoundFX" },
+		{ "ModuleRelativePath", "MyBaseClass.h" },
+	};
+#endif
+	const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_AMyBaseClass_Statics::NewProp_JumpSFX = { "JumpSFX", nullptr, (EPropertyFlags)0x0010000000000015, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AMyBaseClass, JumpSFX), Z_Construct_UClass_USoundBase_NoRegister, METADATA_PARAMS(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_JumpSFX_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_JumpSFX_MetaData)) };
+#if WITH_METADATA
+	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AMyBaseClass_Statics::NewProp_JumpDashSFX_MetaData[] = {
+		{ "Category", "SoundFX" },
+		{ "ModuleRelativePath", "MyBaseClass.h" },
+	};
+#endif
+	const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_AMyBaseClass_Statics::NewProp_JumpDashSFX = { "JumpDashSFX", nullptr, (EPropertyFlags)0x0010000000000015, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AMyBaseClass, JumpDashSFX), Z_Construct_UClass_USoundBase_NoRegister, METADATA_PARAMS(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_JumpDashSFX_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_JumpDashSFX_MetaData)) };
+#if WITH_METADATA
+	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AMyBaseClass_Statics::NewProp_ChargeSpinDashSFX_MetaData[] = {
+		{ "Category", "SoundFX" },
+		{ "ModuleRelativePath", "MyBaseClass.h" },
+	};
+#endif
+	const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_AMyBaseClass_Statics::NewProp_ChargeSpinDashSFX = { "ChargeSpinDashSFX", nullptr, (EPropertyFlags)0x0010000000000015, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AMyBaseClass, ChargeSpinDashSFX), Z_Construct_UClass_USoundBase_NoRegister, METADATA_PARAMS(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_ChargeSpinDashSFX_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_ChargeSpinDashSFX_MetaData)) };
+#if WITH_METADATA
+	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AMyBaseClass_Statics::NewProp_ReleaseSpinDashSFX_MetaData[] = {
+		{ "Category", "SoundFX" },
+		{ "ModuleRelativePath", "MyBaseClass.h" },
+	};
+#endif
+	const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_AMyBaseClass_Statics::NewProp_ReleaseSpinDashSFX = { "ReleaseSpinDashSFX", nullptr, (EPropertyFlags)0x0010000000000015, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AMyBaseClass, ReleaseSpinDashSFX), Z_Construct_UClass_USoundBase_NoRegister, METADATA_PARAMS(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_ReleaseSpinDashSFX_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_ReleaseSpinDashSFX_MetaData)) };
+#if WITH_METADATA
+	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AMyBaseClass_Statics::NewProp_StompSFX_MetaData[] = {
+		{ "Category", "SoundFX" },
+		{ "ModuleRelativePath", "MyBaseClass.h" },
+	};
+#endif
+	const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_AMyBaseClass_Statics::NewProp_StompSFX = { "StompSFX", nullptr, (EPropertyFlags)0x0010000000000015, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AMyBaseClass, StompSFX), Z_Construct_UClass_USoundBase_NoRegister, METADATA_PARAMS(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_StompSFX_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_StompSFX_MetaData)) };
+#if WITH_METADATA
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AMyBaseClass_Statics::NewProp_PauseMenuWidget_MetaData[] = {
 		{ "Category", "UI" },
 		{ "ModuleRelativePath", "MyBaseClass.h" },
@@ -695,12 +767,13 @@ void EmptyLinkFunctionForGeneratedCodeMyBaseClass() {}
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMyBaseClass_Statics::NewProp_TLMovementValue,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMyBaseClass_Statics::NewProp_RingCount,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMyBaseClass_Statics::NewProp_CanBounce,
-		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMyBaseClass_Statics::NewProp_isJumping,
-		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMyBaseClass_Statics::NewProp_isStomping,
+		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMyBaseClass_Statics::NewProp_bIsJumping,
+		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMyBaseClass_Statics::NewProp_bIsJumpDashing,
+		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMyBaseClass_Statics::NewProp_bIsStomping,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMyBaseClass_Statics::NewProp_bIsGrounded,
-		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMyBaseClass_Statics::NewProp_IsHomingAttacking,
-		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMyBaseClass_Statics::NewProp_IsBouncing,
-		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMyBaseClass_Statics::NewProp_IsAutomated,
+		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMyBaseClass_Statics::NewProp_bIsHomingAttacking,
+		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMyBaseClass_Statics::NewProp_bIsBouncing,
+		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMyBaseClass_Statics::NewProp_bIsAutomated,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMyBaseClass_Statics::NewProp_CurrentState_Underlying,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMyBaseClass_Statics::NewProp_CurrentState,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMyBaseClass_Statics::NewProp_InputMappingContext,
@@ -712,6 +785,11 @@ void EmptyLinkFunctionForGeneratedCodeMyBaseClass() {}
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMyBaseClass_Statics::NewProp_SpindashAction,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMyBaseClass_Statics::NewProp_RestartAction,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMyBaseClass_Statics::NewProp_PauseAction,
+		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMyBaseClass_Statics::NewProp_JumpSFX,
+		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMyBaseClass_Statics::NewProp_JumpDashSFX,
+		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMyBaseClass_Statics::NewProp_ChargeSpinDashSFX,
+		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMyBaseClass_Statics::NewProp_ReleaseSpinDashSFX,
+		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMyBaseClass_Statics::NewProp_StompSFX,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMyBaseClass_Statics::NewProp_PauseMenuWidget,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMyBaseClass_Statics::NewProp_MyWidgetInstance,
 	};
@@ -755,9 +833,9 @@ void EmptyLinkFunctionForGeneratedCodeMyBaseClass() {}
 		{ CharacterStates_StaticEnum, TEXT("CharacterStates"), &Z_Registration_Info_UEnum_CharacterStates, CONSTRUCT_RELOAD_VERSION_INFO(FEnumReloadVersionInfo, 2683037699U) },
 	};
 	const FClassRegisterCompiledInInfo Z_CompiledInDeferFile_FID_MyProject_Source_MyProject_MyBaseClass_h_Statics::ClassInfo[] = {
-		{ Z_Construct_UClass_AMyBaseClass, AMyBaseClass::StaticClass, TEXT("AMyBaseClass"), &Z_Registration_Info_UClass_AMyBaseClass, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(AMyBaseClass), 3514885614U) },
+		{ Z_Construct_UClass_AMyBaseClass, AMyBaseClass::StaticClass, TEXT("AMyBaseClass"), &Z_Registration_Info_UClass_AMyBaseClass, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(AMyBaseClass), 3883640074U) },
 	};
-	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_MyProject_Source_MyProject_MyBaseClass_h_3351274864(TEXT("/Script/MyProject"),
+	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_MyProject_Source_MyProject_MyBaseClass_h_1554670445(TEXT("/Script/MyProject"),
 		Z_CompiledInDeferFile_FID_MyProject_Source_MyProject_MyBaseClass_h_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_MyProject_Source_MyProject_MyBaseClass_h_Statics::ClassInfo),
 		nullptr, 0,
 		Z_CompiledInDeferFile_FID_MyProject_Source_MyProject_MyBaseClass_h_Statics::EnumInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_MyProject_Source_MyProject_MyBaseClass_h_Statics::EnumInfo));
