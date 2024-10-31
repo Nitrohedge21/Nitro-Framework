@@ -212,7 +212,7 @@ void AMyBaseClass::Landed(const FHitResult& Hit)
 	}
 	else
 	{
-		// This is an attempt at fixing the spindash bug where sonic can get stuck in the spindash state.
+		// This is done in order to fix the spindash bug where sonic could get stuck in the spindash state.
 		SpindashLaunch();
 	}
 	//Needs to be reset in the case of a jump dash.
