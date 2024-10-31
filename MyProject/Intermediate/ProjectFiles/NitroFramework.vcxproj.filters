@@ -60,5 +60,11 @@
     <ClInclude Include="..\..\Source\MyProject\NinjaMovementComponent.h">
       <Filter>Source\MyProject</Filter>
     </ClInclude>
+    <ClCompile Include="..\..\Source\MyProject\NitroHealthComponent.cpp">
+      <Filter>Source\MyProject</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\MyProject\NitroHealthComponent.h">
+      <Filter>Source\MyProject</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

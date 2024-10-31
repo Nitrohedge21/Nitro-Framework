@@ -63,6 +63,9 @@ AMyBaseClass::AMyBaseClass(const FObjectInitializer& ObjectInitializer)
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
+	// In case the variables don't show up on the blueprints, comment-uncomment out the line below to fix it.
+	HealthComponent = CreateDefaultSubobject<UNitroHealthComponent>(TEXT("HealthComponent"));
+	
 	// Configure the mesh's location and rotation.
 	GetMesh()->SetRelativeLocationAndRotation(FVector(0, 0, -80), FRotator(0, -90, 0));
 
@@ -100,8 +103,7 @@ void AMyBaseClass::SetupPlayerInputComponent(class UInputComponent* PlayerInputC
 		EnhancedInputComponent->BindAction(MoveAction,ETriggerEvent::Triggered,this, &AMyBaseClass::Move);
 		EnhancedInputComponent->BindAction(JumpAction,ETriggerEvent::Started,this, &AMyBaseClass::Jump);
 		EnhancedInputComponent->BindAction(JumpAction,ETriggerEvent::Completed,this, &AMyBaseClass::StopJumping);
-		EnhancedInputComponent->BindAction(StompAction,ETriggerEvent::Triggered,this, &AMyBaseClass::Stomp);
-		EnhancedInputComponent->BindAction(StompAction,ETriggerEvent::Started,this, &AMyBaseClass::PlayStompSFX);
+		EnhancedInputComponent->BindAction(StompAction,ETriggerEvent::Started,this, &AMyBaseClass::Stomp);
 		EnhancedInputComponent->BindAction(BounceAction,ETriggerEvent::Triggered,this, &AMyBaseClass::BounceDown);
 		EnhancedInputComponent->BindAction(SpindashAction,ETriggerEvent::Triggered,this, &AMyBaseClass::ChargeSpindash);
 		EnhancedInputComponent->BindAction(SpindashAction,ETriggerEvent::Started,this, &AMyBaseClass::PlaySpinDashChargeSFX);
@@ -208,6 +210,11 @@ void AMyBaseClass::Landed(const FHitResult& Hit)
 		JumpBallMesh->SetVisibility(false);
 		GetMesh()->SetVisibility(true);
 	}
+	else
+	{
+		// This is an attempt at fixing the spindash bug where sonic can get stuck in the spindash state.
+		SpindashLaunch();
+	}
 	//Needs to be reset in the case of a jump dash.
 	GetCharacterMovement()->BrakingFriction = 2.5f;
 	BounceUp();
@@ -228,6 +235,7 @@ void AMyBaseClass::Stomp()
 	JumpBallMesh->SetVisibility(false);
 	if (/*JumpCurrentCount >= 1 && */GetNinjaCharacterMovement()->IsFalling() && !bIsStomping)
 	{
+		UGameplayStatics::PlaySound2D(GetWorld(),StompSFX,1,1,0);
 		stompForce = 20000 * GetNinjaCharacterMovement()->GravityScale;	// The force value doesn't really matter much as the velocity gets set to zero.
 		const FVector Downward = -GetActorUpVector();
 		GetCharacterMovement()->Velocity = FVector::Zero();
@@ -321,6 +329,7 @@ void AMyBaseClass::SlopePhysics()
 		//The rest handles the math calculations
 		float DotProduct = FVector3d::DotProduct(HitResult.Normal, FVector3d(0.0f,0.0f,1.0f));
 		GroundAngle = UKismetMathLibrary::DegAcos(DotProduct);
+		UE_LOG(LogTemp,Warning,TEXT("Ground Angle is: %f"), GroundAngle);
 
 		FVector HitResVec = FVector(HitResult.Normal.X,HitResult.Normal.Y,UKismetMathLibrary::DegSin(HitResult.Normal.Z));
 		FVector PlaneVector = FVector::VectorPlaneProject(HitResVec,HitResult.Normal);
@@ -592,17 +601,9 @@ void AMyBaseClass::SpindashLaunch()
 // These are separated from the main function due to the fact that I couldn't figure out how to play it only once.
 void AMyBaseClass::PlaySpinDashChargeSFX()
 {
-	if(bIsGrounded)
+	if(bIsGrounded && !GetCharacterMovement()->IsFalling() && GroundAngle < 90 && !bIsStomping)
 	{
 		UGameplayStatics::PlaySound2D(GetWorld(),ChargeSpinDashSFX,1,1,0);
-	}
-}
-
-void AMyBaseClass::PlayStompSFX()
-{
-	if(!bIsStomping && !bIsGrounded)
-	{
-		UGameplayStatics::PlaySound2D(GetWorld(),StompSFX,1,1,0);
 	}
 }
 

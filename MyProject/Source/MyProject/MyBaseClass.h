@@ -7,6 +7,7 @@
 #include "NinjaCharacter.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/TimelineComponent.h"
+#include "NitroHealthComponent.h"
 #include "MyBaseClass.generated.h"
 
 //Unused enum states
@@ -38,7 +39,6 @@ class MYPROJECT_API AMyBaseClass : public ANinjaCharacter
 	/** Follow camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* FollowCamera;
-
 	
 public:
 	AMyBaseClass();
@@ -168,7 +168,6 @@ protected:
 	//Stomp mechanic's functions
 	void Stomp();
 	void CheckStomp();
-	void PlayStompSFX();
 
 	//Bounce mechanic's function
 	void BounceDown();
@@ -212,6 +211,9 @@ public:
 	//This is required to create the widget
 	UPROPERTY()
 	UUserWidget* MyWidgetInstance;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Health Component")
+	UNitroHealthComponent* HealthComponent;
 	
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
