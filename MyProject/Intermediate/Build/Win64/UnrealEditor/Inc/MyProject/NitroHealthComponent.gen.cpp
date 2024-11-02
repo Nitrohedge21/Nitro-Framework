@@ -15,6 +15,7 @@ void EmptyLinkFunctionForGeneratedCodeNitroHealthComponent() {}
 	UPackage* Z_Construct_UPackage__Script_MyProject();
 	COREUOBJECT_API UScriptStruct* Z_Construct_UScriptStruct_FVector2D();
 	ENGINE_API UClass* Z_Construct_UClass_AActor_NoRegister();
+	ENGINE_API UClass* Z_Construct_UClass_USoundBase_NoRegister();
 // End Cross Module References
 	void UNitroHealthComponent::StaticRegisterNativesUNitroHealthComponent()
 	{
@@ -53,11 +54,19 @@ void EmptyLinkFunctionForGeneratedCodeNitroHealthComponent() {}
 #if WITH_METADATA
 		static const UECodeGen_Private::FMetaDataPairParam NewProp_Rings_MetaData[];
 #endif
-		static const UECodeGen_Private::FFloatPropertyParams NewProp_Rings;
+		static const UECodeGen_Private::FUnsizedIntPropertyParams NewProp_Rings;
 #if WITH_METADATA
 		static const UECodeGen_Private::FMetaDataPairParam NewProp_OverlappedActorRef_MetaData[];
 #endif
 		static const UECodeGen_Private::FObjectPropertyParams NewProp_OverlappedActorRef;
+#if WITH_METADATA
+		static const UECodeGen_Private::FMetaDataPairParam NewProp_PhysicsRingRef_MetaData[];
+#endif
+		static const UECodeGen_Private::FObjectPropertyParams NewProp_PhysicsRingRef;
+#if WITH_METADATA
+		static const UECodeGen_Private::FMetaDataPairParam NewProp_RingDropSFX_MetaData[];
+#endif
+		static const UECodeGen_Private::FObjectPropertyParams NewProp_RingDropSFX;
 		static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
 		static const FCppClassTypeInfoStatic StaticCppClassTypeInfo;
 		static const UECodeGen_Private::FClassParams ClassParams;
@@ -112,13 +121,26 @@ void EmptyLinkFunctionForGeneratedCodeNitroHealthComponent() {}
 		{ "ModuleRelativePath", "NitroHealthComponent.h" },
 	};
 #endif
-	const UECodeGen_Private::FFloatPropertyParams Z_Construct_UClass_UNitroHealthComponent_Statics::NewProp_Rings = { "Rings", nullptr, (EPropertyFlags)0x0010000000020005, UECodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(UNitroHealthComponent, Rings), METADATA_PARAMS(Z_Construct_UClass_UNitroHealthComponent_Statics::NewProp_Rings_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_UNitroHealthComponent_Statics::NewProp_Rings_MetaData)) };
+	const UECodeGen_Private::FUnsizedIntPropertyParams Z_Construct_UClass_UNitroHealthComponent_Statics::NewProp_Rings = { "Rings", nullptr, (EPropertyFlags)0x0010000000020005, UECodeGen_Private::EPropertyGenFlags::Int, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(UNitroHealthComponent, Rings), METADATA_PARAMS(Z_Construct_UClass_UNitroHealthComponent_Statics::NewProp_Rings_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_UNitroHealthComponent_Statics::NewProp_Rings_MetaData)) };
 #if WITH_METADATA
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_UNitroHealthComponent_Statics::NewProp_OverlappedActorRef_MetaData[] = {
 		{ "ModuleRelativePath", "NitroHealthComponent.h" },
 	};
 #endif
 	const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_UNitroHealthComponent_Statics::NewProp_OverlappedActorRef = { "OverlappedActorRef", nullptr, (EPropertyFlags)0x0010000000000000, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(UNitroHealthComponent, OverlappedActorRef), Z_Construct_UClass_AActor_NoRegister, METADATA_PARAMS(Z_Construct_UClass_UNitroHealthComponent_Statics::NewProp_OverlappedActorRef_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_UNitroHealthComponent_Statics::NewProp_OverlappedActorRef_MetaData)) };
+#if WITH_METADATA
+	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_UNitroHealthComponent_Statics::NewProp_PhysicsRingRef_MetaData[] = {
+		{ "ModuleRelativePath", "NitroHealthComponent.h" },
+	};
+#endif
+	const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_UNitroHealthComponent_Statics::NewProp_PhysicsRingRef = { "PhysicsRingRef", nullptr, (EPropertyFlags)0x0010000000000000, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(UNitroHealthComponent, PhysicsRingRef), Z_Construct_UClass_AActor_NoRegister, METADATA_PARAMS(Z_Construct_UClass_UNitroHealthComponent_Statics::NewProp_PhysicsRingRef_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_UNitroHealthComponent_Statics::NewProp_PhysicsRingRef_MetaData)) };
+#if WITH_METADATA
+	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_UNitroHealthComponent_Statics::NewProp_RingDropSFX_MetaData[] = {
+		{ "Category", "NitroHealthComponent" },
+		{ "ModuleRelativePath", "NitroHealthComponent.h" },
+	};
+#endif
+	const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_UNitroHealthComponent_Statics::NewProp_RingDropSFX = { "RingDropSFX", nullptr, (EPropertyFlags)0x0010000000020005, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(UNitroHealthComponent, RingDropSFX), Z_Construct_UClass_USoundBase_NoRegister, METADATA_PARAMS(Z_Construct_UClass_UNitroHealthComponent_Statics::NewProp_RingDropSFX_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_UNitroHealthComponent_Statics::NewProp_RingDropSFX_MetaData)) };
 	const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UClass_UNitroHealthComponent_Statics::PropPointers[] = {
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UNitroHealthComponent_Statics::NewProp_RingLossAmount,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UNitroHealthComponent_Statics::NewProp_KnockbackForce,
@@ -127,6 +149,8 @@ void EmptyLinkFunctionForGeneratedCodeNitroHealthComponent() {}
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UNitroHealthComponent_Statics::NewProp_SpawnPoint,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UNitroHealthComponent_Statics::NewProp_Rings,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UNitroHealthComponent_Statics::NewProp_OverlappedActorRef,
+		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UNitroHealthComponent_Statics::NewProp_PhysicsRingRef,
+		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UNitroHealthComponent_Statics::NewProp_RingDropSFX,
 	};
 	const FCppClassTypeInfoStatic Z_Construct_UClass_UNitroHealthComponent_Statics::StaticCppClassTypeInfo = {
 		TCppClassTypeTraits<UNitroHealthComponent>::IsAbstract,
@@ -164,9 +188,9 @@ void EmptyLinkFunctionForGeneratedCodeNitroHealthComponent() {}
 		static const FClassRegisterCompiledInInfo ClassInfo[];
 	};
 	const FClassRegisterCompiledInInfo Z_CompiledInDeferFile_FID_MyProject_Source_MyProject_NitroHealthComponent_h_Statics::ClassInfo[] = {
-		{ Z_Construct_UClass_UNitroHealthComponent, UNitroHealthComponent::StaticClass, TEXT("UNitroHealthComponent"), &Z_Registration_Info_UClass_UNitroHealthComponent, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(UNitroHealthComponent), 2467677926U) },
+		{ Z_Construct_UClass_UNitroHealthComponent, UNitroHealthComponent::StaticClass, TEXT("UNitroHealthComponent"), &Z_Registration_Info_UClass_UNitroHealthComponent, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(UNitroHealthComponent), 3719225724U) },
 	};
-	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_MyProject_Source_MyProject_NitroHealthComponent_h_2158142687(TEXT("/Script/MyProject"),
+	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_MyProject_Source_MyProject_NitroHealthComponent_h_4261816585(TEXT("/Script/MyProject"),
 		Z_CompiledInDeferFile_FID_MyProject_Source_MyProject_NitroHealthComponent_h_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_MyProject_Source_MyProject_NitroHealthComponent_h_Statics::ClassInfo),
 		nullptr, 0,
 		nullptr, 0);

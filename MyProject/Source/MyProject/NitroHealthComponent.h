@@ -29,12 +29,43 @@ public:
 	UPROPERTY()
 	FVector2D SpawnPoint;
 	UPROPERTY(VisibleAnywhere,BlueprintReadWrite)
-	float Rings;
+	int Rings;
 	UPROPERTY()
 	AActor* OverlappedActorRef;
-
+	UPROPERTY()
+	AActor* PhysicsRingRef;
+	UPROPERTY(VisibleAnywhere,BlueprintReadWrite)
+	USoundBase* RingDropSFX;
+	
 	// The timer handle is unused at the moment.
 	FTimerHandle InvinciblityTimerHandle;
+
+	// Overlapping related functions
+	void OnCapsuleBeginOverlap(
+		UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
+		bool bFromSweep, const FHitResult& SweepResult);
+
+	void CheckOverlappedActor(AActor* OverlappedActor);
+
+	// Calculation Functions
+	FTransform CalculateSpawnTransform(int CurrentIndex);
+	int CalculateSpawnAmount(AActor* ActorRef);
+
+	// Status checking functions
+	bool CanSonicBeDamaged();
+	bool CanSonicDealDamage();
+
+	// Invincibility functions
+	void ToggleInvincibilityOn();
+	void ToggleInvincibilityOff();
+	void HandleInvincibility();
+	
+	// Other required functions
+	void DestroyBadnik();
+	void DamageSonic();
+	void KnockbackSonic();
+	void DropRings();
 
 protected:
 	// Called when the game starts
