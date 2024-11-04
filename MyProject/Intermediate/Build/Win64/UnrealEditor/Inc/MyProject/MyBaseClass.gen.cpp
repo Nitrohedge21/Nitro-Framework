@@ -755,7 +755,7 @@ void EmptyLinkFunctionForGeneratedCodeMyBaseClass() {}
 		{ "ModuleRelativePath", "MyBaseClass.h" },
 	};
 #endif
-	const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_AMyBaseClass_Statics::NewProp_HealthComponent = { "HealthComponent", nullptr, (EPropertyFlags)0x00100000000a001d, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AMyBaseClass, HealthComponent), Z_Construct_UClass_UNitroHealthComponent_NoRegister, METADATA_PARAMS(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_HealthComponent_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_HealthComponent_MetaData)) };
+	const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_AMyBaseClass_Statics::NewProp_HealthComponent = { "HealthComponent", nullptr, (EPropertyFlags)0x001000000008000d, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AMyBaseClass, HealthComponent), Z_Construct_UClass_UNitroHealthComponent_NoRegister, METADATA_PARAMS(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_HealthComponent_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_HealthComponent_MetaData)) };
 	const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UClass_AMyBaseClass_Statics::PropPointers[] = {
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMyBaseClass_Statics::NewProp_CameraBoom,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMyBaseClass_Statics::NewProp_FollowCamera,
@@ -847,9 +847,9 @@ void EmptyLinkFunctionForGeneratedCodeMyBaseClass() {}
 		{ CharacterStates_StaticEnum, TEXT("CharacterStates"), &Z_Registration_Info_UEnum_CharacterStates, CONSTRUCT_RELOAD_VERSION_INFO(FEnumReloadVersionInfo, 2683037699U) },
 	};
 	const FClassRegisterCompiledInInfo Z_CompiledInDeferFile_FID_MyProject_Source_MyProject_MyBaseClass_h_Statics::ClassInfo[] = {
-		{ Z_Construct_UClass_AMyBaseClass, AMyBaseClass::StaticClass, TEXT("AMyBaseClass"), &Z_Registration_Info_UClass_AMyBaseClass, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(AMyBaseClass), 2434527284U) },
+		{ Z_Construct_UClass_AMyBaseClass, AMyBaseClass::StaticClass, TEXT("AMyBaseClass"), &Z_Registration_Info_UClass_AMyBaseClass, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(AMyBaseClass), 3299688776U) },
 	};
-	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_MyProject_Source_MyProject_MyBaseClass_h_1348256265(TEXT("/Script/MyProject"),
+	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_MyProject_Source_MyProject_MyBaseClass_h_3414090861(TEXT("/Script/MyProject"),
 		Z_CompiledInDeferFile_FID_MyProject_Source_MyProject_MyBaseClass_h_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_MyProject_Source_MyProject_MyBaseClass_h_Statics::ClassInfo),
 		nullptr, 0,
 		Z_CompiledInDeferFile_FID_MyProject_Source_MyProject_MyBaseClass_h_Statics::EnumInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_MyProject_Source_MyProject_MyBaseClass_h_Statics::EnumInfo));

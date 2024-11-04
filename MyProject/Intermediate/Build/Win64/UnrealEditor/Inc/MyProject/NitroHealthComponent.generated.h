@@ -8,14 +8,25 @@
 #include "UObject/ScriptMacros.h"
 
 PRAGMA_DISABLE_DEPRECATION_WARNINGS
+class UPrimitiveComponent;
+class AActor;
+struct FHitResult;
 #ifdef MYPROJECT_NitroHealthComponent_generated_h
 #error "NitroHealthComponent.generated.h already included, missing '#pragma once' in NitroHealthComponent.h"
 #endif
 #define MYPROJECT_NitroHealthComponent_generated_h
 
 #define FID_MyProject_Source_MyProject_NitroHealthComponent_h_13_SPARSE_DATA
-#define FID_MyProject_Source_MyProject_NitroHealthComponent_h_13_RPC_WRAPPERS
-#define FID_MyProject_Source_MyProject_NitroHealthComponent_h_13_RPC_WRAPPERS_NO_PURE_DECLS
+#define FID_MyProject_Source_MyProject_NitroHealthComponent_h_13_RPC_WRAPPERS \
+ \
+	DECLARE_FUNCTION(execOnCapsuleBeginOverlap);
+
+
+#define FID_MyProject_Source_MyProject_NitroHealthComponent_h_13_RPC_WRAPPERS_NO_PURE_DECLS \
+ \
+	DECLARE_FUNCTION(execOnCapsuleBeginOverlap);
+
+
 #define FID_MyProject_Source_MyProject_NitroHealthComponent_h_13_INCLASS_NO_PURE_DECLS \
 private: \
 	static void StaticRegisterNativesUNitroHealthComponent(); \

@@ -212,7 +212,7 @@ public:
 	UPROPERTY()
 	UUserWidget* MyWidgetInstance;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Health Component")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health Component")
 	UNitroHealthComponent* HealthComponent;
 	
 	// APawn interface

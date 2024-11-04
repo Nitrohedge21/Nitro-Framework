@@ -329,7 +329,7 @@ void AMyBaseClass::SlopePhysics()
 		//The rest handles the math calculations
 		float DotProduct = FVector3d::DotProduct(HitResult.Normal, FVector3d(0.0f,0.0f,1.0f));
 		GroundAngle = UKismetMathLibrary::DegAcos(DotProduct);
-		UE_LOG(LogTemp,Warning,TEXT("Ground Angle is: %f"), GroundAngle);
+		//UE_LOG(LogTemp,Warning,TEXT("Ground Angle is: %f"), GroundAngle);
 
 		FVector HitResVec = FVector(HitResult.Normal.X,HitResult.Normal.Y,UKismetMathLibrary::DegSin(HitResult.Normal.Z));
 		FVector PlaneVector = FVector::VectorPlaneProject(HitResVec,HitResult.Normal);

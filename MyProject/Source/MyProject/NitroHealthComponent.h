@@ -16,9 +16,9 @@ public:
 	// Sets default values for this component's properties
 	UNitroHealthComponent();
 
-// TODO - IMPORT ALL THE LOGIC INSIDE THE BLUEPRINT CLASS INTO HERE
+	// TODO - IMPORT ALL THE LOGIC INSIDE THE BLUEPRINT CLASS INTO HERE
 	
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly)
 	int RingLossAmount;
 	UPROPERTY()
 	int KnockbackForce;
@@ -32,15 +32,16 @@ public:
 	int Rings;
 	UPROPERTY()
 	AActor* OverlappedActorRef;
+	UPROPERTY(VisibleAnywhere)
+	TSubclassOf<AActor> PhysicsRingRef;
 	UPROPERTY()
-	AActor* PhysicsRingRef;
-	UPROPERTY(VisibleAnywhere,BlueprintReadWrite)
 	USoundBase* RingDropSFX;
 	
 	// The timer handle is unused at the moment.
 	FTimerHandle InvinciblityTimerHandle;
 
 	// Overlapping related functions
+	UFUNCTION()
 	void OnCapsuleBeginOverlap(
 		UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
