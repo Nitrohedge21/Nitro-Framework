@@ -6,7 +6,6 @@
 #include "Components/ActorComponent.h"
 #include "NitroHealthComponent.generated.h"
 
-
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class MYPROJECT_API UNitroHealthComponent : public UActorComponent
 {
@@ -18,9 +17,9 @@ public:
 
 	// TODO - IMPORT ALL THE LOGIC INSIDE THE BLUEPRINT CLASS INTO HERE
 	
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	int RingLossAmount;
-	UPROPERTY()
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	int KnockbackForce;
 	UPROPERTY()
 	int RingSpawnAmount;

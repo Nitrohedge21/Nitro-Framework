@@ -15,7 +15,9 @@ UNitroHealthComponent::UNitroHealthComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 
 	KnockbackForce = 1000;
-
+	RingLossAmount = 20;
+	Radius = 200;
+	
 	// Sets the RingDropSFX reference
 	static ConstructorHelpers::FObjectFinder<USoundBase> SoundAsset(TEXT("/Game/SoundFX/Sonic/sn_droprings.sn_droprings"));
 	if (SoundAsset.Succeeded())
@@ -150,6 +152,8 @@ void UNitroHealthComponent::DamageSonic()
 	int MaxValue = SonicHealthComponent->Rings;
 	SonicHealthComponent->Rings = FMath::Clamp(ClampValue, MinValue, MaxValue);
 	UE_LOG(LogTemp, Warning, TEXT("Ring count should be: %d"), SonicHealthComponent->Rings);
+	UE_LOG(LogTemp, Warning, TEXT("Spawned ring count should be: %d"), RingSpawnAmount);
+	
 	KnockbackSonic();
 	DropRings();
 
@@ -180,12 +184,13 @@ void UNitroHealthComponent::DropRings()
 {
 	UGameplayStatics::PlaySound2D(GetWorld(),RingDropSFX,1,1,0);
 	
+	
 	for (int currentIndex = 0; currentIndex < RingSpawnAmount; currentIndex++)
 	{
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 		
-		const FTransform Transform = CalculateSpawnTransform(currentIndex);
+		FTransform Transform = CalculateSpawnTransform(currentIndex);
 		
 		// TODO- WHENEVER POSSIBLE, DEBUG THIS FUNCTION TO SEE THE LINE BELOW ACTUALLY SPAWNS IN AN ACTOR OR NOT
 		AActor* SpawnedActor = GetWorld()->SpawnActor<AActor>(PhysicsRingRef, Transform, SpawnParams);
@@ -201,25 +206,77 @@ void UNitroHealthComponent::HandleInvincibility()
 
 void UNitroHealthComponent::ToggleInvincibilityOn()
 {
+	AActor* LocalActorRef = OverlappedActorRef;
+	AMyBaseClass* NitroBaseClassRef = Cast<AMyBaseClass>(LocalActorRef);
 	
+	LocalActorRef->SetActorHiddenInGame(false);
+	// ECC_GameTraceChannel is ECC_Badniks, this was found through the DefaultEngine.ini file
+	NitroBaseClassRef->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel2,ECR_Overlap);
 }
 
 void UNitroHealthComponent::ToggleInvincibilityOff()
 {
+	AActor* LocalActorRef = OverlappedActorRef;
+	AMyBaseClass* NitroBaseClassRef = Cast<AMyBaseClass>(LocalActorRef);
 	
+	LocalActorRef->SetActorHiddenInGame(true);
+	// ECC_GameTraceChannel is ECC_Badniks, this was found through the DefaultEngine.ini file
+	NitroBaseClassRef->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel2,ECR_Ignore);
 }
 
 FTransform UNitroHealthComponent::CalculateSpawnTransform(int CurrentIndex)
 {
-	FTransform returnValue;
+	// The transform calculation logic was done with the help from Cernodile! Thanks a lot man :)
+
+	FTransform returnValue = FTransform();
+	
+	float angle = 360.0f;
+	float numberOfPoints = 10;
+	
+	// Calculate the angle in degrees for this index
+	float angleInDegrees = (CurrentIndex + 1) * (angle / numberOfPoints);
+	
+	// Convert degrees to radians
+	float angleInRadians = FMath::DegreesToRadians(angleInDegrees);
+
+	// Now calculate Cos and Sin using radians
+	float CosValue = FMath::Cos(angleInRadians);
+	float SinValue = FMath::Sin(angleInRadians);
+	
+	float ActorX = OverlappedActorRef->GetActorLocation().X;
+	float ActorY = OverlappedActorRef->GetActorLocation().Y;
+	float ActorZ = OverlappedActorRef->GetActorLocation().Z;
+	
+	SpawnPoint.X = ActorX + (CosValue * Radius);
+	SpawnPoint.Y = ActorY + (SinValue * Radius);
+
+	FVector TransformLocation = FVector(SpawnPoint.X,SpawnPoint.Y,ActorZ);
+	FRotator TransformRotation = FRotator::ZeroRotator;
+	FVector TransformScale = FVector(1,1,1);
+
+	returnValue = FTransform(TransformRotation,TransformLocation,TransformScale);
 	
 	return returnValue;
 }
 
+// TODO - Figure out why the ring spawn amount and loss amount are not separated
 int UNitroHealthComponent::CalculateSpawnAmount(AActor* ActorRef)
 {
-	int returnValue = 10;
+	int returnValue = 0;
 
+	UNitroHealthComponent* ActorHealthComponent =
+		Cast<UNitroHealthComponent>(ActorRef->GetComponentByClass(UNitroHealthComponent::StaticClass()));
+
+	// "this" in here is supposed to be the enemy or the other actor that has caused this function to be called.
+	if(ActorHealthComponent->Rings >= this->RingLossAmount)
+	{
+		returnValue = ActorHealthComponent->RingLossAmount;
+	}
+	else
+	{
+		returnValue = ActorHealthComponent->Rings;
+	}
+	
 	return returnValue;
 }
 

@@ -35,7 +35,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health Component")
 	UNitroHealthComponent* EnemyHealthComponent;
-
 	
 protected:
 	// Called when the game starts or when spawned
