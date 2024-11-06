@@ -191,6 +191,7 @@ void UNitroHealthComponent::DestroyBadnik()
 	Rings -= EnemyHealthComponent->RingLossAmount;
 	
 	GetOwner()->Destroy();
+	EndInvincibility();
 }
 
 void UNitroHealthComponent::KnockbackSonic()
