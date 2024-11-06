@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "TimerManager.h"
 #include "NitroHealthComponent.generated.h"
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -21,8 +22,8 @@ public:
 	int RingLossAmount;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	int KnockbackForce;
-	UPROPERTY()
-	int RingSpawnAmount;
+	UPROPERTY() // This variable is used by the CalculateSpawnAmount function, check the function to see how.
+	int ActualRingSpawnAmount;
 	UPROPERTY()
 	float Radius;
 	UPROPERTY()
@@ -36,9 +37,18 @@ public:
 	UPROPERTY()
 	USoundBase* RingDropSFX;
 	
-	// The timer handle is unused at the moment.
-	FTimerHandle InvinciblityTimerHandle;
+	// Invincibility Logic Variables
+	FTimerHandle InvincibilityTimerHandle;
+	int CurrentInvincibilityFrame;
+	int InvincibilityFrameCount;
+	float DelayBetweenFrames;
+	bool bIsInvincible;
 
+private:
+	UPROPERTY() // This variable is used by the CalculateSpawnAmount function, check the function to see how.
+	int CalculatedRingSpawnAmount;
+
+public:
 	// Overlapping related functions
 	UFUNCTION()
 	void OnCapsuleBeginOverlap(
@@ -57,9 +67,11 @@ public:
 	bool CanSonicDealDamage();
 
 	// Invincibility functions
+	// TODO - PASS IN THE ACTOR REFERENCE THROUGH THE PARAMETERS TO CLEAN UP THE CODE.
 	void ToggleInvincibilityOn();
 	void ToggleInvincibilityOff();
-	void HandleInvincibility();
+	void StartInvincibility();
+	void EndInvincibility();
 	
 	// Other required functions
 	void DestroyBadnik();

@@ -16,7 +16,14 @@ UNitroHealthComponent::UNitroHealthComponent()
 
 	KnockbackForce = 1000;
 	RingLossAmount = 20;
+	ActualRingSpawnAmount = 10;
 	Radius = 200;
+
+	// Invincibility Variables
+	CurrentInvincibilityFrame = 0;
+	InvincibilityFrameCount = 10;
+	DelayBetweenFrames = 0.5;
+	bIsInvincible = false;
 	
 	// Sets the RingDropSFX reference
 	static ConstructorHelpers::FObjectFinder<USoundBase> SoundAsset(TEXT("/Game/SoundFX/Sonic/sn_droprings.sn_droprings"));
@@ -85,6 +92,8 @@ void UNitroHealthComponent::CheckOverlappedActor(AActor* OverlappedActor)
 				if(CanSonicBeDamaged()) { DamageSonic(); }
 			}
 		}
+
+		// TODO - FIGURE OUT IF THE PART BELOW IS EVEN NECESSARY
 		/*else
 		{
 			UE_LOG(LogTemp, Warning, TEXT("This part of the logic is supposed to run now!"));
@@ -106,13 +115,22 @@ bool UNitroHealthComponent::CanSonicBeDamaged()
 
 	if(HealthComponentRef->Rings > 0)
 	{
-		returnValue = true;
+		if(HealthComponentRef->bIsInvincible == true)
+		{
+			// SONIC IS INVINCIBLE
+			returnValue = false;
+		}
+		else {returnValue = true;}
 	}
 	else
 	{
+		if(HealthComponentRef->bIsInvincible == false)
+		{
+			// SONIC IS INVINCIBLE
+			KnockbackSonic();
+		}
 		// SONIC NEEDS TO DIE
 		returnValue = false;
-		KnockbackSonic();
 	}
 	
 	return returnValue;
@@ -123,10 +141,13 @@ bool UNitroHealthComponent::CanSonicDealDamage()
 	bool returnValue;
 
 	AMyBaseClass* NitroBaseClassRef = Cast<AMyBaseClass>(OverlappedActorRef);
+	UNitroHealthComponent* HealthComponentRef =
+		Cast<UNitroHealthComponent>(OverlappedActorRef->GetComponentByClass(UNitroHealthComponent::StaticClass()));
 	
 	if(NitroBaseClassRef->bIsHomingAttacking
 		|| NitroBaseClassRef->bIsStomping
 		|| (NitroBaseClassRef->GetCharacterMovement()->IsFalling() && NitroBaseClassRef->JumpCurrentCount == 1))
+		// || HealthComponentRef->bIsInvincible == true // TODO - IMPLEMENT THIS LOGIC PROPERLY
 	{
 		returnValue = true;
 	}
@@ -146,19 +167,19 @@ void UNitroHealthComponent::DamageSonic()
 	UNitroHealthComponent* EnemyHealthComponent =
 		Cast<UNitroHealthComponent>(GetOwner()->GetComponentByClass(UNitroHealthComponent::StaticClass()));
 
-	RingSpawnAmount = SonicHealthComponent->CalculateSpawnAmount(OverlappedActorRef);
-	int ClampValue = SonicHealthComponent->Rings -= EnemyHealthComponent->RingLossAmount;
+	CalculatedRingSpawnAmount = SonicHealthComponent->CalculateSpawnAmount(OverlappedActorRef);
+	int ClampValue = SonicHealthComponent->Rings - EnemyHealthComponent->RingLossAmount;
 	int MinValue = 0;
 	int MaxValue = SonicHealthComponent->Rings;
 	SonicHealthComponent->Rings = FMath::Clamp(ClampValue, MinValue, MaxValue);
 	UE_LOG(LogTemp, Warning, TEXT("Ring count should be: %d"), SonicHealthComponent->Rings);
-	UE_LOG(LogTemp, Warning, TEXT("Spawned ring count should be: %d"), RingSpawnAmount);
+	UE_LOG(LogTemp, Warning, TEXT("Spawned ring count should be: %d"), CalculatedRingSpawnAmount);
 	
 	KnockbackSonic();
 	DropRings();
 
 	// TODO - THE PART BELOW IS NOT DONE YET
-	//HandleInvincibility();
+	StartInvincibility();
 }
 
 void UNitroHealthComponent::DestroyBadnik()
@@ -185,43 +206,79 @@ void UNitroHealthComponent::DropRings()
 	UGameplayStatics::PlaySound2D(GetWorld(),RingDropSFX,1,1,0);
 	
 	
-	for (int currentIndex = 0; currentIndex < RingSpawnAmount; currentIndex++)
+	for (int currentIndex = 0; currentIndex < CalculatedRingSpawnAmount; currentIndex++)
 	{
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 		
 		FTransform Transform = CalculateSpawnTransform(currentIndex);
 		
-		// TODO- WHENEVER POSSIBLE, DEBUG THIS FUNCTION TO SEE THE LINE BELOW ACTUALLY SPAWNS IN AN ACTOR OR NOT
 		AActor* SpawnedActor = GetWorld()->SpawnActor<AActor>(PhysicsRingRef, Transform, SpawnParams);
 		
 		if(IsValid(SpawnedActor)) {SpawnedActor->SetLifeSpan(10.0f);}
 	}
 }
 
-void UNitroHealthComponent::HandleInvincibility()
+void UNitroHealthComponent::StartInvincibility()
 {
-	
+	// Reset counter and start toggling
+	CurrentInvincibilityFrame = 0;
+	ToggleInvincibilityOn();
 }
+
+void UNitroHealthComponent::EndInvincibility()
+{
+	GetWorld()->GetTimerManager().ClearTimer(InvincibilityTimerHandle);
+
+	// Reset actor visibility and collision to normal state
+	AActor* LocalActorRef = OverlappedActorRef;
+	AMyBaseClass* NitroBaseClassRef = Cast<AMyBaseClass>(LocalActorRef);
+	UNitroHealthComponent* LocalActorHealthComponent =
+			Cast<UNitroHealthComponent>(LocalActorRef->GetComponentByClass(UNitroHealthComponent::StaticClass()));
+
+	LocalActorRef->SetActorHiddenInGame(false);
+	// ECC_GameTraceChannel is ECC_Badniks, this was found through the DefaultEngine.ini file
+	NitroBaseClassRef->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel2, ECR_Block);
+	LocalActorHealthComponent->bIsInvincible = false;
+}
+
 
 void UNitroHealthComponent::ToggleInvincibilityOn()
 {
+	if (CurrentInvincibilityFrame >= InvincibilityFrameCount) {
+		EndInvincibility();
+		return;
+	}
+
 	AActor* LocalActorRef = OverlappedActorRef;
 	AMyBaseClass* NitroBaseClassRef = Cast<AMyBaseClass>(LocalActorRef);
+	UNitroHealthComponent* LocalActorHealthComponent =
+			Cast<UNitroHealthComponent>(LocalActorRef->GetComponentByClass(UNitroHealthComponent::StaticClass()));
 	
 	LocalActorRef->SetActorHiddenInGame(false);
 	// ECC_GameTraceChannel is ECC_Badniks, this was found through the DefaultEngine.ini file
-	NitroBaseClassRef->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel2,ECR_Overlap);
+	NitroBaseClassRef->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel2, ECR_Overlap);
+	LocalActorHealthComponent->bIsInvincible = true;
+
+	// Set timer to turn off after delay
+	GetWorld()->GetTimerManager().SetTimer(InvincibilityTimerHandle, this, &UNitroHealthComponent::ToggleInvincibilityOff, DelayBetweenFrames, false,0.2f);
 }
 
 void UNitroHealthComponent::ToggleInvincibilityOff()
 {
 	AActor* LocalActorRef = OverlappedActorRef;
-	AMyBaseClass* NitroBaseClassRef = Cast<AMyBaseClass>(LocalActorRef);
-	
 	LocalActorRef->SetActorHiddenInGame(true);
-	// ECC_GameTraceChannel is ECC_Badniks, this was found through the DefaultEngine.ini file
-	NitroBaseClassRef->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel2,ECR_Ignore);
+    
+	// Increase toggle count and check if more toggles are needed
+	CurrentInvincibilityFrame++;
+	
+	if (CurrentInvincibilityFrame >= InvincibilityFrameCount) {
+		EndInvincibility();
+		return;
+	}
+
+	// Set timer to turn on again after delay
+	GetWorld()->GetTimerManager().SetTimer(InvincibilityTimerHandle, this, &UNitroHealthComponent::ToggleInvincibilityOn, DelayBetweenFrames, false);
 }
 
 FTransform UNitroHealthComponent::CalculateSpawnTransform(int CurrentIndex)
@@ -231,6 +288,8 @@ FTransform UNitroHealthComponent::CalculateSpawnTransform(int CurrentIndex)
 	FTransform returnValue = FTransform();
 	
 	float angle = 360.0f;
+
+	// The number of points is either could be a hardcoded value or CalculatedRingSpawnAmount in order to be more dynamic(?)
 	float numberOfPoints = 10;
 	
 	// Calculate the angle in degrees for this index
@@ -259,7 +318,6 @@ FTransform UNitroHealthComponent::CalculateSpawnTransform(int CurrentIndex)
 	return returnValue;
 }
 
-// TODO - Figure out why the ring spawn amount and loss amount are not separated
 int UNitroHealthComponent::CalculateSpawnAmount(AActor* ActorRef)
 {
 	int returnValue = 0;
@@ -270,7 +328,8 @@ int UNitroHealthComponent::CalculateSpawnAmount(AActor* ActorRef)
 	// "this" in here is supposed to be the enemy or the other actor that has caused this function to be called.
 	if(ActorHealthComponent->Rings >= this->RingLossAmount)
 	{
-		returnValue = ActorHealthComponent->RingLossAmount;
+		// This was originally set to ActorHealthComponent->RingLossAmount but 
+		returnValue = ActualRingSpawnAmount;
 	}
 	else
 	{
