@@ -261,8 +261,8 @@ void AMyBaseClass::BounceDown()
 	
 	if (GetCharacterMovement()->IsFalling() && !bIsStomping)
 	{
-		stompForce = 10000;	// The force value doesn't really matter much as the velocity gets set to zero.
-		LaunchCharacter(Downward * stompForce, false, true);
+		OriginalBounceForce = 10000;	// The force value doesn't really matter much as the velocity gets set to zero.
+		LaunchCharacter(Downward * OriginalBounceForce, false, true);
 		JumpCurrentCount = 2; // This is done in order to block the players from jumping while stomping
 		CanBounce = true;
 		JumpBallMesh->SetVisibility(true);
@@ -273,15 +273,28 @@ void AMyBaseClass::BounceDown()
 void AMyBaseClass::BounceUp()
 {
 	const FVector Upward  = GetActorUpVector();
-
-	if(CanBounce == true)
+	
+	// The logic here should work along the lines of
+	if(CanBounce == true && (CurrentBounceCount < MaxBounceCount))
 	{
-		LaunchCharacter(Upward * bounceForce,false,true);
-		CanBounce = false;
-		JumpBallMesh->SetVisibility(true);
-		GetMesh()->SetVisibility(false);
-		bIsBouncing = true;
+		// If the max bounce count hasn't been reached, increase the bounce force
+		CurrentBounceForce *= BounceIncreaseRate;
+		LaunchCharacter(Upward * CurrentBounceForce,false,true);
 	}
+	else
+	{
+		// When the max bounce count has been reached, stop increasing the force value
+		LaunchCharacter(Upward * CurrentBounceForce,false,true);
+	}
+	CanBounce = false;
+	JumpBallMesh->SetVisibility(true);
+	GetMesh()->SetVisibility(false);
+	bIsBouncing = true;
+	// Handles the bounce count and clamps it to the max bounce count
+	CurrentBounceCount = FMath::Clamp(CurrentBounceCount + 1,0,MaxBounceCount);
+
+	// TODO - If everything is working as intended, as soon as sonic starts walking,
+	// the bounce force and the count should be reset to their original values
 }
 
 ////////////////////////////

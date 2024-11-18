@@ -67,8 +67,10 @@ public:
 	float stompForce = 2000.0f;
 	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category = "Forces")
 	float jumpDashForce = 500.0f;
+	// The variable below will be deleted
 	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category = "Forces")
 	float bounceForce = 1500.0f;
+	
 	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category = "Forces")
 	float MinSpindashForce = 2500.0f;
 	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category = "Forces")
@@ -109,6 +111,11 @@ public:
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "Bounce Stuff")
 	bool CanBounce = false;
+	int CurrentBounceCount;
+	int MaxBounceCount;
+	float OriginalBounceForce;
+	float CurrentBounceForce;
+	float BounceIncreaseRate;
 	
 	// These are most likely gonna be replaced by enums later. - Ersan 04.03.2024
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "State bools")
