@@ -31,6 +31,12 @@ AMyBaseClass::AMyBaseClass(const FObjectInitializer& ObjectInitializer)
 	MinSlopeAngle = 60.0f;
 	MinSlopeSpeed = 600.0f;
 
+	// bounce values
+	CurrentBounceCount = 0;
+	MaxBounceCount = 3;
+	OriginalBounceForce = 1000;	// The force value doesn't really matter much as the velocity gets set to zero.
+	CurrentBounceForce = OriginalBounceForce;
+	BounceIncreaseRate = 1.15f;
 	
 	// Don't rotate when the controller rotates. Let that just affect the camera.
 	bUseControllerRotationPitch = false;
@@ -261,7 +267,6 @@ void AMyBaseClass::BounceDown()
 	
 	if (GetCharacterMovement()->IsFalling() && !bIsStomping)
 	{
-		OriginalBounceForce = 10000;	// The force value doesn't really matter much as the velocity gets set to zero.
 		LaunchCharacter(Downward * OriginalBounceForce, false, true);
 		JumpCurrentCount = 2; // This is done in order to block the players from jumping while stomping
 		CanBounce = true;
@@ -275,26 +280,23 @@ void AMyBaseClass::BounceUp()
 	const FVector Upward  = GetActorUpVector();
 	
 	// The logic here should work along the lines of
-	if(CanBounce == true && (CurrentBounceCount < MaxBounceCount))
+	if(CanBounce == true)
 	{
-		// If the max bounce count hasn't been reached, increase the bounce force
-		CurrentBounceForce *= BounceIncreaseRate;
+		if(CurrentBounceCount < MaxBounceCount)
+		{
+			CurrentBounceForce *= BounceIncreaseRate;
+		}
 		LaunchCharacter(Upward * CurrentBounceForce,false,true);
-	}
-	else
-	{
-		// When the max bounce count has been reached, stop increasing the force value
-		LaunchCharacter(Upward * CurrentBounceForce,false,true);
-	}
-	CanBounce = false;
-	JumpBallMesh->SetVisibility(true);
-	GetMesh()->SetVisibility(false);
-	bIsBouncing = true;
-	// Handles the bounce count and clamps it to the max bounce count
-	CurrentBounceCount = FMath::Clamp(CurrentBounceCount + 1,0,MaxBounceCount);
+		CanBounce = false;
+		JumpBallMesh->SetVisibility(true);
+		GetMesh()->SetVisibility(false);
+		bIsBouncing = true;
 
-	// TODO - If everything is working as intended, as soon as sonic starts walking,
-	// the bounce force and the count should be reset to their original values
+		CurrentBounceCount = FMath::Clamp(CurrentBounceCount + 1,0,MaxBounceCount);
+		UE_LOG(LogTemp,Warning,TEXT("Current Bounce Count: %d"), CurrentBounceCount);
+		UE_LOG(LogTemp,Warning,TEXT("Current Bounce Force: %f"), CurrentBounceForce);
+
+	}
 }
 
 ////////////////////////////
