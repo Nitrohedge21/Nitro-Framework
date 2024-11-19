@@ -116,6 +116,7 @@ public:
 	float OriginalBounceForce;
 	float CurrentBounceForce;
 	float BounceIncreaseRate;
+	FTimerHandle BounceTimerHandle;
 	
 	// These are most likely gonna be replaced by enums later. - Ersan 04.03.2024
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "State bools")
@@ -179,6 +180,8 @@ protected:
 	//Bounce mechanic's function
 	void BounceDown();
 	void BounceUp();
+	void CheckBounceCount();
+	void ResetBounceHeight();
 	
 	//Jump related functions
 	void JumpDash();

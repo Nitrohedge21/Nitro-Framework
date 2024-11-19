@@ -33,10 +33,10 @@ AMyBaseClass::AMyBaseClass(const FObjectInitializer& ObjectInitializer)
 
 	// bounce values
 	CurrentBounceCount = 0;
-	MaxBounceCount = 3;
+	MaxBounceCount = 4;
 	OriginalBounceForce = 1000;	// The force value doesn't really matter much as the velocity gets set to zero.
 	CurrentBounceForce = OriginalBounceForce;
-	BounceIncreaseRate = 1.15f;
+	BounceIncreaseRate = 1.2f;
 	
 	// Don't rotate when the controller rotates. Let that just affect the camera.
 	bUseControllerRotationPitch = false;
@@ -224,6 +224,7 @@ void AMyBaseClass::Landed(const FHitResult& Hit)
 	//Needs to be reset in the case of a jump dash.
 	GetCharacterMovement()->BrakingFriction = 2.5f;
 	BounceUp();
+	CheckBounceCount();
 	OldTarget = nullptr;
 	CurrentTarget = nullptr;
 	ChosenTarget = nullptr;
@@ -298,6 +299,23 @@ void AMyBaseClass::BounceUp()
 
 	}
 }
+
+void AMyBaseClass::CheckBounceCount()
+{
+	if(CurrentBounceCount >= MaxBounceCount)
+	{
+		GetWorld()->GetTimerManager().SetTimer(BounceTimerHandle, this, &AMyBaseClass::ResetBounceHeight, 1, false);
+	}
+}
+
+
+void AMyBaseClass::ResetBounceHeight()
+{
+	CurrentBounceCount = 0;
+	CurrentBounceForce = OriginalBounceForce;
+	BounceTimerHandle.Invalidate();
+}
+
 
 ////////////////////////////
 ///	Jump dash mechanic	///

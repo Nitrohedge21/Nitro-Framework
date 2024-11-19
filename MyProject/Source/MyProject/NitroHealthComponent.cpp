@@ -146,7 +146,8 @@ bool UNitroHealthComponent::CanSonicDealDamage()
 	
 	if(NitroBaseClassRef->bIsHomingAttacking
 		|| NitroBaseClassRef->bIsStomping
-		|| (NitroBaseClassRef->GetCharacterMovement()->IsFalling() && NitroBaseClassRef->JumpCurrentCount == 1))
+		|| (NitroBaseClassRef->GetCharacterMovement()->IsFalling() && NitroBaseClassRef->JumpCurrentCount == 1)
+		|| NitroBaseClassRef->bIsBouncing)
 		// || HealthComponentRef->bIsInvincible == true // TODO - IMPLEMENT THIS LOGIC PROPERLY
 	{
 		returnValue = true;
