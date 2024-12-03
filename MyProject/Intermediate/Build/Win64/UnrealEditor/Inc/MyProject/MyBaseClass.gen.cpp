@@ -178,10 +178,6 @@ void EmptyLinkFunctionForGeneratedCodeMyBaseClass() {}
 #endif
 		static const UECodeGen_Private::FFloatPropertyParams NewProp_jumpDashForce;
 #if WITH_METADATA
-		static const UECodeGen_Private::FMetaDataPairParam NewProp_bounceForce_MetaData[];
-#endif
-		static const UECodeGen_Private::FFloatPropertyParams NewProp_bounceForce;
-#if WITH_METADATA
 		static const UECodeGen_Private::FMetaDataPairParam NewProp_MinSpindashForce_MetaData[];
 #endif
 		static const UECodeGen_Private::FFloatPropertyParams NewProp_MinSpindashForce;
@@ -440,15 +436,6 @@ void EmptyLinkFunctionForGeneratedCodeMyBaseClass() {}
 	};
 #endif
 	const UECodeGen_Private::FFloatPropertyParams Z_Construct_UClass_AMyBaseClass_Statics::NewProp_jumpDashForce = { "jumpDashForce", nullptr, (EPropertyFlags)0x0010000000000015, UECodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AMyBaseClass, jumpDashForce), METADATA_PARAMS(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_jumpDashForce_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_jumpDashForce_MetaData)) };
-#if WITH_METADATA
-	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AMyBaseClass_Statics::NewProp_bounceForce_MetaData[] = {
-		{ "Category", "Forces" },
-		{ "Comment", "// The variable below will be deleted\n" },
-		{ "ModuleRelativePath", "MyBaseClass.h" },
-		{ "ToolTip", "The variable below will be deleted" },
-	};
-#endif
-	const UECodeGen_Private::FFloatPropertyParams Z_Construct_UClass_AMyBaseClass_Statics::NewProp_bounceForce = { "bounceForce", nullptr, (EPropertyFlags)0x0010000000000015, UECodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AMyBaseClass, bounceForce), METADATA_PARAMS(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_bounceForce_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AMyBaseClass_Statics::NewProp_bounceForce_MetaData)) };
 #if WITH_METADATA
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AMyBaseClass_Statics::NewProp_MinSpindashForce_MetaData[] = {
 		{ "Category", "Forces" },
@@ -768,7 +755,6 @@ void EmptyLinkFunctionForGeneratedCodeMyBaseClass() {}
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMyBaseClass_Statics::NewProp_pushForce,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMyBaseClass_Statics::NewProp_stompForce,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMyBaseClass_Statics::NewProp_jumpDashForce,
-		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMyBaseClass_Statics::NewProp_bounceForce,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMyBaseClass_Statics::NewProp_MinSpindashForce,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMyBaseClass_Statics::NewProp_MaxSpindashForce,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AMyBaseClass_Statics::NewProp_CurrentSpindashForce,
@@ -849,9 +835,9 @@ void EmptyLinkFunctionForGeneratedCodeMyBaseClass() {}
 		{ CharacterStates_StaticEnum, TEXT("CharacterStates"), &Z_Registration_Info_UEnum_CharacterStates, CONSTRUCT_RELOAD_VERSION_INFO(FEnumReloadVersionInfo, 2683037699U) },
 	};
 	const FClassRegisterCompiledInInfo Z_CompiledInDeferFile_FID_MyProject_Source_MyProject_MyBaseClass_h_Statics::ClassInfo[] = {
-		{ Z_Construct_UClass_AMyBaseClass, AMyBaseClass::StaticClass, TEXT("AMyBaseClass"), &Z_Registration_Info_UClass_AMyBaseClass, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(AMyBaseClass), 213153784U) },
+		{ Z_Construct_UClass_AMyBaseClass, AMyBaseClass::StaticClass, TEXT("AMyBaseClass"), &Z_Registration_Info_UClass_AMyBaseClass, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(AMyBaseClass), 1022730785U) },
 	};
-	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_MyProject_Source_MyProject_MyBaseClass_h_4292480572(TEXT("/Script/MyProject"),
+	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_MyProject_Source_MyProject_MyBaseClass_h_206867731(TEXT("/Script/MyProject"),
 		Z_CompiledInDeferFile_FID_MyProject_Source_MyProject_MyBaseClass_h_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_MyProject_Source_MyProject_MyBaseClass_h_Statics::ClassInfo),
 		nullptr, 0,
 		Z_CompiledInDeferFile_FID_MyProject_Source_MyProject_MyBaseClass_h_Statics::EnumInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_MyProject_Source_MyProject_MyBaseClass_h_Statics::EnumInfo));

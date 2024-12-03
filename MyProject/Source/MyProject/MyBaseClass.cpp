@@ -25,8 +25,11 @@ AMyBaseClass::AMyBaseClass(const FObjectInitializer& ObjectInitializer)
 	bIsStomping = false;
 	RingCount = 0;
 	JumpMaxHoldTime = 0.2f;
+	
 	//Slope Physics values
-	SlopeInfluence = 200.0f;
+	OriginalSlopeInfluence = 200.0f;
+	SlopeInfluence = OriginalSlopeInfluence;
+	SpindashSlopeInfluence = 300.0f;
 	SlopeIsAlignedToGravity = true;
 	MinSlopeAngle = 60.0f;
 	MinSlopeSpeed = 600.0f;
@@ -37,6 +40,10 @@ AMyBaseClass::AMyBaseClass(const FObjectInitializer& ObjectInitializer)
 	OriginalBounceForce = 1000;	// The force value doesn't really matter much as the velocity gets set to zero.
 	CurrentBounceForce = OriginalBounceForce;
 	BounceIncreaseRate = 1.2f;
+
+	// Braking friction stuff ( used for spindash specifically)
+	OriginalBrakingFriction = 2.5f;
+	SpindashBrakingFriction = 1.0f;
 	
 	// Don't rotate when the controller rotates. Let that just affect the camera.
 	bUseControllerRotationPitch = false;
@@ -211,18 +218,9 @@ void AMyBaseClass::Landed(const FHitResult& Hit)
 {
 	Super::Landed(Hit);
 
-	if(!ChargingSpindash)
-	{
-		JumpBallMesh->SetVisibility(false);
-		GetMesh()->SetVisibility(true);
-	}
-	else
-	{
-		// This is done in order to fix the spindash bug where sonic could get stuck in the spindash state.
-		SpindashLaunch();
-	}
-	//Needs to be reset in the case of a jump dash.
-	GetCharacterMovement()->BrakingFriction = 2.5f;
+	SpindashPatch();
+	GetCharacterMovement()->BrakingFriction = 2.5f; // Not sure why I've done this - 03.12.2024
+	bIsBouncing = false;
 	BounceUp();
 	CheckBounceCount();
 	OldTarget = nullptr;
@@ -239,9 +237,9 @@ void AMyBaseClass::Landed(const FHitResult& Hit)
 void AMyBaseClass::Stomp()
 {
 	// In case of jumpball mesh being active
-	JumpBallMesh->SetVisibility(false);
 	if (/*JumpCurrentCount >= 1 && */GetNinjaCharacterMovement()->IsFalling() && !bIsStomping)
 	{
+		JumpBallMesh->SetVisibility(false);
 		UGameplayStatics::PlaySound2D(GetWorld(),StompSFX,1,1,0);
 		stompForce = 20000 * GetNinjaCharacterMovement()->GravityScale;	// The force value doesn't really matter much as the velocity gets set to zero.
 		const FVector Downward = -GetActorUpVector();
@@ -263,11 +261,11 @@ void AMyBaseClass::CheckStomp()
 //////////////////////
 void AMyBaseClass::BounceDown()
 {
-	bIsBouncing = true;
 	const FVector Downward = -GetActorUpVector();
 	
-	if (GetCharacterMovement()->IsFalling() && !bIsStomping)
+	if (GetCharacterMovement()->IsFalling() && !bIsStomping & !CanBounce)
 	{
+		bIsBouncing = true;
 		LaunchCharacter(Downward * OriginalBounceForce, false, true);
 		JumpCurrentCount = 2; // This is done in order to block the players from jumping while stomping
 		CanBounce = true;
@@ -280,8 +278,10 @@ void AMyBaseClass::BounceUp()
 {
 	const FVector Upward  = GetActorUpVector();
 	
-	// The logic here should work along the lines of
-	if(CanBounce == true)
+	// If sonic can bounce, check if the current count has reached the max count
+	// if not, increase the rate and do the logic below it. if so, just call the
+	// rest of the logic.
+	if(CanBounce)
 	{
 		if(CurrentBounceCount < MaxBounceCount)
 		{
@@ -289,9 +289,9 @@ void AMyBaseClass::BounceUp()
 		}
 		LaunchCharacter(Upward * CurrentBounceForce,false,true);
 		CanBounce = false;
+		bIsBouncing = true;
 		JumpBallMesh->SetVisibility(true);
 		GetMesh()->SetVisibility(false);
-		bIsBouncing = true;
 
 		CurrentBounceCount = FMath::Clamp(CurrentBounceCount + 1,0,MaxBounceCount);
 		UE_LOG(LogTemp,Warning,TEXT("Current Bounce Count: %d"), CurrentBounceCount);
@@ -307,7 +307,6 @@ void AMyBaseClass::CheckBounceCount()
 		GetWorld()->GetTimerManager().SetTimer(BounceTimerHandle, this, &AMyBaseClass::ResetBounceHeight, 1, false);
 	}
 }
-
 
 void AMyBaseClass::ResetBounceHeight()
 {
@@ -597,15 +596,19 @@ void AMyBaseClass::BlockJumpWhileFalling()
 ////////////////////////
 void AMyBaseClass::ChargeSpindash()
 {
+	// If the requirements are met, disables the jump, kills sonic's velocity
+	// starts charging the spindash, disables the sonic mesh & enables the jump ball.
+	// Then sets the braking friction to the spindash friction.
 	if(bIsGrounded && !GetCharacterMovement()->IsFalling() && GroundAngle < 90 && !bIsStomping)
 	{
 		GetMovementComponent()->SetJumpAllowed(false);
-		// TODO - Figure out a way to disable the movement input rather than killing velocity.
 		GetMovementComponent()->Velocity = FVector::Zero();
 		ChargingSpindash = true;
 		CurrentSpindashForce = FMath::Clamp(CurrentSpindashForce + SpindashIncreaseRate,MinSpindashForce,MaxSpindashForce);
 		JumpBallMesh->SetVisibility(true);
 		GetMesh()->SetVisibility(false);
+		GetCharacterMovement()->BrakingFriction = SpindashBrakingFriction;
+		SlopeInfluence = SpindashSlopeInfluence;
 	}
 }
 
@@ -616,19 +619,28 @@ void AMyBaseClass::ReleaseSpindash()
 	{
 		UGameplayStatics::PlaySound2D(GetWorld(),ReleaseSpinDashSFX,1,1,0);
 		GetMovementComponent()->Velocity = FVector(GetMovementComponent()->Velocity + GetActorForwardVector() * CurrentSpindashForce);
-		SpindashLaunch();
+	
+		// The function is is called through a timer after a few seconds
+		// in order to have a proper spindash mechanic in the project.
+		GetWorld()->GetTimerManager().SetTimer(SpindashTimerHandle, this, &AMyBaseClass::SpindashLaunch, 1.5, false);
 	}
 }
 
 void AMyBaseClass::SpindashLaunch()
 {
-	ChargingSpindash = false;
+	// ChargingSpindash is reset, disable the jumpball & enable sonic mesh.
+	// All the changed variables are set back to their original values.
 
-	//Disable jumpbass, enable sonic mesh
+	ChargingSpindash = false;
+	GetCharacterMovement()->BrakingFriction = OriginalBrakingFriction;
+	SlopeInfluence = OriginalSlopeInfluence;
+	//GetCharacterMovement()->RotationRate = FRotator(520.0f, 520.0f, 520.0f);
+	
 	JumpBallMesh->SetVisibility(false);
 	GetMesh()->SetVisibility(true);
 	
 	CurrentSpindashForce = MinSpindashForce;
+	SpindashTimerHandle.Invalidate();
 }
 
 // These are separated from the main function due to the fact that I couldn't figure out how to play it only once.
@@ -639,6 +651,21 @@ void AMyBaseClass::PlaySpinDashChargeSFX()
 		UGameplayStatics::PlaySound2D(GetWorld(),ChargeSpinDashSFX,1,1,0);
 	}
 }
+
+void AMyBaseClass::SpindashPatch()
+{
+	if(!ChargingSpindash)
+	{
+		JumpBallMesh->SetVisibility(false);
+		GetMesh()->SetVisibility(true);
+	}
+	else
+	{
+		// This is done in order to fix the spindash bug where sonic could get stuck in the spindash state.
+		SpindashLaunch();
+	}
+}
+
 
 // RestartLevel
 void AMyBaseClass::RestartLevel()
@@ -683,7 +710,6 @@ void AMyBaseClass::PauseGame()
 		GetWorld()->GetFirstPlayerController()->bEnableClickEvents = false;
 	}
 }
-
 
 void AMyBaseClass::HandleFOV()
 {

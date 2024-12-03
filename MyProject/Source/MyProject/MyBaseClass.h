@@ -60,6 +60,9 @@ public:
 	UPROPERTY(EditAnywhere,Category = "Spindash stuff")
 	bool ChargingSpindash = false;
 	float SpindashIncreaseRate = 1000.0f;
+	FTimerHandle SpindashTimerHandle;
+	float OriginalBrakingFriction;
+	float SpindashBrakingFriction;
 	
 	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category = "Forces")
 	float pushForce = 50.0f;
@@ -67,9 +70,6 @@ public:
 	float stompForce = 2000.0f;
 	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category = "Forces")
 	float jumpDashForce = 500.0f;
-	// The variable below will be deleted
-	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category = "Forces")
-	float bounceForce = 1500.0f;
 	
 	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category = "Forces")
 	float MinSpindashForce = 2500.0f;
@@ -82,6 +82,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Slope Physics")
 	float GroundAngle;
 	float SlopeInfluence;
+	float OriginalSlopeInfluence;
+	float SpindashSlopeInfluence;
 	float MinSlopeSpeed;
 	float MinSlopeAngle;
 	bool SlopeIsAlignedToGravity;
@@ -208,6 +210,7 @@ protected:
 	void ReleaseSpindash();
 	void SpindashLaunch();
 	void PlaySpinDashChargeSFX();
+	void SpindashPatch();
 
 	void RestartLevel();
 	void PauseGame();
