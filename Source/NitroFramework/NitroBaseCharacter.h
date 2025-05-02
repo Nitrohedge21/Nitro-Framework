@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Logging/LogMacros.h"
 #include "NinjaCharacter.h"
+#include "NitroHealthComponent.h"
 #include "NitroBaseCharacter.generated.h"
 
 class USpringArmComponent;
@@ -45,6 +46,8 @@ class ANitroBaseCharacter : public ANinjaCharacter
 public:
 	ANitroBaseCharacter(const FObjectInitializer& ObjectInitializer);
 	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health Component")
+	UNitroHealthComponent* HealthComponent;
 
 protected:
 
