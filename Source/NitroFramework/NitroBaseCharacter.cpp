@@ -51,8 +51,6 @@ ANitroBaseCharacter::ANitroBaseCharacter(const FObjectInitializer& ObjectInitial
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
-	// In case the variables don't show up on the blueprints, comment-uncomment out the line below to fix it.
-	HealthComponent = CreateDefaultSubobject<UNitroHealthComponent>(TEXT("HealthComponent"));
 }
 
 void ANitroBaseCharacter::BeginPlay()
@@ -79,8 +77,9 @@ void ANitroBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent)) {
 		
 		// Jumping
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ACharacter::Jump);
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
+		EnhancedInputComponent->BindAction(JumpAction_1, ETriggerEvent::Started, this, &ACharacter::Jump);
+		EnhancedInputComponent->BindAction(JumpAction_1, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
+		EnhancedInputComponent->BindAction(JumpAction_2, ETriggerEvent::Triggered, this, &ANitroBaseCharacter::Jump_2);
 
 		// Moving
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ANitroBaseCharacter::Move);
@@ -124,4 +123,9 @@ void ANitroBaseCharacter::Look(const FInputActionValue& Value)
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
 	}
+}
+
+void ANitroBaseCharacter::Jump_2()
+{
+	UE_LOG(LogTemp,Warning,TEXT("Jump action 2 has been executed!"));
 }

@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "Logging/LogMacros.h"
 #include "NinjaCharacter.h"
-#include "NitroHealthComponent.h"
 #include "NitroBaseCharacter.generated.h"
 
 class USpringArmComponent;
@@ -33,7 +32,11 @@ class ANitroBaseCharacter : public ANinjaCharacter
 
 	/** Jump Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* JumpAction;
+	UInputAction* JumpAction_1;
+
+	/** Jump Input Action 2 */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* JumpAction_2;
 
 	/** Move Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
@@ -43,11 +46,11 @@ class ANitroBaseCharacter : public ANinjaCharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* LookAction;
 
+
 public:
 	ANitroBaseCharacter(const FObjectInitializer& ObjectInitializer);
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health Component")
-	UNitroHealthComponent* HealthComponent;
+
+	void Jump_2();
 
 protected:
 
