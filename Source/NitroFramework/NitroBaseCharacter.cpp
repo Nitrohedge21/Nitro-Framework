@@ -10,6 +10,7 @@
 #include "GameFramework/Controller.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Kismet/GameplayStatics.h"
 #include "InputActionValue.h"
 
 
@@ -33,9 +34,9 @@ ANitroBaseCharacter::ANitroBaseCharacter(const FObjectInitializer& ObjectInitial
 
 	// Note: For faster iteration times these variables, and many more, can be tweaked in the Character Blueprint
 	// instead of recompiling to adjust them
-	GetNinjaCharacterMovement()->JumpZVelocity = 500.f;
+	GetNinjaCharacterMovement()->JumpZVelocity = DefaultJumpForce;
 	GetNinjaCharacterMovement()->AirControl = 0.35f;
-	GetNinjaCharacterMovement()->MaxWalkSpeed = 500.f;
+	GetNinjaCharacterMovement()->MaxWalkSpeed = DefaultWalkSpeed;
 	GetNinjaCharacterMovement()->MinAnalogWalkSpeed = 20.f;
 	GetNinjaCharacterMovement()->BrakingDecelerationWalking = 2000.f;
 	GetNinjaCharacterMovement()->BrakingDecelerationFalling = 1500.0f;
@@ -50,6 +51,8 @@ ANitroBaseCharacter::ANitroBaseCharacter(const FObjectInitializer& ObjectInitial
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
+
+	JumpCurrentCount = 0;
 
 }
 
@@ -68,6 +71,11 @@ void ANitroBaseCharacter::BeginPlay()
 	}
 }
 
+void ANitroBaseCharacter::Tick(float DeltaTime)
+{
+	bIsGrounded = GetCharacterMovement()->IsMovingOnGround();
+}
+
 //////////////////////////////////////////////////////////////////////////
 // Input
 
@@ -77,15 +85,21 @@ void ANitroBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent)) {
 		
 		// Jumping
-		EnhancedInputComponent->BindAction(JumpAction_1, ETriggerEvent::Started, this, &ACharacter::Jump);
-		EnhancedInputComponent->BindAction(JumpAction_1, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
-		EnhancedInputComponent->BindAction(JumpAction_2, ETriggerEvent::Triggered, this, &ANitroBaseCharacter::Jump_2);
+		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ACharacter::Jump);
+		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
 
 		// Moving
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ANitroBaseCharacter::Move);
 
 		// Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ANitroBaseCharacter::Look);
+
+		// Custom Action 1 - This is based on spindash & boost inputs from actual Sonic games
+		EnhancedInputComponent->BindAction(CustomAction_1, CustomAction_1_TE, this, &ANitroBaseCharacter::CustomAction_1_Logic);
+		EnhancedInputComponent->BindAction(CustomAction_1, ETriggerEvent::Completed, this, &ANitroBaseCharacter::CustomAction_1_Reset);
+		
+		// Restart Level
+		EnhancedInputComponent->BindAction(RestartAction, ETriggerEvent::Triggered, this, &ANitroBaseCharacter::RestartLevel);
 	}
 }
 
@@ -125,7 +139,75 @@ void ANitroBaseCharacter::Look(const FInputActionValue& Value)
 	}
 }
 
+void ANitroBaseCharacter::Jump()
+{
+	// To override the built-in Jump function of CMC.
+	Super::Jump();
+	BlockJumpWhileFalling();
+	
+	// This logic is done to have a modular secondary jump logic.
+	if (JumpCurrentCount >= 1) {Jump_2();}
+}
+
 void ANitroBaseCharacter::Jump_2()
 {
 	UE_LOG(LogTemp,Warning,TEXT("Jump action 2 has been executed!"));
+	JumpDash();
 }
+
+void ANitroBaseCharacter::Landed(const FHitResult& Hit)
+{
+	Super::Landed(Hit);
+	
+}
+
+void ANitroBaseCharacter::CustomAction_1_Logic()
+{
+	Boost();
+}
+
+void ANitroBaseCharacter::CustomAction_1_Reset()
+{
+	GetNinjaCharacterMovement()->MaxWalkSpeed = DefaultWalkSpeed;
+}
+
+void ANitroBaseCharacter::BlockJumpWhileFalling()
+{
+	if (GetNinjaCharacterMovement()->IsFalling())
+	{
+		// Character is falling, prevent jumping
+		GetNinjaCharacterMovement()->SetJumpAllowed(false);
+		UE_LOG(LogTemp,Warning,TEXT("The jump has been toggled off!"));
+	}
+	else
+	{
+		// Character is not falling, allow jumping
+		GetNinjaCharacterMovement()->SetJumpAllowed(true);
+		UE_LOG(LogTemp,Warning,TEXT("The jump has been toggled on!"));
+	}
+}
+
+void ANitroBaseCharacter::RestartLevel()
+{
+	UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
+}
+
+// Gameplay Mechanics that can be attached to the children of this class are below this line. //
+
+void ANitroBaseCharacter::JumpDash()
+{
+	if (!bIsGrounded && JumpCurrentCount <= 1)
+	{
+		const FVector ForwardDir = GetActorRotation().Vector();
+		LaunchCharacter(ForwardDir * jumpDashForce, false, false);
+	}
+	JumpCurrentCount = 2;
+}
+
+void ANitroBaseCharacter::Boost()
+{
+	UE_LOG(LogTemp,Warning,TEXT("The boost logic has been executed!"));
+	BoostWalkSpeed = DefaultWalkSpeed * 2;
+	GetNinjaCharacterMovement()->MaxWalkSpeed = BoostWalkSpeed;
+}
+
