@@ -6,7 +6,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Blueprint/UserWidget.h"
-#include "NinjaCharacter/Public/NinjaCharacterMovementComponent.h"
+#include "NinjaCharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Components/TimelineComponent.h"
